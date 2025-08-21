@@ -2,7 +2,7 @@ import { car, map } from '@/assets';
 
 const HeroSection = () => {
   return (
-    <section className='mt-15 mb-15'>
+    <section className='mt-15'>
       <div className='flex md:flex-row flex-col items-start justify-between '>
         <div className='flex gap-4 flex-col max-w-[600px]'>
           <h1 className='text-7xl font-semibold'>
