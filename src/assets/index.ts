@@ -14,6 +14,9 @@ import cng1 from "./images/cng-1-removbg.png"
 import express_1_removebg from "./images/express_1-removebg-preview.png"
 import svts_icon from "./icon/svts-icon.png"
 import vehicle_tracking from "./images/obhai-vts_1.jpg"
+import carouselImage1 from "./images/circle-thum_1.jpg"
+import carouselImage2 from "./images/circle-thum_1_0.jpg"
+import carouselImage3 from "./images/circle-thum_1_1.jpg"
 
 export {
     map,
@@ -38,4 +41,10 @@ export const subTabImage = {
     cng1,
     express_1_removebg,
     vehicle_tracking
+}
+
+export const carouselImage = {
+    carouselImage1,
+    carouselImage2,
+    carouselImage3
 }
