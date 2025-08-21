@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <div>
       <footer className='bg-background'>
-        <div className='mx-auto max-w-screen-xl space-y-8 px-4 py-10 sm:px-6 lg:space-y-16 lg:px-8'>
+        <div className='mx-auto container space-y-8 px-4 py-10 sm:px-6 lg:space-y-16 lg:px-8'>
           <div className='sm:flex sm:items-center sm:justify-between'>
             <div >
              <Logo />
