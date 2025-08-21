@@ -1,13 +1,13 @@
-import Logo from "@/assets/icon/Logo";
+import Logo from '@/assets/icon/Logo';
 
 const Footer = () => {
   return (
     <div>
-      <footer className='bg-background'>
-        <div className='mx-auto container max-w-7xl space-y-8 py-10 lg:space-y-16'>
+      <footer className='bg-background border-t'>
+        <div className='mx-auto container max-w-7xl space-y-8 py-10 lg:space-y-16 '>
           <div className='sm:flex sm:items-center sm:justify-between'>
-            <div >
-             <Logo />
+            <div>
+              <Logo />
             </div>
 
             <ul className='mt-8 flex justify-start gap-6 sm:mt-0 sm:justify-end'>
@@ -129,7 +129,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className='grid grid-cols-1 gap-8 border-t  pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:pt-16'>
+          <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
             <div>
               <p className='font-medium text-accent-foreground'>Services</p>
 
@@ -223,7 +223,9 @@ const Footer = () => {
             </div>
 
             <div>
-              <p className='font-medium text-accent-foreground'>Helpful Links</p>
+              <p className='font-medium text-accent-foreground'>
+                Helpful Links
+              </p>
 
               <ul className='mt-6 space-y-4 text-sm'>
                 <li>

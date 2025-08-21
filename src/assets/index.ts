@@ -17,10 +17,15 @@ import vehicle_tracking from "./images/obhai-vts_1.jpg"
 import carouselImage1 from "./images/circle-thum_1.jpg"
 import carouselImage2 from "./images/circle-thum_1_0.jpg"
 import carouselImage3 from "./images/circle-thum_1_1.jpg"
+import banner from "./images/love-driving-dsktp.jpg"
+import findUs from "./images/findus-map_0.jpg"
+
 
 export {
     map,
-    car
+    car,
+    banner,
+    findUs,
 }
 
 export const tabIcon = {

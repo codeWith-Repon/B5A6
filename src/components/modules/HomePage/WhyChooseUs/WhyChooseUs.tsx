@@ -11,7 +11,7 @@ import { carouselData } from '@/constants/CarouselData';
 export function WhyChooseUs() {
   return (
     <div className='container mx-auto mt-15'>
-      <h1 className='text-4xl font-bold mb-15 text-center'>
+      <h1 className='text-4xl font-bold mb-20 text-center'>
         Safety and comfort, wherever you go
       </h1>
       <Carousel
