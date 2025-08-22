@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import GoogleSvg from '@/assets/googleSvg';
 import { useForm } from 'react-hook-form';
 import Password from '@/components/ui/Password';
@@ -25,6 +26,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterMutation } from '@/redux/features/auth/auth.api';
 import config from '@/config';
+import { toast } from 'sonner';
 
 const registerSchema = z
   .object({
@@ -56,7 +58,7 @@ export function RegisterForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [register] = useRegisterMutation();
-
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues:
@@ -84,8 +86,15 @@ export function RegisterForm({
 
     try {
       const result = await register(userInfo).unwrap();
+      if (result.success) {
+        toast.success('Registration successful');
+        navigate('/verify');
+      }
       console.log('registration result', result);
-    } catch (error) {
+    } catch (error: any) {
+      if (!error.success) {
+        toast.error(error.data.message || 'Registration failed');
+      }
       console.error('registration error', error);
     }
   };
@@ -192,13 +201,13 @@ export function RegisterForm({
             </Form>
 
             <Button type='submit' form='register-form' className='w-full'>
-              Register
+              Sign up
             </Button>
 
             <div className='text-center text-sm'>
               Already have an account?{' '}
               <Link to='/login' className='underline underline-offset-4'>
-                Login
+                sign in
               </Link>
             </div>
           </div>
