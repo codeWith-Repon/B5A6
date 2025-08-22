@@ -73,9 +73,11 @@ export function LoginForm({
       }
       console.log('login result', result);
     } catch (error: any) {
-      if (!error.success) {
+      if (!error.success && error.data.message === 'User not verified!') {
         toast.error(error.data.message || 'Login failed');
-        navigate('/verify');
+        navigate('/verify', { state: data.email });
+      } else {
+        toast.error('Something went wrong');
       }
       console.log('login failed', error);
     }
