@@ -1,5 +1,6 @@
 import App from '@/App';
 import About from '@/pages/About';
+import Driver from '@/pages/Driver';
 import HomePage from '@/pages/HomePage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         Component: About,
         path: 'about',
+      },
+      {
+        Component: Driver,
+        path: 'driver',
       },
     ],
   },

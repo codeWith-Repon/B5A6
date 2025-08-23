@@ -30,6 +30,7 @@ const navigationLinks = [
   { href: '#', label: 'About' },
   { href: '#', label: 'Faq' },
   { href: '#', label: 'Contact' },
+  { href: '/driver', label: 'Become a driver' },
 ];
 
 export default function Navbar() {
