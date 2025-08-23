@@ -44,10 +44,10 @@ const Verify = () => {
   const navigate = useNavigate();
   const [email] = useState(location.state);
   const [confirmed, setConfirmed] = useState<boolean>(false);
-  const [timer, setTimer] = useState<number>(0);
+  const [timer, setTimer] = useState<number>(120);
 
   const [sendOtp, { isLoading }] = useSendOtpMutation();
-  const [verifyOtp] = useVerifyOtpMutation();
+  const [verifyOtp, { isLoading: verifyLoading }] = useVerifyOtpMutation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -62,12 +62,23 @@ const Verify = () => {
     }
   }, [email, navigate]);
 
+  useEffect(() => {
+    if (!email || !confirmed) return;
+
+    const timerId = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      console.log('timer', timer);
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [email, confirmed, timer]);
+
   const handleSentOtp = async () => {
     const toastId = toast.loading('Sending OTP...');
     try {
       const res = await sendOtp({ email: email }).unwrap();
       if (res.success) {
         toast.success('OTP Sent!', { id: toastId });
+        setTimer(120);
         setConfirmed(true);
       }
       console.log(res);
@@ -152,9 +163,12 @@ const Verify = () => {
                           })}
                           type='button'
                           variant={'link'}
+                          onClick={handleSentOtp}
+                          disabled={timer !== 0}
                         >
                           Resend OTP
                         </Button>
+                        {timer > 0 && ` in ${timer} s`}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -168,6 +182,7 @@ const Verify = () => {
               type='submit'
               className='w-full cursor-pointer'
               form='otp-form'
+              disabled={verifyLoading}
             >
               Verify
             </Button>
