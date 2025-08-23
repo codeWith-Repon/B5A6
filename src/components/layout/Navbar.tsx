@@ -14,6 +14,13 @@ import {
 import { Link } from 'react-router';
 import { ModeToggle } from './ModeToggler';
 import { useEffect, useState } from 'react';
+import {
+  authApi,
+  useLogOutMutation,
+  useUserInfoQuery,
+} from '@/redux/features/auth/auth.api';
+import { toast } from 'sonner';
+import { useAppDispatch } from '@/redux/hook';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -26,7 +33,16 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  const [logOut] = useLogOutMutation();
   const [isSticky, setIsSticky] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    logOut(undefined);
+    dispatch(authApi.util.resetApiState());
+    toast.success('Logout successful');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,9 +138,20 @@ export default function Navbar() {
           {/* Right side */}
           <div className='flex items-center gap-2'>
             <ModeToggle />
-            <Button asChild size='sm' className='text-sm'>
-              <Link to={'/login'}>Log In</Link>
-            </Button>
+            {userInfo?.data?.email ? (
+              <Button
+                onClick={handleLogout}
+                size='sm'
+                className='text-sm'
+                variant='outline'
+              >
+                Log Out
+              </Button>
+            ) : (
+              <Button asChild size='sm' className='text-sm'>
+                <Link to={'/login'}>Log In</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>
