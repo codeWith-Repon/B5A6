@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import {
@@ -26,6 +27,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} from '@/redux/features/auth/auth.api';
+import { cn } from '@/lib/utils';
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -37,7 +43,11 @@ const Verify = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [email] = useState(location.state);
-  const [confirm, setConfirm] = useState<boolean>(false);
+  const [confirmed, setConfirmed] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(0);
+
+  const [sendOtp, { isLoading }] = useSendOtpMutation();
+  const [verifyOtp] = useVerifyOtpMutation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,14 +62,46 @@ const Verify = () => {
     }
   }, [email, navigate]);
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-  }
+  const handleSentOtp = async () => {
+    const toastId = toast.loading('Sending OTP...');
+    try {
+      const res = await sendOtp({ email: email }).unwrap();
+      if (res.success) {
+        toast.success('OTP Sent!', { id: toastId });
+        setConfirmed(true);
+      }
+      console.log(res);
+    } catch (error) {
+      toast.error('Something went wrong', { id: toastId });
+      console.log(error);
+    }
+  };
 
-  console.log(email);
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const toastId = toast.loading('Verifying OTP...');
+
+    const userinfo = {
+      email: email,
+      otp: data.pin,
+    };
+
+    try {
+      const res = await verifyOtp(userinfo).unwrap();
+      if (res.success) {
+        toast.success('OTP Verified!', { id: toastId });
+        navigate('/');
+      }
+    } catch (error: any) {
+      if (error.data.message) {
+        toast.error(error.data.message, { id: toastId });
+      }
+      console.log(error);
+    }
+  };
+
   return (
     <div className='grid place-content-center h-screen'>
-      {confirm ? (
+      {confirmed ? (
         <Card className='w-full max-w-sm'>
           <CardHeader>
             <CardTitle>One-Time Password</CardTitle>
@@ -72,6 +114,7 @@ const Verify = () => {
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className='w-2/3 space-y-6'
+                id='otp-form'
               >
                 <FormField
                   control={form.control}
@@ -101,7 +144,17 @@ const Verify = () => {
                         </InputOTP>
                       </FormControl>
                       <FormDescription>
-                        Please enter the one-time password sent to your email.
+                        Please enter the one-time password sent to your email.{' '}
+                        <Button
+                          className={cn('p-0 m-0', {
+                            'cursor-pointer': timer === 0,
+                            'text-gray-500': timer !== 0,
+                          })}
+                          type='button'
+                          variant={'link'}
+                        >
+                          Resend OTP
+                        </Button>
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -111,8 +164,12 @@ const Verify = () => {
             </Form>
           </CardContent>
           <CardFooter className='flex-col gap-2'>
-            <Button type='submit' className='w-full'>
-              Submit
+            <Button
+              type='submit'
+              className='w-full cursor-pointer'
+              form='otp-form'
+            >
+              Verify
             </Button>
           </CardFooter>
         </Card>
@@ -129,7 +186,8 @@ const Verify = () => {
             <Button
               type='submit'
               className='w-full'
-              onClick={() => setConfirm(true)}
+              onClick={handleSentOtp}
+              disabled={isLoading}
             >
               Confirm
             </Button>

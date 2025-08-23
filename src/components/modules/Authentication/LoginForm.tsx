@@ -27,6 +27,7 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLoginMutation } from '@/redux/features/auth/auth.api';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 const signInSchema = z.object({
   email: z.email().min(1, { error: 'Email is required' }),
@@ -46,7 +47,7 @@ export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [Login] = useLoginMutation();
+  const [Login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -76,6 +77,11 @@ export function LoginForm({
       if (!error.success && error.data.message === 'User not verified!') {
         toast.error(error.data.message || 'Login failed');
         navigate('/verify', { state: data.email });
+      } else if (
+        !error.success &&
+        error.data.message === 'User dos not exist'
+      ) {
+        toast.error(error.data.message || 'Login failed');
       } else {
         toast.error('Something went wrong');
       }
@@ -149,9 +155,25 @@ export function LoginForm({
               </form>
             </Form>
 
-            <Button type='submit' form='login-form' className='w-full'>
-              sign in
-            </Button>
+            {isLoading ? (
+              <Button
+                type='submit'
+                form='login-form'
+                className='w-full cursor-pointer'
+                disabled
+              >
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Sign in
+              </Button>
+            ) : (
+              <Button
+                type='submit'
+                form='login-form'
+                className='w-full cursor-pointer'
+              >
+                Sign in
+              </Button>
+            )}
 
             <div className='text-center text-sm'>
               don&apos;t have an account?{' '}

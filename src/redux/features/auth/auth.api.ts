@@ -15,11 +15,27 @@ const authApi = baseApi.injectEndpoints({
                 method: "POST",
                 data: userInfo
             })
+        }),
+        sendOtp: builder.mutation({
+            query: (userInfo) => ({
+                url: "/otp/send",
+                method: "POST",
+                data: userInfo
+            })
+        }),
+        verifyOtp: builder.mutation({
+            query: (userInfo) => ({
+                url: "/otp/verify",
+                method: "POST",
+                data: userInfo
+            })
         })
     })
 })
 
 export const {
     useRegisterMutation,
-    useLoginMutation
+    useLoginMutation,
+    useSendOtpMutation,
+    useVerifyOtpMutation
 } = authApi

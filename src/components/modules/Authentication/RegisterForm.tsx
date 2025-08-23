@@ -27,6 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterMutation } from '@/redux/features/auth/auth.api';
 import config from '@/config';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 const registerSchema = z
   .object({
@@ -57,7 +58,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -200,9 +201,21 @@ export function RegisterForm({
               </form>
             </Form>
 
-            <Button type='submit' form='register-form' className='w-full'>
-              Sign up
-            </Button>
+            {isLoading ? (
+              <Button
+                type='submit'
+                form='register-form'
+                className='w-full'
+                disabled
+              >
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Sign up
+              </Button>
+            ) : (
+              <Button type='submit' form='register-form' className='w-full cursor-pointer'>
+                Sign up
+              </Button>
+            )}
 
             <div className='text-center text-sm'>
               Already have an account?{' '}
