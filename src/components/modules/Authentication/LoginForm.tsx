@@ -81,7 +81,12 @@ export function LoginForm({
         !error.success &&
         error.data.message === 'User dos not exist'
       ) {
-        toast.error(error.data.message || 'Login failed');
+        toast.error(error.data.message || 'User dos not exist');
+      } else if (
+        !error.success &&
+        error.data.message === 'Password does not match'
+      ) {
+        toast.error(error.data.message || 'Password does not match');
       } else {
         toast.error('Something went wrong');
       }
