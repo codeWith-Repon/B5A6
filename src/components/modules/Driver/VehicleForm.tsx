@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +23,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { vehicleTypeOptions } from '@/constants/VehicleType';
+import { useRegisterVehicleMutation } from '@/redux/features/driver/driver.api';
+import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
+import { useEffect, useState } from 'react';
+import type { IVehicle } from '@/types/driver.types';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 const vehicleSchema = z.object({
   brand: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -30,13 +37,26 @@ const vehicleSchema = z.object({
 
   vehicleLicense: z
     .string()
-    .min(8, { message: 'Password must be at least 8 characters' }),
+    .min(8, { message: 'vehicle license must be at least 8 characters' })
+    .max(15, { message: 'vehicle license does not exceed 16 characters' }),
 });
 
 export function VehicleForm({
-  className,
+  setIsVehicleRegistered,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  setIsVehicleRegistered: (value: boolean) => void;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const [registerVehicle, { isLoading }] = useRegisterVehicleMutation();
+  const { data: userData } = useUserInfoQuery(undefined);
+  const [userId, setUserId] = useState<string>('');
+
+  useEffect(() => {
+    if (userData?.success) {
+      setUserId(userData?.data?._id);
+    }
+  }, [userData, userId]);
+
   const form = useForm<z.infer<typeof vehicleSchema>>({
     resolver: zodResolver(vehicleSchema),
     defaultValues: {
@@ -48,11 +68,26 @@ export function VehicleForm({
   });
 
   const onSubmit = async (data: z.infer<typeof vehicleSchema>) => {
-    console.log(data);
+    const vehicleData: IVehicle = {
+      driver: userId,
+      vehicleType: data.vehicleType,
+      brand: data.brand,
+      model: data.model,
+      vehicleLicense: data.vehicleLicense,
+    };
+
+    try {
+      const res = await registerVehicle(vehicleData).unwrap();
+      if (res.success) toast.success(res.message);
+      setIsVehicleRegistered(true);
+    } catch (error: any) {
+      toast.error(error.data.message);
+      console.log('Failed to register vehicle', error);
+    }
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-6')} {...props}>
       <Card>
         <CardHeader className='text-center'>
           <CardTitle className='text-xl'>Register vehicle</CardTitle>
@@ -152,13 +187,20 @@ export function VehicleForm({
               </form>
             </Form>
 
-            <Button
-              type='submit'
-              form='vehicle-form'
-              className='w-full cursor-pointer'
-            >
-              Register Vehicle
-            </Button>
+            {isLoading ? (
+              <Button type='submit' form='vehicle-form' disabled>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Please wait
+              </Button>
+            ) : (
+              <Button
+                type='submit'
+                form='vehicle-form'
+                className='w-full cursor-pointer'
+              >
+                Register Vehicle
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
