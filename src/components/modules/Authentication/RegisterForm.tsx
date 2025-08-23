@@ -110,7 +110,11 @@ export function RegisterForm({
         <CardContent>
           <div className='grid gap-6'>
             <div className='flex flex-col gap-4'>
-              <Button variant='outline' className='w-full'>
+              <Button
+                variant='outline'
+                className='w-full cursor-pointer'
+                onClick={() => window.open(`${config.baseUrl}/auth/google`)}
+              >
                 <GoogleSvg />
                 Sign up with Google
               </Button>
@@ -212,7 +216,11 @@ export function RegisterForm({
                 Sign up
               </Button>
             ) : (
-              <Button type='submit' form='register-form' className='w-full cursor-pointer'>
+              <Button
+                type='submit'
+                form='register-form'
+                className='w-full cursor-pointer'
+              >
                 Sign up
               </Button>
             )}
