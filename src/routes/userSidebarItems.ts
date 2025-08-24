@@ -7,7 +7,7 @@ export const userSidebarItems = [
         items: [
             {
                 title: "Your Activity",
-                url: "/driver/ride-request",
+                url: "/rider/ride-request",
                 component: RideRequest
             }
         ]
@@ -17,17 +17,17 @@ export const userSidebarItems = [
         items: [
             {
                 title: "Completed Ride",
-                url: "/driver/ride-completed",
+                url: "/rider/ride-completed",
                 component: Completed
             },
             {
                 title: "Cancelled Ride",
-                url: "/driver/ride-request",
+                url: "/rider/ride-request",
                 component: RideRequest
             },
             {
                 title: "Payment History",
-                url: "/driver/ride-request",
+                url: "/rider/ride-request",
                 component: RideRequest
             }
         ]

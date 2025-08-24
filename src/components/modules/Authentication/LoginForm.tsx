@@ -55,8 +55,8 @@ export function LoginForm({
     defaultValues:
       config.environment === 'development'
         ? {
-            email: 'repon4008@gmail.com',
-            password: 'R@123456',
+            email: 'superadmin@super.com',
+            password: 'Repon@123',
           }
         : {
             email: '',

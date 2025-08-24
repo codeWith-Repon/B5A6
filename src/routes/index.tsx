@@ -10,6 +10,7 @@ import { generateRoutes } from '@/utils/generateRoutes';
 import { createBrowserRouter } from 'react-router';
 import { adminSidebarItems } from './adminSidebarItems';
 import { driverSidebarItems } from './DriverSidebarItem';
+import { userSidebarItems } from './userSidebarItems';
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
       },
       {
         Component: Driver,
-        path: 'driver',
+        path: 'driver/register',
       },
     ],
   },
@@ -39,6 +40,11 @@ export const router = createBrowserRouter([
     Component: DashboardLayout,
     path: '/driver',
     children: [...generateRoutes(driverSidebarItems)],
+  },
+  {
+    Component: DashboardLayout,
+    path: '/rider',
+    children: [...generateRoutes(userSidebarItems)],
   },
   {
     Component: Login,
