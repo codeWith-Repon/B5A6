@@ -29,6 +29,7 @@ import { useEffect, useState } from 'react';
 import type { IVehicle } from '@/types/driver.types';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router';
 
 const vehicleSchema = z.object({
   brand: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -42,20 +43,18 @@ const vehicleSchema = z.object({
 });
 
 export function VehicleForm({
-  setIsVehicleRegistered,
   ...props
-}: {
-  setIsVehicleRegistered: (value: boolean) => void;
-} & React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement>) {
   const [registerVehicle, { isLoading }] = useRegisterVehicleMutation();
   const { data: userData } = useUserInfoQuery(undefined);
   const [userId, setUserId] = useState<string>('');
+  const [vehicleParams, setVehicleParams] = useSearchParams();
 
   useEffect(() => {
     if (userData?.success) {
       setUserId(userData?.data?._id);
     }
-  }, [userData, userId]);
+  }, [userData]);
 
   const form = useForm<z.infer<typeof vehicleSchema>>({
     resolver: zodResolver(vehicleSchema),
@@ -77,9 +76,13 @@ export function VehicleForm({
     };
 
     try {
+      const params = new URLSearchParams(vehicleParams);
       const res = await registerVehicle(vehicleData).unwrap();
-      if (res.success) toast.success(res.message);
-      setIsVehicleRegistered(true);
+      if (res.success) {
+        toast.success(res.message);
+        params.set('vehicleRegistered', 'true');
+        setVehicleParams(params);
+      }
     } catch (error: any) {
       toast.error(error.data.message);
       console.log('Failed to register vehicle', error);

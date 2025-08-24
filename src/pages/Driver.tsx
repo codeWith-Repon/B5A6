@@ -2,11 +2,13 @@ import DriverForm from '@/components/modules/Driver/DriverForm';
 import { VehicleForm } from '@/components/modules/Driver/VehicleForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
-import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 const Driver = () => {
   const { isLoading: userLoading } = useUserInfoQuery(undefined);
-  const [isVehicleRegistered, setIsVehicleRegistered] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  const isVehicleRegistered = searchParams.get('vehicleRegistered') === 'true';
 
   return (
     <div>
@@ -17,7 +19,7 @@ const Driver = () => {
               <Skeleton className='h-[300px] w-full rounded-xl' />
             </div>
           ) : !isVehicleRegistered ? (
-            <VehicleForm setIsVehicleRegistered={setIsVehicleRegistered} />
+            <VehicleForm />
           ) : (
             <DriverForm />
           )}
