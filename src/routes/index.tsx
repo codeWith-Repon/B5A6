@@ -1,15 +1,15 @@
 import App from '@/App';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import About from '@/pages/About';
-import AllDriver from '@/pages/Admin/AllDriver';
-import Analytics from '@/pages/Admin/Analytics';
 import Driver from '@/pages/Driver';
 import RideRequest from '@/pages/Driver/RideRequest';
 import HomePage from '@/pages/HomePage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Verify from '@/pages/Verify';
+import { generateRoutes } from '@/utils/generateRoutes';
 import { createBrowserRouter } from 'react-router';
+import { adminSidebarItems } from './adminSidebarItems';
 
 export const router = createBrowserRouter([
   {
@@ -33,16 +33,7 @@ export const router = createBrowserRouter([
   {
     Component: DashboardLayout,
     path: '/admin',
-    children: [
-      {
-        Component: Analytics,
-        path: 'analytics',
-      },
-      {
-        Component: AllDriver,
-        path: 'all-driver',
-      },
-    ],
+    children: [...generateRoutes(adminSidebarItems)],
   },
   {
     Component: DashboardLayout,
