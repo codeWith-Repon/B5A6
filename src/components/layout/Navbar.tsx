@@ -14,6 +14,13 @@ import {
 import { Link } from 'react-router';
 import { ModeToggle } from './ModeToggler';
 import { useEffect, useState } from 'react';
+import {
+  authApi,
+  useLogOutMutation,
+  useUserInfoQuery,
+} from '@/redux/features/auth/auth.api';
+import { toast } from 'sonner';
+import { useAppDispatch } from '@/redux/hook';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -23,10 +30,20 @@ const navigationLinks = [
   { href: '#', label: 'About' },
   { href: '#', label: 'Faq' },
   { href: '#', label: 'Contact' },
+  { href: '/driver', label: 'Become a driver' },
 ];
 
 export default function Navbar() {
+  const { data: userInfo } = useUserInfoQuery(undefined);
+  const [logOut] = useLogOutMutation();
   const [isSticky, setIsSticky] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    logOut(undefined);
+    dispatch(authApi.util.resetApiState());
+    toast.success('Logout successful');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,8 +105,8 @@ export default function Navbar() {
                   <NavigationMenuList className='flex-col items-start gap-0 md:gap-2'>
                     {navigationLinks.map((link, index) => (
                       <NavigationMenuItem key={index} className='w-full'>
-                        <NavigationMenuLink href={link.href} className='py-1.5'>
-                          {link.label}
+                        <NavigationMenuLink asChild className='py-1.5'>
+                          <Link to={link.href}>{link.label}</Link>
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                     ))}
@@ -108,10 +125,10 @@ export default function Navbar() {
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index}>
                       <NavigationMenuLink
-                        href={link.href}
+                        asChild
                         className='text-muted-foreground hover:text-primary py-1.5 font-medium'
                       >
-                        {link.label}
+                        <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -122,9 +139,20 @@ export default function Navbar() {
           {/* Right side */}
           <div className='flex items-center gap-2'>
             <ModeToggle />
-            <Button asChild size='sm' className='text-sm'>
-              <Link to={'/sign-in'}>Sign In</Link>
-            </Button>
+            {userInfo?.data?.email ? (
+              <Button
+                onClick={handleLogout}
+                size='sm'
+                className='text-sm'
+                variant='outline'
+              >
+                Log Out
+              </Button>
+            ) : (
+              <Button asChild size='sm' className='text-sm'>
+                <Link to={'/login'}>Log In</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

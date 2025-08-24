@@ -1,7 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import axiosBaseQuery from './axiosBaseQuery'
 
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://ride-booking-apis.vercel.app/api/v1' }),
+    baseQuery: axiosBaseQuery(),
+    tagTypes: ["User"],
     endpoints: () => ({}),
 })
