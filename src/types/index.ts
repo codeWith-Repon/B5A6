@@ -35,3 +35,9 @@ export interface ISidebarItem {
         component: ComponentType
     }[]
 }
+
+export type IRole =
+    "SUPER_ADMIN"
+    | "ADMIN"
+    | "RIDER"
+    | "DRIVER"
