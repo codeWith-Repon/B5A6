@@ -43,6 +43,8 @@ export type IRole =
     | "RIDER"
     | "DRIVER"
 
+export type IDriverStatus = "PENDING" | "APPROVED" | "SUSPENDED"
+
 export interface IDriver {
     data: IDriverResponse[]
     meta: IMeta

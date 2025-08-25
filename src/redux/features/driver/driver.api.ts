@@ -1,5 +1,5 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IResponse } from "@/types";
+import type { IDriverStatus, IResponse } from "@/types";
 import type { IDriver, IDriverResponse, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
@@ -18,7 +18,8 @@ export const authApi = baseApi.injectEndpoints({
                 url: "/driver/register-driver",
                 method: "POST",
                 data: driverInfo
-            })
+            }),
+            invalidatesTags: ["Driver"]
         }),
         getVehicle: builder.query<{ data: IVehicleResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({
@@ -44,8 +45,19 @@ export const authApi = baseApi.injectEndpoints({
                     data: response.data.data,
                     meta: response.data.meta
                 }
-            }
-        })
+            },
+            providesTags: ["Driver"]
+        }),
+
+        updateDriver: builder.mutation<IDriverResponse, { id: string, data: { status: IDriverStatus } }>({
+            query: ({ id, data }) => ({
+                url: `driver/update/${id}`,
+                method: "patch",
+                data
+            }),
+            invalidatesTags: ["Driver"]
+        }),
+
     })
 })
 
@@ -53,5 +65,6 @@ export const {
     useRegisterVehicleMutation,
     useRegisterDriverMutation,
     useGetVehicleQuery,
-    useGetDriversQuery
+    useGetDriversQuery,
+    useUpdateDriverMutation
 } = authApi

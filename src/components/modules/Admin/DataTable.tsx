@@ -7,13 +7,42 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { IDriverResponse, IGetResponse } from '@/types/driver.types';
+import { driverStatus } from '@/constants/driverStatus';
+import {
+  useGetDriversQuery,
+  useUpdateDriverMutation,
+} from '@/redux/features/driver/driver.api';
+import clsx from 'clsx';
 import { Check, X } from 'lucide-react';
+import { toast } from 'sonner';
 
-interface DataTableProps {
-  drivers?: IGetResponse<IDriverResponse>;
-}
-const DataTable = ({ drivers }: DataTableProps) => {
+const DataTable = () => {
+  const { data: drivers } = useGetDriversQuery(undefined);
+  const [updateDriver] = useUpdateDriverMutation();
+
+  const handleApprove = async (id: string) => {
+    try {
+      await updateDriver({ id, data: { status: 'APPROVED' } }).unwrap();
+
+      toast.success('Driver approved successfully');
+    } catch (error) {
+      toast.error('Failed to approve driver');
+      console.log(error);
+    }
+  };
+
+  const handleSuspend = async (id: string) => {
+    try {
+      await updateDriver({ id, data: { status: 'SUSPENDED' } }).unwrap();
+
+      toast.success('Driver suspended successfully');
+    } catch (error) {
+      toast.error('Failed to suspend driver');
+      console.log(error);
+    }
+  };
+
+  // console.log(drivers);
   return (
     <Table className=''>
       <TableHeader>
@@ -29,14 +58,28 @@ const DataTable = ({ drivers }: DataTableProps) => {
           <TableRow key={driver?._id}>
             <TableCell className='font-medium'>{driver?.user?.name}</TableCell>
             <TableCell>{driver?.user?.email}</TableCell>
-            <TableCell>{driver?.status}</TableCell>
+            <TableCell
+              className={clsx('text-xs font-semibold', {
+                'text-yellow-500': driver?.status === driverStatus.pending,
+                'text-green-500': driver?.status === driverStatus.approved,
+                'text-red-500': driver?.status === driverStatus.suspended,
+              })}
+            >
+              {driver?.status}
+            </TableCell>
             <TableCell className=' flex gap-2 items-center justify-end'>
-              <Button size='sm' className='cursor-pointer' variant={'outline'}>
+              <Button
+                size='sm'
+                className='cursor-pointer'
+                variant={'outline'}
+                onClick={() => handleApprove(driver?._id)}
+              >
                 <Check className='' />
               </Button>
               <Button
                 size='sm'
                 className='cursor-pointer bg-primary text-foreground'
+                onClick={() => handleSuspend(driver?._id)}
               >
                 <X className='' />
               </Button>
