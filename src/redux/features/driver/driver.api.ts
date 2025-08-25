@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IResponse } from "@/types";
-import type { IDriver, IDriverResponse, IGetVehicleResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
+import type { IDriverStatus, IResponse } from "@/types";
+import type { IDriver, IDriverResponse, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -18,7 +18,8 @@ export const authApi = baseApi.injectEndpoints({
                 url: "/driver/register-driver",
                 method: "POST",
                 data: driverInfo
-            })
+            }),
+            invalidatesTags: ["Driver"]
         }),
         getVehicle: builder.query<{ data: IVehicleResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({
@@ -26,18 +27,44 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET",
                 params
             }),
-            transformResponse: (response: IResponse<IGetVehicleResponse>) => {
+            transformResponse: (response: IResponse<IGetResponse<IVehicleResponse>>) => {
                 return {
                     data: response.data.data,
                     meta: response.data.meta
                 }
             }
-        }), 
+        }),
+        getDrivers: builder.query<{ data: IDriverResponse[], meta?: IMeta }, unknown>({
+            query: (params) => ({
+                url: "driver/drivers",
+                method: "GET",
+                params
+            }),
+            transformResponse: (response: IResponse<IGetResponse<IDriverResponse>>) => {
+                return {
+                    data: response.data.data,
+                    meta: response.data.meta
+                }
+            },
+            providesTags: ["Driver"]
+        }),
+
+        updateDriver: builder.mutation<IDriverResponse, { id: string, data: { status: IDriverStatus } }>({
+            query: ({ id, data }) => ({
+                url: `driver/update/${id}`,
+                method: "patch",
+                data
+            }),
+            invalidatesTags: ["Driver"]
+        }),
+
     })
 })
 
 export const {
     useRegisterVehicleMutation,
     useRegisterDriverMutation,
-    useGetVehicleQuery
+    useGetVehicleQuery,
+    useGetDriversQuery,
+    useUpdateDriverMutation
 } = authApi

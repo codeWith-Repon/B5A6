@@ -31,6 +31,7 @@ export interface User {
     _id: string
     name: string
     email: string
+    isActive?: boolean
 }
 
 export interface Vehicle {
@@ -67,9 +68,9 @@ export interface IDriverResponse {
     __v: number
 }
 
-export interface IGetVehicleResponse {
-    data: IVehicleResponse[]
-    meta: IMeta
+export interface IGetResponse<T> {
+    data: T[]
+    meta?: IMeta
 }
 
 export interface IMeta {
