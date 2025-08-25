@@ -12,6 +12,9 @@ import { adminSidebarItems } from './adminSidebarItems';
 import { driverSidebarItems } from './DriverSidebarItem';
 import { userSidebarItems } from './userSidebarItems';
 import Unauthorized from '@/pages/Unauthorized';
+import { WithAuth } from '@/utils/WithAuth';
+import { role } from '@/constants/role';
+import type { IRole } from '@/types';
 
 export const router = createBrowserRouter([
   {
@@ -27,13 +30,13 @@ export const router = createBrowserRouter([
         path: 'about',
       },
       {
-        Component: Driver,
+        Component: WithAuth(Driver, role.rider as IRole),
         path: 'driver/register',
       },
     ],
   },
   {
-    Component: DashboardLayout,
+    Component: WithAuth(DashboardLayout, role.superAdmin as IRole),
     path: '/admin',
     children: [
       { index: true, element: <Navigate to='/admin/analytics' /> },
@@ -41,7 +44,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    Component: DashboardLayout,
+    Component: WithAuth(DashboardLayout, role.driver as IRole),
     path: '/driver',
     children: [
       { index: true, element: <Navigate to='/driver/ride-request' /> },
@@ -49,7 +52,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    Component: DashboardLayout,
+    Component: WithAuth(DashboardLayout, role.rider as IRole),
     path: '/rider',
     children: [
       { index: true, element: <Navigate to='/rider/ride-request' /> },
