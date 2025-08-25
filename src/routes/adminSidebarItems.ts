@@ -1,8 +1,10 @@
-import AllDriver from "@/pages/Admin/AllDrivers";
-import Analytics from "@/pages/Admin/Analytics";
-import ApproveDrivers from "@/pages/Admin/ApproveDrivers";
-import PendingDrivers from "@/pages/Admin/PendingDrivers";
-import SuspendedDrivers from "@/pages/Admin/SuspendedDrivers";
+import { lazy } from "react";
+
+const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
+const AllDriver = lazy(() => import("@/pages/Admin/AllDrivers"));
+const ApproveDrivers = lazy(() => import("@/pages/Admin/ApproveDrivers"));
+const PendingDrivers = lazy(() => import("@/pages/Admin/PendingDrivers"));
+const SuspendedDrivers = lazy(() => import("@/pages/Admin/SuspendedDrivers"));
 import type { ISidebarItem } from "@/types";
 
 export const adminSidebarItems: ISidebarItem[] =

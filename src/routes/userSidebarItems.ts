@@ -1,5 +1,7 @@
-import Completed from "@/pages/Driver/Completed";
-import RideRequest from "@/pages/Driver/RideRequest";
+import { lazy } from "react";
+
+const Completed = lazy(() => import("@/pages/Driver/Completed"))
+const RideRequest = lazy(() => import("@/pages/Driver/RideRequest"))
 
 export const userSidebarItems = [
     {
