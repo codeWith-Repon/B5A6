@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
 import type { IResponse } from "@/types";
-import type { IDriver, IDriverResponse, IGetVehicleResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
+import type { IDriver, IDriverResponse, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -26,18 +26,32 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET",
                 params
             }),
-            transformResponse: (response: IResponse<IGetVehicleResponse>) => {
+            transformResponse: (response: IResponse<IGetResponse<IVehicleResponse>>) => {
                 return {
                     data: response.data.data,
                     meta: response.data.meta
                 }
             }
-        }), 
+        }),
+        getDrivers: builder.query<{ data: IDriverResponse[], meta?: IMeta }, unknown>({
+            query: (params) => ({
+                url: "driver/drivers",
+                method: "GET",
+                params
+            }),
+            transformResponse: (response: IResponse<IGetResponse<IDriverResponse>>) => {
+                return {
+                    data: response.data.data,
+                    meta: response.data.meta
+                }
+            }
+        })
     })
 })
 
 export const {
     useRegisterVehicleMutation,
     useRegisterDriverMutation,
-    useGetVehicleQuery
+    useGetVehicleQuery,
+    useGetDriversQuery
 } = authApi
