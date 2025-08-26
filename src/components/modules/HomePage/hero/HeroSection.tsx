@@ -1,4 +1,5 @@
-import { car, map } from '@/assets';
+import { map } from '@/assets';
+import GetRide from '../../Rider/GetRide';
 
 const HeroSection = () => {
   return (
@@ -13,7 +14,7 @@ const HeroSection = () => {
             one for later directly from your browser.
           </p>
           <div className=' '>
-            <img src={car} alt='' className='w-full h-full object-cover' />
+            <GetRide />
           </div>
         </div>
         <div className='mt-[16px]'>
