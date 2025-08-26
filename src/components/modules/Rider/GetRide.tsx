@@ -69,7 +69,7 @@ const GetRide = () => {
   };
   return (
     <>
-      <div className='flex flex-col gap-4 w-3/4'>
+      <div className='flex flex-col gap-4'>
         <Form {...form}>
           <form
             id='ride-form'

@@ -11,7 +11,8 @@ export const riderApi = baseApi.injectEndpoints({
                 url: "/ride/book",
                 method: "POST",
                 data
-            })
+            }),
+            invalidatesTags: ["CurrentRide"]
         }),
         getRides: builder.query<IGetResponse<IRide>, unknown>({
             query: (params) => ({
@@ -25,11 +26,28 @@ export const riderApi = baseApi.injectEndpoints({
                     meta: response.data.meta
                 }
             }
+        }),
+        getCurrentRide: builder.query<IResponse<IRide>, unknown>({
+            query: () => ({
+                url: "/ride/current-ride",
+                method: "GET",
+            }),
+            providesTags: ["CurrentRide"]
+        }),
+        updateRideStatus: builder.mutation({
+            query: (rideStatus) => ({
+                url: "ride/update-status",
+                method: "POST",
+                data: rideStatus
+            }),
+            invalidatesTags: ["CurrentRide"]
         })
     }),
 })
 
 export const {
     useBookRideMutation,
-    useGetRidesQuery
+    useGetRidesQuery,
+    useUpdateRideStatusMutation,
+    useGetCurrentRideQuery
 } = riderApi
