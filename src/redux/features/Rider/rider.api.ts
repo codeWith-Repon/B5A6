@@ -41,6 +41,13 @@ export const riderApi = baseApi.injectEndpoints({
                 data: { rideStatus }
             }),
             invalidatesTags: ["CurrentRide", "RideRequest"]
+        }),
+        verifyRideOtp: builder.mutation({
+            query: (data: { otp: string }) => ({
+                url: "/ride/verify-otp",
+                method: "POST",
+                data
+            })
         })
     }),
 })
@@ -49,5 +56,6 @@ export const {
     useBookRideMutation,
     useGetRidesQuery,
     useUpdateRideStatusMutation,
-    useGetCurrentRideQuery
+    useGetCurrentRideQuery,
+    useVerifyRideOtpMutation
 } = riderApi

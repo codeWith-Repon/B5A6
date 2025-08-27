@@ -1,4 +1,4 @@
-import { rideStatus } from '@/constants/rideStatus';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Table,
   TableBody,
@@ -7,24 +7,58 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useGetRideRequestQuery } from '@/redux/features/ride/ride.api';
-import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
-import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { SetFairDialog } from './SetFairDialog';
+import { Button } from '@/components/ui/button';
+import {
+  useGetCurrentRideQuery,
+  useUpdateRideStatusMutation,
+} from '@/redux/features/Rider/rider.api';
+import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
+
+const driverChangeableRideStatus = {
+  accepted: 'ACCEPTED',
+  pickedUp: 'PICKED UP',
+  inTransit: 'IN TRANSIT',
+  completed: 'COMPLETED',
+  rejected: 'REJECTED',
+};
 
 const RideRequestTable = () => {
-  const { data: userData } = useUserInfoQuery(undefined);
-  const { data: driverData } = useGetDriversQuery(
-    { user: userData?.data?._id },
-    { skip: !userData?.data?._id }
-  );
-  const { data: rideRequestData } = useGetRideRequestQuery(
-    {
-      rideStatus: rideStatus.requested,
-      driver: driverData?.data[0]?._id,
-    },
-    { skip: !driverData?.data[0]?._id }
-  );
+  const [currentRideId, setCurrentRideId] = useState<string | null>(null);
+  const { data: rideRequestData } = useGetCurrentRideQuery(undefined);
+
+  const [updateRideStatus] = useUpdateRideStatusMutation();
+
+  useEffect(() => {
+    if (rideRequestData?.data) {
+      setCurrentRideId(rideRequestData.data._id);
+    }
+  }, [rideRequestData]);
+
+  const handleUpdateRideStatus = async (status: string) => {
+    const rideId = rideRequestData?.data?._id;
+    if (!rideId) return;
+    try {
+      const res = await updateRideStatus({
+        rideId,
+        rideStatus: status,
+      }).unwrap();
+      toast.success('Ride status updated successfully');
+      console.log(res);
+    } catch (error: any) {
+      toast.error(error.data.message);
+      console.log(error);
+    }
+  };
 
   console.log('riderequest data', rideRequestData);
   return (
@@ -42,22 +76,42 @@ const RideRequestTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rideRequestData && rideRequestData?.data.length > 0 ? (
+          {rideRequestData ? (
             <TableRow>
               <TableCell className='font-medium'>
-                {rideRequestData?.data[0]?.user?.name}
+                {rideRequestData?.data?.user?.name}
               </TableCell>
-              <TableCell>{rideRequestData?.data[0]?.pickupLocation}</TableCell>
-              <TableCell>{rideRequestData?.data[0]?.dropLocation}</TableCell>
-              <TableCell>{rideRequestData?.data[0]?.rideStatus}</TableCell>
+              <TableCell>{rideRequestData?.data?.pickupLocation}</TableCell>
+              <TableCell>{rideRequestData?.data?.dropLocation}</TableCell>
               <TableCell>
-                {rideRequestData?.data[0]?.isOtpVerified ? 'Yes' : 'No'}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button type='button' variant={'outline'} size={'sm'}>
+                      {rideRequestData?.data?.rideStatus}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Ride Status</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {Object.values(driverChangeableRideStatus).map((status) => (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={() => handleUpdateRideStatus(status)}
+                      >
+                        {status}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
-              <TableCell>{rideRequestData?.data[0]?.payment.status}</TableCell>
+              <TableCell>
+                {rideRequestData?.data?.isOtpVerified ? 'Yes' : 'No'}
+              </TableCell>
+              <TableCell>{rideRequestData?.data?.payment.status}</TableCell>
               <TableCell className=' flex gap-2 items-center justify-end'>
                 <div className='flex items-center gap-2'>
-                  <span>{rideRequestData?.data[0]?.fare}</span>
-                  <SetFairDialog />
+                  <span>{rideRequestData?.data?.fare}</span>
+                  <SetFairDialog currentRideId={currentRideId} />
                 </div>
               </TableCell>
             </TableRow>

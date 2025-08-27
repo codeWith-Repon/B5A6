@@ -19,9 +19,19 @@ export const authApi = baseApi.injectEndpoints({
             },
             providesTags: ["RideRequest"]
         }),
+
+        setRideFare: builder.mutation({
+            query: ({ rideId, fare }) => ({
+                url: `/ride/set-fare/${rideId}`,
+                method: "POST",
+                data: { fare }
+            }),
+            invalidatesTags: ["CurrentRide"]
+        })
     })
 })
 
 export const {
     useGetRideRequestQuery,
+    useSetRideFareMutation
 } = authApi

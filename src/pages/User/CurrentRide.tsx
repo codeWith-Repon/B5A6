@@ -1,4 +1,5 @@
 import GetRideModal from '@/components/modules/Rider/GetRideModal';
+import { VerifyRideOtp } from '@/components/modules/Rider/VerifyRideOtp';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { rideStatus } from '@/constants/rideStatus';
@@ -103,8 +104,9 @@ const CurrentRide = () => {
                   className='primary cursor-pointer'
                   variant={'outline'}
                   size={'sm'}
+                  asChild
                 >
-                  Verify OTP
+                  <VerifyRideOtp />
                 </Button>
               </div>
               <p>

@@ -11,20 +11,26 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUpdateRideStatusMutation } from '@/redux/features/Rider/rider.api';
+import { useSetRideFareMutation } from '@/redux/features/ride/ride.api';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-export function SetFairDialog() {
-  const [updateRideStatus] = useUpdateRideStatusMutation();
+export function SetFairDialog({
+  currentRideId,
+}: {
+  currentRideId: string | null;
+}) {
+  const [setRideFare] = useSetRideFareMutation();
   const [Fare, setFare] = useState('');
 
   const handleSetFair = async () => {
     try {
-      const fare = {
-        fare: Number(Fare),
-      };
-      await updateRideStatus(fare).unwrap();
+      const fare = Number(Fare);
+      const res = await setRideFare({
+        rideId: currentRideId,
+        fare: fare,
+      }).unwrap();
+      console.log(res);
       toast.success('Fare set successfully');
     } catch (error) {
       toast.error('Failed to set fare');
