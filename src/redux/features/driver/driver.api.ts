@@ -23,7 +23,7 @@ export const authApi = baseApi.injectEndpoints({
         }),
         getVehicle: builder.query<{ data: IVehicleResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({
-                url: "vehicle/vehicles",
+                url: "/vehicle/vehicles",
                 method: "GET",
                 params
             }),
@@ -36,7 +36,7 @@ export const authApi = baseApi.injectEndpoints({
         }),
         getDrivers: builder.query<{ data: IDriverResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({
-                url: "driver/drivers",
+                url: "/driver/drivers",
                 method: "GET",
                 params
             }),
@@ -51,7 +51,7 @@ export const authApi = baseApi.injectEndpoints({
 
         updateDriver: builder.mutation<IDriverResponse, { id: string, data: { status: IDriverStatus } }>({
             query: ({ id, data }) => ({
-                url: `driver/update/${id}`,
+                url: `/driver/update/${id}`,
                 method: "patch",
                 data
             }),

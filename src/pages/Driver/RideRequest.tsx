@@ -1,7 +1,9 @@
+import RideRequestTable from '@/components/modules/Driver/RideRequestTable';
+
 const RideRequest = () => {
   return (
     <div>
-      <h1>This is RideRequest component</h1>
+      <RideRequestTable />
     </div>
   );
 };

@@ -12,7 +12,7 @@ export const riderApi = baseApi.injectEndpoints({
                 method: "POST",
                 data
             }),
-            invalidatesTags: ["CurrentRide"]
+            invalidatesTags: ["CurrentRide", "RideRequest"]
         }),
         getRides: builder.query<IGetResponse<IRide>, unknown>({
             query: (params) => ({
@@ -35,12 +35,12 @@ export const riderApi = baseApi.injectEndpoints({
             providesTags: ["CurrentRide"]
         }),
         updateRideStatus: builder.mutation({
-            query: (rideStatus) => ({
-                url: "ride/update-status",
+            query: ({ rideId, rideStatus }) => ({
+                url: `ride/update-status/${rideId}`,
                 method: "POST",
-                data: rideStatus
+                data: { rideStatus }
             }),
-            invalidatesTags: ["CurrentRide"]
+            invalidatesTags: ["CurrentRide", "RideRequest"]
         })
     }),
 })

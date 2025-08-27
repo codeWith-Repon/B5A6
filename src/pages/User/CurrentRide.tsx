@@ -18,12 +18,15 @@ const CurrentRide = () => {
   const [updateRideStatus] = useUpdateRideStatusMutation();
 
   const handleCancelRide = async () => {
+    if (!rideData?.data?._id) return;
     try {
       const res = await updateRideStatus({
+        rideId: rideData?.data?._id,
         rideStatus: rideStatus.cancelled,
       }).unwrap();
       console.log(res);
       toast.success('Ride cancelled successfully');
+
     } catch (error) {
       toast.error('Failed to cancel ride');
       console.log('Failed to cancel ride', error);
