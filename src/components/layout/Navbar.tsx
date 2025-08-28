@@ -22,6 +22,7 @@ import {
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
+import GetRide from '../modules/Rider/GetRide';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -42,13 +43,12 @@ export default function Navbar() {
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-
   const handleLogout = () => {
     logOut(undefined);
     dispatch(authApi.util.resetApiState());
     toast.success('Logout successful');
   };
-
+  console.log(userInfo);
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -150,6 +150,17 @@ export default function Navbar() {
                       )}
                     </div>
                   ))}
+                  {userInfo?.success &&
+                    userInfo?.data?.role !== 'DRIVER' &&
+                    userInfo?.data?.role !== 'ADMIN' &&
+                    userInfo?.data?.role !== 'SUPER_ADMIN' && (
+                      <NavigationMenuItem>
+                        <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
+                          {/* Get ride */}
+                          <GetRide />
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
