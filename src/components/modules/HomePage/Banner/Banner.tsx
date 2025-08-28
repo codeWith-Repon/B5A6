@@ -4,13 +4,15 @@ import { Link } from 'react-router';
 
 const Banner = () => {
   return (
-    <div className='mt-20'>
-      <div className='w-full relative'>
+    <div className='mt-20 relative'>
+      <div className='w-full '>
         <div className='absolute top-0 left-0 w-full h-full bg-black/30'></div>
         <img src={banner} alt='' className='w-full max-w-full ' />
-        <div className='absolute top-1/2 left-[317px] -translate-y-1/2 w-[500px]'>
-          <h1 className='text-5xl font-bold text-white mb-3'>Love to drive?</h1>
-          <p className='text-white mb-4 text-2xl'>
+        <div className='absolute top-1/2 2xl:left-[250px]  sm:left-[80px] left-[40px] -translate-y-1/2 w-[500px]'>
+          <h1 className='lg:text-5xl md:text-4xl text-3xl  font-bold text-white md:mb-3 mb-0'>
+            Love to drive?
+          </h1>
+          <p className='text-white mb-4 lg:text-2xl md:text-xl text-base sm:w-full w-xs'>
             Be your own boss and track your earnings as you cruise down the
             streets.
           </p>

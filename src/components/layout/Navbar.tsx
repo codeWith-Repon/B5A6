@@ -65,7 +65,7 @@ export default function Navbar() {
         isSticky ? 'sticky bg-background/80 backdrop-blur-md shadow-sm' : ''
       }`}
     >
-      <div className={`sticky`}>
+      <div>
         <div className='flex h-16 items-center justify-between gap-4 mx-auto container max-w-[1370px]'>
           {/* Left side */}
           <div className='flex items-center gap-2'>

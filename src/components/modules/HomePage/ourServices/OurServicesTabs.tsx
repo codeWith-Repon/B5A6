@@ -6,12 +6,12 @@ import { mainTabs } from '@/constants/serviceData';
 export default function OurServicesTabs() {
   return (
     <Tabs defaultValue='tab-1' className='items-start'>
-      <TabsList className='h-auto rounded-none border-b bg-transparent p-0 flex gap-16'>
+      <TabsList className='h-auto rounded-none border-b bg-transparent p-0 flex md:gap-16 sm:gap-2 gap-1'>
         {mainTabs.map((tab) => (
           <TabsTrigger
             value={tab.value}
             key={tab.value}
-            className='group data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-2xl text-foreground flex flex-col gap-1 items-center cursor-pointer hover:text-primary transition-all duration-300 '
+            className=' group data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-2xl sm:text-xl text-foreground flex flex-col gap-1 items-center cursor-pointer hover:text-primary transition-all duration-300 '
           >
             <span>
               <img src={tab.icon} alt='' />
