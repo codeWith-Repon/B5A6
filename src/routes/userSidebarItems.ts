@@ -2,6 +2,8 @@ import { lazy } from "react";
 
 const Completed = lazy(() => import("@/pages/Driver/Completed"))
 const RideRequest = lazy(() => import("@/pages/Driver/RideRequest"))
+const Activity = lazy(() => import("@/pages/User/Activity"))
+const CurrentRide = lazy(() => import("@/pages/User/CurrentRide"))
 
 export const userSidebarItems = [
     {
@@ -9,14 +11,19 @@ export const userSidebarItems = [
         items: [
             {
                 title: "Your Activity",
-                url: "/rider/ride-request",
-                component: RideRequest
+                url: "/rider/activity",
+                component: Activity
             }
         ]
     },
     {
         title: "History",
         items: [
+            {
+                title: "Current Ride",
+                url: "/rider/current-ride",
+                component: CurrentRide
+            },
             {
                 title: "Completed Ride",
                 url: "/rider/ride-completed",

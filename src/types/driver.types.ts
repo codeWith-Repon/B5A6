@@ -27,7 +27,7 @@ export interface IDriver {
     experience: number
 }
 
-export interface User {
+export interface IUser {
     _id: string
     name: string
     email: string
@@ -54,7 +54,7 @@ export interface IMeta {
 
 
 export interface IDriverResponse {
-    user: User
+    user: IUser
     vehicle: Vehicle
     licenseNumber: string
     experience: number

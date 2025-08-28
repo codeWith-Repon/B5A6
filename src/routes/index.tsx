@@ -15,6 +15,8 @@ import Unauthorized from '@/pages/Unauthorized';
 import { WithAuth } from '@/utils/WithAuth';
 import { role } from '@/constants/role';
 import type { IRole } from '@/types';
+import Faq from '@/pages/Faq';
+import Contact from '@/pages/Contact';
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +30,14 @@ export const router = createBrowserRouter([
       {
         Component: About,
         path: 'about',
+      },
+      {
+        Component: Faq,
+        path: 'faq',
+      },
+      {
+        Component: Contact,
+        path: 'contact',
       },
       {
         Component: WithAuth(Driver, role.rider as IRole),
@@ -55,7 +65,7 @@ export const router = createBrowserRouter([
     Component: WithAuth(DashboardLayout, role.rider as IRole),
     path: '/rider',
     children: [
-      { index: true, element: <Navigate to='/rider/ride-request' /> },
+      { index: true, element: <Navigate to='/rider/current-ride' /> },
       ...generateRoutes(userSidebarItems),
     ],
   },
