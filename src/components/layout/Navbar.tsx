@@ -69,12 +69,74 @@ export default function Navbar() {
         <div className='flex h-16 items-center justify-between gap-4 mx-auto container max-w-[1370px]'>
           {/* Left side */}
           <div className='flex items-center gap-2'>
+            {/* Main nav */}
+            <div className='flex items-center gap-6'>
+              <Link to='/' className='text-primary hover:text-primary/90'>
+                <Logo />
+              </Link>
+              {/* Navigation menu */}
+              <NavigationMenu className='max-md:hidden'>
+                <NavigationMenuList className='gap-2 flex-wrap md:flex-nowrap'>
+                  {navigationLinks.map((link) => {
+                    if (
+                      link.role === 'PUBLIC' ||
+                      link.role === userInfo?.data?.role
+                    ) {
+                      return (
+                        <NavigationMenuItem key={link.href}>
+                          <NavigationMenuLink
+                            asChild
+                            className='text-muted-foreground hover:text-primary py-1.5 font-medium'
+                          >
+                            <Link to={link.href}>{link.label}</Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {userInfo?.success &&
+                    userInfo?.data?.role !== 'DRIVER' &&
+                    userInfo?.data?.role !== 'ADMIN' &&
+                    userInfo?.data?.role !== 'SUPER_ADMIN' && (
+                      <NavigationMenuItem className='ml-auto'>
+                        <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
+                          {/* Get ride */}
+                          <GetRide />
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
+          </div>
+          {/* Right side */}
+          <div className='flex items-center gap-2'>
+            <ModeToggle />
+            <div className='hidden md:block'>
+              {userInfo?.data?.email ? (
+                <Button
+                  onClick={handleLogout}
+                  size='sm'
+                  className='text-sm'
+                  variant='outline'
+                >
+                  Log Out
+                </Button>
+              ) : (
+                <Button asChild size='sm' className='text-sm'>
+                  <Link to={'/login'}>Log In</Link>
+                </Button>
+              )}
+            </div>
+
             {/* Mobile menu trigger */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   className='group size-8 md:hidden'
-                  variant='ghost'
+                  variant='outline'
                   size='icon'
                 >
                   <svg
@@ -108,80 +170,61 @@ export default function Navbar() {
                 <NavigationMenu className='max-w-none *:w-full'>
                   <NavigationMenuList className='flex-col items-start gap-0 md:gap-2'>
                     {navigationLinks.map((link, index) => (
-                      <NavigationMenuItem key={index} className='w-full'>
-                        <NavigationMenuLink asChild className='py-1.5'>
-                          <Link to={link.href}>{link.label}</Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
+                      <div key={index}>
+                        {link.role === 'PUBLIC' && (
+                          <NavigationMenuItem key={index}>
+                            <NavigationMenuLink
+                              asChild
+                              className='text-muted-foreground hover:text-primary py-1.5 font-medium'
+                            >
+                              <Link to={link.href}>{link.label}</Link>
+                            </NavigationMenuLink>
+                          </NavigationMenuItem>
+                        )}
+                        {link.role === userInfo?.data?.role && (
+                          <NavigationMenuItem key={index}>
+                            <NavigationMenuLink
+                              asChild
+                              className='text-muted-foreground hover:text-primary py-1.5 font-medium'
+                            >
+                              <Link to={link.href}>{link.label}</Link>
+                            </NavigationMenuLink>
+                          </NavigationMenuItem>
+                        )}
+                      </div>
                     ))}
+                    {userInfo?.success &&
+                      userInfo?.data?.role !== 'DRIVER' &&
+                      userInfo?.data?.role !== 'ADMIN' &&
+                      userInfo?.data?.role !== 'SUPER_ADMIN' && (
+                        <NavigationMenuItem>
+                          <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
+                            {/* Get ride */}
+                            <GetRide />
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+
+                    <div className='ml-1 my-2'>
+                      {userInfo?.data?.email ? (
+                        <Button
+                          onClick={handleLogout}
+                          size='sm'
+                          className='text-sm'
+                          variant='outline'
+                        >
+                          Log Out
+                        </Button>
+                      ) : (
+                        <Button asChild size='sm' className='text-sm'>
+                          <Link to={'/login'}>Log In</Link>
+                        </Button>
+                      )}
+                    </div>
                   </NavigationMenuList>
                 </NavigationMenu>
               </PopoverContent>
             </Popover>
-            {/* Main nav */}
-            <div className='flex items-center gap-6'>
-              <Link to='/' className='text-primary hover:text-primary/90'>
-                <Logo />
-              </Link>
-              {/* Navigation menu */}
-              <NavigationMenu className='max-md:hidden'>
-                <NavigationMenuList className='gap-2'>
-                  {navigationLinks.map((link, index) => (
-                    <div key={index}>
-                      {link.role === 'PUBLIC' && (
-                        <NavigationMenuItem key={index}>
-                          <NavigationMenuLink
-                            asChild
-                            className='text-muted-foreground hover:text-primary py-1.5 font-medium'
-                          >
-                            <Link to={link.href}>{link.label}</Link>
-                          </NavigationMenuLink>
-                        </NavigationMenuItem>
-                      )}
-                      {link.role === userInfo?.data?.role && (
-                        <NavigationMenuItem key={index}>
-                          <NavigationMenuLink
-                            asChild
-                            className='text-muted-foreground hover:text-primary py-1.5 font-medium'
-                          >
-                            <Link to={link.href}>{link.label}</Link>
-                          </NavigationMenuLink>
-                        </NavigationMenuItem>
-                      )}
-                    </div>
-                  ))}
-                  {userInfo?.success &&
-                    userInfo?.data?.role !== 'DRIVER' &&
-                    userInfo?.data?.role !== 'ADMIN' &&
-                    userInfo?.data?.role !== 'SUPER_ADMIN' && (
-                      <NavigationMenuItem>
-                        <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
-                          {/* Get ride */}
-                          <GetRide />
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
-          </div>
-          {/* Right side */}
-          <div className='flex items-center gap-2'>
-            <ModeToggle />
-            {userInfo?.data?.email ? (
-              <Button
-                onClick={handleLogout}
-                size='sm'
-                className='text-sm'
-                variant='outline'
-              >
-                Log Out
-              </Button>
-            ) : (
-              <Button asChild size='sm' className='text-sm'>
-                <Link to={'/login'}>Log In</Link>
-              </Button>
-            )}
           </div>
         </div>
       </div>
