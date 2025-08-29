@@ -1,12 +1,17 @@
 import Logo from '@/assets/icon/Logo';
 import { LoginForm } from '@/components/modules/Authentication/LoginForm';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
-import { Link } from 'react-router';
+import Spinner from '@/utils/spinner';
+import { Link, Navigate } from 'react-router';
 
 const Login = () => {
-  const { data } = useUserInfoQuery(undefined);
+  const { data, isLoading } = useUserInfoQuery(undefined);
   if (data?.success) {
-    window.location.href = '/';
+    return <Navigate to='/' replace />;
+  }
+
+  if (isLoading) {
+    return <Spinner />;
   }
   return (
     <div className='min-h-svh content-center'>

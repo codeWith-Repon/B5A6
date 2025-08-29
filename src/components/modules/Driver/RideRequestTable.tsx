@@ -60,7 +60,6 @@ const RideRequestTable = () => {
     }
   };
 
-  console.log('riderequest data', rideRequestData);
   return (
     <div>
       <Table className='w-full max-w-7xl mx-auto'>

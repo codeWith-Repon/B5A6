@@ -58,6 +58,13 @@ export const authApi = baseApi.injectEndpoints({
             invalidatesTags: ["Driver"]
         }),
 
+        logInDriver: builder.query({
+            query: (driverId) => ({
+                url: `/driver/${driverId}`,
+                method: "GET"
+            })
+        })
+
     })
 })
 
@@ -66,5 +73,6 @@ export const {
     useRegisterDriverMutation,
     useGetVehicleQuery,
     useGetDriversQuery,
-    useUpdateDriverMutation
+    useUpdateDriverMutation,
+    useLogInDriverQuery
 } = authApi
