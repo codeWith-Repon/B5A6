@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
 import GetRide from '../modules/Rider/GetRide';
+import AvatarComponent from '../modules/Rider/avater';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -48,7 +49,7 @@ export default function Navbar() {
     dispatch(authApi.util.resetApiState());
     toast.success('Logout successful');
   };
-  console.log(userInfo);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -116,14 +117,10 @@ export default function Navbar() {
             <ModeToggle />
             <div className='hidden md:block'>
               {userInfo?.data?.email ? (
-                <Button
-                  onClick={handleLogout}
-                  size='sm'
-                  className='text-sm'
-                  variant='outline'
-                >
-                  Log Out
-                </Button>
+                <AvatarComponent
+                  userInfo={userInfo}
+                  handleLogout={handleLogout}
+                />
               ) : (
                 <Button asChild size='sm' className='text-sm'>
                   <Link to={'/login'}>Log In</Link>

@@ -3,8 +3,8 @@ import { Link } from 'react-router';
 
 const Footer = () => {
   return (
-    <div className='overflow-hidden mx-20'>
-      <footer className='bg-background border-t'>
+    <div className='overflow-hidden border-t'>
+      <footer className='bg-background  mx-20'>
         <div className='mx-auto container max-w-7xl space-y-8 py-10 lg:space-y-16 '>
           <div className='sm:flex sm:items-center sm:justify-between'>
             <div>
