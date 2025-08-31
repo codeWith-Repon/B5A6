@@ -1,5 +1,6 @@
 import EditDriverInfoDialog from '@/components/modules/UpdateProfile/EditDriverInfo';
 import EditProfileDialog from '@/components/modules/UpdateProfile/EditProfileDialog';
+import EditVehicleInfo from '@/components/modules/UpdateProfile/EditVehicleInfo';
 import { Card } from '@/components/ui/card';
 
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router';
 export function Profile() {
   const [openProfileDialog, setOpenProfileDialog] = useState(false);
   const [openDriverDialog, setOpenDriverDialog] = useState(false);
+  const [openVehicleDialog, setOpenVehicleDialog] = useState(false);
   const navigate = useNavigate();
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
 
@@ -34,6 +36,7 @@ export function Profile() {
   if (!userInfo?.success) {
     navigate('/login');
   }
+  // console.log(driverInfo);
 
   return (
     <Card className='w-full max-w-7xl mx-auto my-10 px-6'>
@@ -167,24 +170,34 @@ export function Profile() {
           <div>
             <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
               <h1 className='text-2xl font-bold'>Vehicle Information</h1>
-              <SquarePen className='cursor-pointer' />
+              <SquarePen
+                className='cursor-pointer'
+                onClick={() => setOpenVehicleDialog(true)}
+              />
             </div>
-            <div className='grid grid-cols-12 mb-4'>
-              <div className='col-span-4 rounded-md overflow-hidden'>
+            <EditVehicleInfo
+              open={openVehicleDialog}
+              setOpen={setOpenVehicleDialog}
+              vehicleInfo={driverInfo}
+            />
+            <div className='mb-4'>
+              <div className=' rounded-md overflow-hidden'>
                 <h3 className='text-lg font-medium mb-2'>Vehicle Images</h3>
-                {driverInfo?.data[0]?.vehicle?.images &&
-                driverInfo?.data[0]?.vehicle?.images.length > 0 ? (
-                  driverInfo?.data[0]?.vehicle?.images?.map((image) => (
-                    <img
-                      key={image}
-                      src={image}
-                      className='w-full rounded-md'
-                      alt=''
-                    />
-                  ))
-                ) : (
-                  <p>No images available</p>
-                )}
+                <div className='grid grid-cols-4 gap-3'>
+                  {driverInfo?.data[0]?.vehicle?.images &&
+                  driverInfo?.data[0]?.vehicle?.images.length > 0 ? (
+                    driverInfo?.data[0]?.vehicle?.images?.map((image) => (
+                      <img
+                        key={image}
+                        src={image}
+                        className='w-full rounded-md'
+                        alt=''
+                      />
+                    ))
+                  ) : (
+                    <p>No images available</p>
+                  )}
+                </div>
               </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>
@@ -208,6 +221,17 @@ export function Profile() {
                 </Label>
                 <h3 className='text-lg font-medium mb-2'>
                   {driverInfo?.data[0]?.vehicle?.brand}
+                </h3>
+              </div>
+              <div>
+                <Label
+                  htmlFor='model'
+                  className='text-lg text-muted-foreground'
+                >
+                  Model
+                </Label>
+                <h3 className='text-lg font-medium mb-2'>
+                  {driverInfo?.data[0]?.vehicle?.model}
                 </h3>
               </div>
               <div className=''>

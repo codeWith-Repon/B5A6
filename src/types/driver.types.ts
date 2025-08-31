@@ -1,12 +1,12 @@
 import type { IDriverStatus } from "."
 
 export interface IVehicle {
-    driver: string
-    vehicleType: string
-    brand: string
-    model: string
+    driver?: string
+    vehicleType?: string
+    brand?: string
+    model?: string
     images?: string[]
-    vehicleLicense: string
+    vehicleLicense?: string
 }
 
 export interface IVehicleResponse {

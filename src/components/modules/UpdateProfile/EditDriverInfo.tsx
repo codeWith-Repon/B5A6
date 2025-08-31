@@ -63,7 +63,6 @@ export default function EditDriverInfoDialog({
     },
   });
   const [updateDriver] = useUpdateDriverMutation();
-  console.log(driverInfo?.data[0]?.licenseNumber, 'driverInfo');
 
   useEffect(() => {
     if (driverInfo?.data?.[0]) {
@@ -78,11 +77,11 @@ export default function EditDriverInfoDialog({
     const id = toast.loading('Updating profile...');
     try {
       console.log(data, 'driving data');
-      const res = await updateDriver({
+      await updateDriver({
         id: driverInfo?.data[0]?._id as string,
         data,
       }).unwrap();
-      console.log(res, 'res');
+      setOpen(false);
       toast.success('Profile updated successfully.', { id });
     } catch (error: any) {
       console.log(error);
