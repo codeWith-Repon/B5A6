@@ -48,7 +48,8 @@ export const riderApi = baseApi.injectEndpoints({
                 method: "POST",
                 data
             })
-        })
+        }),
+        
     }),
 })
 
@@ -57,5 +58,5 @@ export const {
     useGetRidesQuery,
     useUpdateRideStatusMutation,
     useGetCurrentRideQuery,
-    useVerifyRideOtpMutation
+    useVerifyRideOtpMutation,
 } = riderApi

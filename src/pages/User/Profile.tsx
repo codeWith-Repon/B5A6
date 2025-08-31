@@ -1,3 +1,4 @@
+import EditProfileDialog from '@/components/modules/EditProfile/EditProfileDialog';
 import { Card } from '@/components/ui/card';
 
 import { Label } from '@/components/ui/label';
@@ -7,9 +8,11 @@ import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
 import Spinner from '@/utils/spinner';
 import { SquarePen } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export function Profile() {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
 
@@ -22,8 +25,6 @@ export function Profile() {
     { skip: !isDriver }
   );
 
-  console.log(driverInfo);
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -31,12 +32,27 @@ export function Profile() {
   if (!userInfo?.success) {
     navigate('/login');
   }
+
+  const profileHandler = () => {
+    setOpen(true);
+  };
   return (
     <Card className='w-full max-w-7xl mx-auto my-10 px-6'>
+      <EditProfileDialog open={open} setOpen={setOpen} userInfo={userInfo} />
       <div>
         <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
           <h1 className='text-2xl font-bold'>My Profile</h1>
-          <SquarePen className='cursor-pointer' />
+          <SquarePen className='cursor-pointer' onClick={profileHandler} />
+        </div>
+        <div className='grid grid-cols-12 mb-4'>
+          <div className='col-span-4 rounded-md overflow-hidden'>
+            <h3 className='text-lg font-medium mb-2'>Profile Picture</h3>
+            <img
+              src={userInfo?.data?.image}
+              className='w-full rounded-md'
+              alt=''
+            />
+          </div>
         </div>
         <div className='grid grid-cols-2 gap-4'>
           <div className=''>
@@ -49,8 +65,16 @@ export function Profile() {
             <Label htmlFor='email' className='text-lg text-muted-foreground'>
               Email
             </Label>
-            <h3 className='text-lg font-medium mb-2'>
+            <h3 className='text-lg font-medium mb-2 break-words whitespace-normal'>
               {userInfo?.data?.email}
+            </h3>
+          </div>
+          <div>
+            <Label htmlFor='address' className='text-lg text-muted-foreground'>
+              Address
+            </Label>
+            <h3 className='text-lg font-medium mb-2'>
+              {userInfo?.data?.address ? userInfo?.data?.address : 'N/A'}
             </h3>
           </div>
           <div>
@@ -76,7 +100,7 @@ export function Profile() {
           <div>
             <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
               <h1 className='text-2xl font-bold'>Driver Information</h1>
-              <SquarePen className='cursor-pointer' />
+              <SquarePen className='cursor-pointer' onClick={profileHandler} />
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div className=''>
@@ -129,7 +153,25 @@ export function Profile() {
           <div>
             <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
               <h1 className='text-2xl font-bold'>Vehicle Information</h1>
-              <SquarePen className='cursor-pointer' />
+              <SquarePen className='cursor-pointer' onClick={profileHandler} />
+            </div>
+            <div className='grid grid-cols-12 mb-4'>
+              <div className='col-span-4 rounded-md overflow-hidden'>
+                <h3 className='text-lg font-medium mb-2'>Vehicle Images</h3>
+                {driverInfo?.data[0]?.vehicle?.images &&
+                driverInfo?.data[0]?.vehicle?.images.length > 0 ? (
+                  driverInfo?.data[0]?.vehicle?.images?.map((image) => (
+                    <img
+                      key={image}
+                      src={image}
+                      className='w-full rounded-md'
+                      alt=''
+                    />
+                  ))
+                ) : (
+                  <p>No images available</p>
+                )}
+              </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div className=''>
