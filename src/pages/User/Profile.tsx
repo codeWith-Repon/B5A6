@@ -1,3 +1,4 @@
+import EditDriverInfoDialog from '@/components/modules/EditProfile/EditDriverInfo';
 import EditProfileDialog from '@/components/modules/EditProfile/EditProfileDialog';
 import { Card } from '@/components/ui/card';
 
@@ -12,7 +13,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export function Profile() {
-  const [open, setOpen] = useState(false);
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
+  const [openDriverDialog, setOpenDriverDialog] = useState(false);
   const navigate = useNavigate();
   const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
 
@@ -33,16 +35,20 @@ export function Profile() {
     navigate('/login');
   }
 
-  const profileHandler = () => {
-    setOpen(true);
-  };
   return (
     <Card className='w-full max-w-7xl mx-auto my-10 px-6'>
-      <EditProfileDialog open={open} setOpen={setOpen} userInfo={userInfo} />
+      <EditProfileDialog
+        open={openProfileDialog}
+        setOpen={setOpenProfileDialog}
+        userInfo={userInfo}
+      />
       <div>
         <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
           <h1 className='text-2xl font-bold'>My Profile</h1>
-          <SquarePen className='cursor-pointer' onClick={profileHandler} />
+          <SquarePen
+            className='cursor-pointer'
+            onClick={() => setOpenProfileDialog(true)}
+          />
         </div>
         <div className='grid grid-cols-12 mb-4'>
           <div className='col-span-4 rounded-md overflow-hidden'>
@@ -100,8 +106,16 @@ export function Profile() {
           <div>
             <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
               <h1 className='text-2xl font-bold'>Driver Information</h1>
-              <SquarePen className='cursor-pointer' onClick={profileHandler} />
+              <SquarePen
+                className='cursor-pointer'
+                onClick={() => setOpenDriverDialog(true)}
+              />
             </div>
+            <EditDriverInfoDialog
+              open={openDriverDialog}
+              setOpen={setOpenDriverDialog}
+              driverInfo={driverInfo}
+            />
             <div className='grid grid-cols-2 gap-4'>
               <div className=''>
                 <Label
@@ -153,7 +167,7 @@ export function Profile() {
           <div>
             <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
               <h1 className='text-2xl font-bold'>Vehicle Information</h1>
-              <SquarePen className='cursor-pointer' onClick={profileHandler} />
+              <SquarePen className='cursor-pointer' />
             </div>
             <div className='grid grid-cols-12 mb-4'>
               <div className='col-span-4 rounded-md overflow-hidden'>

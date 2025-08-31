@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IDriverStatus, IResponse } from "@/types";
-import type { IDriver, IDriverResponse, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
+import type {  IResponse } from "@/types";
+import type { IDriver, IDriverResponse, IDriverUpdate, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -49,7 +49,7 @@ export const authApi = baseApi.injectEndpoints({
             providesTags: ["Driver"]
         }),
 
-        updateDriver: builder.mutation<IDriverResponse, { id: string, data: { status: IDriverStatus } }>({
+        updateDriver: builder.mutation<IDriverResponse, { id: string, data: IDriverUpdate }>({
             query: ({ id, data }) => ({
                 url: `/driver/update/${id}`,
                 method: "patch",

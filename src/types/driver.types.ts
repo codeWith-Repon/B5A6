@@ -1,3 +1,4 @@
+import type { IDriverStatus } from "."
 
 export interface IVehicle {
     driver: string
@@ -78,4 +79,10 @@ export interface IMeta {
     limit: number
     total: number
     totalPage: number
+}
+
+export interface IDriverUpdate {
+    licenseNumber?: string
+    experience?: number
+    status?: IDriverStatus
 }

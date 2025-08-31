@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import UploadSingleFile from './uploadSingleFile';
 import {
   Form,
   FormControl,
@@ -21,81 +20,69 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import type { IUser } from '@/types/user.types';
-import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
+import type { IDriverResponse, IGetResponse } from '@/types/driver.types';
+import { useUpdateDriverMutation } from '@/redux/features/driver/driver.api';
+import { useEffect } from 'react';
 
 // Pretend we have initial image files
 
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  userInfo: {
-    data: IUser;
-  };
+  driverInfo: IGetResponse<IDriverResponse> | undefined;
 }
 
 const formSchema = z.object({
-  name: z
+  licenseNumber: z
     .string()
     .min(2, {
-      message: 'Name must be at least 2 characters.',
+      message: 'Driving License must be at least 8 characters.',
     })
     .optional()
     .or(z.literal('')),
-  email: z
-    .email({
-      message: 'Invalid email address.',
-    })
-    .optional()
-    .or(z.literal('')),
-  address: z
-    .string()
-    .min(5, {
-      message: 'Address must be at least 5 characters.',
-    })
-    .optional()
-    .or(z.literal('')),
-  phone: z
-    .string()
-    .regex(/^01[3-9]\d{8}$/, {
-      message: 'Invalid Bangladeshi phone number format.',
-    })
-    .optional()
-    .or(z.literal('')),
+  experience: z
+    .number({ message: 'Experience must be a number' })
+    .min(0)
+    .max(30, { message: 'Experience must be between 0 and 30' })
+    .nonnegative(),
 });
 
-export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
-  const [updateProfile] = useUpdateProfileMutation();
-  const [image, setImage] = useState<File | null>(null);
-
+export default function EditDriverInfoDialog({
+  open,
+  setOpen,
+  driverInfo,
+}: IProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: userInfo.data?.name || '',
-      email: userInfo.data?.email || '',
-      address: userInfo.data?.address || '',
-      phone: userInfo.data?.phone || '',
+      licenseNumber: '',
+      experience: 0,
     },
   });
+  const [updateDriver] = useUpdateDriverMutation();
+  console.log(driverInfo?.data[0]?.licenseNumber, 'driverInfo');
 
+  useEffect(() => {
+    if (driverInfo?.data?.[0]) {
+      form.reset({
+        licenseNumber: driverInfo.data[0].licenseNumber || '',
+        experience: driverInfo.data[0].experience || 0,
+      });
+    }
+  }, [driverInfo, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const id = toast.loading('Updating profile...');
     try {
-      const formData = new FormData();
-
-      formData.append('data', JSON.stringify(data));
-      if (image) {
-        formData.append('file', image);
-      }
-
-      const res = await updateProfile(formData).unwrap();
-      setOpen(false);
-      console.log(res, 'ressss');
+      console.log(data, 'driving data');
+      const res = await updateDriver({
+        id: driverInfo?.data[0]?._id as string,
+        data,
+      }).unwrap();
+      console.log(res, 'res');
       toast.success('Profile updated successfully.', { id });
     } catch (error: any) {
       console.log(error);
@@ -119,7 +106,6 @@ export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
           username.
         </DialogDescription>
         <div className='overflow-y-auto pt-5'>
-          <UploadSingleFile onChange={setImage} />
           <div className='px-6 pt-4 pb-6'>
             <div className='space-y-2'>
               <Form {...form}>
@@ -130,12 +116,12 @@ export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
                 >
                   <FormField
                     control={form.control}
-                    name='name'
+                    name='licenseNumber'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Driving License</FormLabel>
                         <FormControl>
-                          <Input placeholder='name' {...field} />
+                          <Input placeholder='Driving License' {...field} />
                         </FormControl>
                         <FormDescription className='sr-only'>
                           This is your public display name.
@@ -146,31 +132,24 @@ export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
                   />
                   <FormField
                     control={form.control}
-                    name='phone'
+                    name='experience'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>Experience</FormLabel>
                         <FormControl>
-                          <Input placeholder='e.g. 01XXXXXXXXX' {...field} />
+                          <Input
+                            type='number'
+                            placeholder='Years of experience'
+                            min={0}
+                            max={30}
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
                         </FormControl>
                         <FormDescription className='sr-only'>
                           This is your public phone number.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name='address'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address</FormLabel>
-                        <FormControl>
-                          <Input placeholder='address' {...field} />
-                        </FormControl>
-                        <FormDescription className='sr-only'>
-                          This is your public address.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -193,7 +172,7 @@ export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
             type='submit'
             className='cursor-pointer'
           >
-            Update Profile
+            Update
           </Button>
         </DialogFooter>
       </DialogContent>
