@@ -1,5 +1,5 @@
-import EditDriverInfoDialog from '@/components/modules/EditProfile/EditDriverInfo';
-import EditProfileDialog from '@/components/modules/EditProfile/EditProfileDialog';
+import EditDriverInfoDialog from '@/components/modules/UpdateProfile/EditDriverInfo';
+import EditProfileDialog from '@/components/modules/UpdateProfile/EditProfileDialog';
 import { Card } from '@/components/ui/card';
 
 import { Label } from '@/components/ui/label';
