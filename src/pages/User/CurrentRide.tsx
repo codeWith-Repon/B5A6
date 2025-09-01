@@ -68,7 +68,7 @@ const CurrentRide = () => {
         )}
 
         {(isError || !rideData) && (
-          <GetRideModal isError={isError} rideData={rideData} />
+          <GetRideModal />
         )}
       </div>
       <Card className='w-full '>

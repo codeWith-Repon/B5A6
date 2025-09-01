@@ -33,7 +33,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { NavigationMenuItem } from '@/components/ui/navigation-menu';
 
 const formSchema = z.object({
   pickupLocation: z.string().min(1, {
@@ -80,9 +79,9 @@ const GetRide = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <NavigationMenuItem className='cursor-pointer'>
+        <Button className='cursor-pointer'>
           Get Ride
-        </NavigationMenuItem>
+        </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>

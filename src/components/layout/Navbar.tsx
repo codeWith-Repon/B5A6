@@ -96,18 +96,6 @@ export default function Navbar() {
                     }
                     return null;
                   })}
-
-                  {userInfo?.success &&
-                    userInfo?.data?.role !== 'DRIVER' &&
-                    userInfo?.data?.role !== 'ADMIN' &&
-                    userInfo?.data?.role !== 'SUPER_ADMIN' && (
-                      <NavigationMenuItem className='ml-auto'>
-                        <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
-                          {/* Get ride */}
-                          <GetRide />
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
