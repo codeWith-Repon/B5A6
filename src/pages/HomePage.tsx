@@ -7,8 +7,8 @@ import { WhyChooseUs } from '@/components/modules/HomePage/WhyChooseUs/WhyChoose
 const HomePage = () => {
   return (
     <>
+      <HeroSection />
       <div className='container mx-auto max-w-7xl flex flex-col gap-7'>
-        <HeroSection />
         <OurServices />
         <WhyChooseUs />
       </div>
