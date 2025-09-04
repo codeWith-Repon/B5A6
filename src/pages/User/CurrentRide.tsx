@@ -7,6 +7,7 @@ import {
   useGetCurrentRideQuery,
   useUpdateRideStatusMutation,
 } from '@/redux/features/Rider/rider.api';
+import { useSendEmergencyMessageMutation } from '@/redux/features/SOS/sos.api';
 import { toast } from 'sonner';
 
 const CurrentRide = () => {
@@ -17,6 +18,8 @@ const CurrentRide = () => {
   } = useGetCurrentRideQuery(undefined);
 
   const [updateRideStatus] = useUpdateRideStatusMutation();
+  const [sendEmergencyMessage, { isLoading: sosLoading }] =
+    useSendEmergencyMessageMutation();
 
   const handleCancelRide = async () => {
     if (!rideData?.data?._id) return;
@@ -30,6 +33,20 @@ const CurrentRide = () => {
     } catch (error) {
       toast.error('Failed to cancel ride');
       console.log('Failed to cancel ride', error);
+    }
+  };
+
+  const handleSendEmergencyMessage = async () => {
+    console.log(rideData?.data?._id);
+    try {
+      const res = await sendEmergencyMessage({
+        rideId: rideData?.data?._id,
+      }).unwrap();
+      console.log(res);
+      toast.success('Emergency message sent successfully');
+    } catch (error) {
+      toast.error('Failed to send emergency message');
+      console.log('Failed to send emergency message', error);
     }
   };
 
@@ -58,13 +75,30 @@ const CurrentRide = () => {
       <div className='flex items-center justify-between'>
         <h1 className='text-xl font-bold mb-3'>Current Ride</h1>
 
-        {rideData?.data?.rideStatus === rideStatus.requested && (
-          <Button className='primary cursor-pointer' onClick={handleCancelRide}>
-            Cancel Ride
-          </Button>
+        {rideData?.data ? (
+          rideData.data.rideStatus === rideStatus.requested && (
+            <Button
+              className='primary cursor-pointer'
+              onClick={handleCancelRide}
+            >
+              Cancel Ride
+            </Button>
+          )
+        ) : (
+          <GetRideModal />
         )}
 
-        {(isError || !rideData) && <GetRideModal />}
+        {rideData?.data &&
+          rideData.data.rideStatus === rideStatus.pickedUp &&
+          rideData.data.rideStatus !== rideStatus.inTransit && (
+            <Button
+              className='bg-green-600 cursor-pointer'
+              onClick={handleSendEmergencyMessage}
+              disabled={sosLoading}
+            >
+              {sosLoading ? 'Sending SOS...' : 'Send SOS'}
+            </Button>
+          )}
       </div>
       <Card className='w-full '>
         <CardContent>
