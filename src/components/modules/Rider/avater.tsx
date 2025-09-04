@@ -8,26 +8,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { IUser } from '@/types/user.types';
+import {
+  authApi,
+  useLogOutMutation,
+  useUserInfoQuery,
+} from '@/redux/features/auth/auth.api';
+import { useAppDispatch } from '@/redux/hook';
 import { BadgeCheck } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
-interface IAvatarProps {
-  userInfo: {
-    data: IUser;
-  };
-  handleLogout: () => void;
-}
-
-export default function AvatarComponent({
-  userInfo,
-  handleLogout,
-}: IAvatarProps) {
+export default function AvatarComponent() {
   const navigate = useNavigate();
+  const [logOut] = useLogOutMutation();
+  const dispatch = useAppDispatch();
+
+  const { data: userInfo } = useUserInfoQuery(undefined);
+
+  const handleLogout = () => {
+    logOut(undefined);
+    dispatch(authApi.util.resetApiState());
+    toast.success('Logout successful');
+  };
 
   const avatarName = userInfo?.data?.name
     .split(' ')
-    .map((part) => part[0])
+    .map((part: string) => part[0])
     .join('')
     .toUpperCase();
 

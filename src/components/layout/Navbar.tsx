@@ -105,8 +105,7 @@ export default function Navbar() {
             <div className='hidden md:block'>
               {userInfo?.data?.email ? (
                 <AvatarComponent
-                  userInfo={userInfo}
-                  handleLogout={handleLogout}
+                  
                 />
               ) : (
                 <Button asChild size='sm' className='text-sm'>

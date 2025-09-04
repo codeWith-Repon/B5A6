@@ -15,6 +15,7 @@ import { Link } from 'react-router';
 import Logo from '@/assets/icon/Logo';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { getSidebarItems } from '@/utils/getSidebarItems';
+import AvatarComponent from './modules/Rider/avater';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
@@ -47,6 +48,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <div className='flex items-center gap-4 m-4'>
+        <AvatarComponent />
+        <span>Profile</span>
+      </div>
       <SidebarRail />
     </Sidebar>
   );
