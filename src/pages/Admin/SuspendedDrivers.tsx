@@ -1,7 +1,15 @@
+import DataTable from '@/components/modules/Admin/DataTable';
+import { driverStatus } from '@/constants/driverStatus';
+import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
+
 const SuspendedDrivers = () => {
+  const { data: drivers, isLoading: driverLoading } = useGetDriversQuery({
+    status: driverStatus.suspended,
+  });
+
   return (
     <div>
-      <h1>This is SuspendedDrivers component</h1>
+      <DataTable drivers={drivers} driverLoading={driverLoading} suspended />
     </div>
   );
 };

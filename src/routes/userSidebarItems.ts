@@ -1,6 +1,7 @@
+import Cancelled from "@/pages/User/Cancelled";
 import { lazy } from "react";
 
-const Completed = lazy(() => import("@/pages/Driver/Completed"))
+const CompletedRide = lazy(() => import("@/pages/User/CompletedRide"))
 const RideRequest = lazy(() => import("@/pages/Driver/RideRequest"))
 const Activity = lazy(() => import("@/pages/User/Activity"))
 const CurrentRide = lazy(() => import("@/pages/User/CurrentRide"))
@@ -27,12 +28,12 @@ export const userSidebarItems = [
             {
                 title: "Completed Ride",
                 url: "/rider/ride-completed",
-                component: Completed
+                component: CompletedRide
             },
             {
                 title: "Cancelled Ride",
                 url: "/rider/ride-request",
-                component: RideRequest
+                component: Cancelled
             },
             {
                 title: "Payment History",
