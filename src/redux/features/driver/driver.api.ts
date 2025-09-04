@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
 import type { IResponse } from "@/types";
-import type { IDriver, IDriverResponse, IDriverUpdate, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
+import { type IGetFreeDrivers, type IDriver, type IDriverResponse, type IDriverUpdate, type IGetResponse, type IMeta, type IVehicle, type IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -65,14 +65,21 @@ export const authApi = baseApi.injectEndpoints({
             })
         }),
 
-        updateVehicle: builder.mutation<IVehicleResponse, { id: string, data: IVehicle | FormData}>({
+        updateVehicle: builder.mutation<IVehicleResponse, { id: string, data: IVehicle | FormData }>({
             query: ({ id, data }) => ({
                 url: `/vehicle/update/${id}`,
                 method: "PATCH",
                 data
             }),
             invalidatesTags: ["Driver"]
-        })
+        }),
+
+        getFreeDrivers: builder.query<IResponse<IGetFreeDrivers[]>, void>({
+            query: () => ({
+                url: "/driver/free-drivers",
+                method: "GET"
+            })
+        }),
 
     })
 })
@@ -84,5 +91,6 @@ export const {
     useGetDriversQuery,
     useUpdateDriverMutation,
     useLogInDriverQuery,
-    useUpdateVehicleMutation
+    useUpdateVehicleMutation,
+    useGetFreeDriversQuery
 } = authApi

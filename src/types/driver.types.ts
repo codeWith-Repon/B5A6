@@ -86,3 +86,17 @@ export interface IDriverUpdate {
     experience?: number
     status?: IDriverStatus
 }
+
+export interface IGetFreeDrivers {
+    _id: string
+    user: {
+        name: string
+        email: string
+        phone: string
+    }
+    vehicle: string
+    licenseNumber: string
+    experience: number
+    availabilityStatus: string
+    status: string
+}

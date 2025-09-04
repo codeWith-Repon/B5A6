@@ -27,14 +27,11 @@ const CurrentRide = () => {
       }).unwrap();
       console.log(res);
       toast.success('Ride cancelled successfully');
-
     } catch (error) {
       toast.error('Failed to cancel ride');
       console.log('Failed to cancel ride', error);
     }
   };
-
-  console.log(rideData);
 
   if (rideLoading) {
     // Skeleton Loading State
@@ -67,9 +64,7 @@ const CurrentRide = () => {
           </Button>
         )}
 
-        {(isError || !rideData) && (
-          <GetRideModal />
-        )}
+        {(isError || !rideData) && <GetRideModal />}
       </div>
       <Card className='w-full '>
         <CardContent>

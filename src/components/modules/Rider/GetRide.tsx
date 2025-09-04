@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -17,7 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
+import { useGetFreeDriversQuery } from '@/redux/features/driver/driver.api';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,12 +46,10 @@ const formSchema = z.object({
 });
 
 const GetRide = () => {
-  const { data: driverData } = useGetDriversQuery({
-    status: 'APPROVED',
-    availabilityStatus: 'ONLINE',
-  });
+  const { data: freeDrivers, isLoading: isLoadingFreeDrivers } =
+    useGetFreeDriversQuery(undefined);
+  console.log('Free Drivers data:', freeDrivers?.data);
 
-  //   console.log(driverData);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -145,14 +144,25 @@ const GetRide = () => {
                         <SelectValue placeholder='Select driver' />
                       </SelectTrigger>
                     </FormControl>
-
-                    <SelectContent>
-                      {driverData?.data?.map((driver) => (
-                        <SelectItem key={driver?._id} value={driver?._id}>
-                          {driver?.user?.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                    <SelectGroup>
+                      <SelectContent>
+                        {isLoadingFreeDrivers ? (
+                          <SelectItem value='' disabled>
+                            Loading...
+                          </SelectItem>
+                        ) : freeDrivers?.data && freeDrivers.data.length > 0 ? (
+                          freeDrivers.data.map((driver) => (
+                            <SelectItem key={driver?._id} value={driver?._id}>
+                              {driver?.user?.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value='no-drivers' disabled>
+                            No free drivers available
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </SelectGroup>
                   </Select>
                   <FormMessage />
                 </FormItem>

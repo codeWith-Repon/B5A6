@@ -30,7 +30,6 @@ const DashboardLayout = () => {
   const isPending =
     isDriver && driver?.data?.[0]?.status === driverStatus.pending;
 
-  console.log(isSuspended);
 
   return (
     <SidebarProvider>
