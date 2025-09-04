@@ -23,6 +23,7 @@ import {
 } from '@/redux/features/Rider/rider.api';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
+import Spinner from '@/utils/spinner';
 
 const driverChangeableRideStatus = {
   accepted: 'ACCEPTED',
@@ -34,7 +35,8 @@ const driverChangeableRideStatus = {
 
 const RideRequestTable = () => {
   const [currentRideId, setCurrentRideId] = useState<string | null>(null);
-  const { data: rideRequestData } = useGetCurrentRideQuery(undefined);
+  const { data: rideRequestData, isLoading } =
+    useGetCurrentRideQuery(undefined);
 
   const [updateRideStatus] = useUpdateRideStatusMutation();
 
@@ -43,6 +45,8 @@ const RideRequestTable = () => {
       setCurrentRideId(rideRequestData.data._id);
     }
   }, [rideRequestData]);
+
+  if (isLoading) return <Spinner />;
 
   const handleUpdateRideStatus = async (status: string) => {
     const rideId = rideRequestData?.data?._id;

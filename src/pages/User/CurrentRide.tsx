@@ -8,6 +8,7 @@ import {
   useUpdateRideStatusMutation,
 } from '@/redux/features/Rider/rider.api';
 import { useSendEmergencyMessageMutation } from '@/redux/features/SOS/sos.api';
+import Spinner from '@/utils/spinner';
 import { toast } from 'sonner';
 
 const CurrentRide = () => {
@@ -20,6 +21,10 @@ const CurrentRide = () => {
   const [updateRideStatus] = useUpdateRideStatusMutation();
   const [sendEmergencyMessage, { isLoading: sosLoading }] =
     useSendEmergencyMessageMutation();
+
+  if (rideLoading) {
+    return <Spinner />;
+  }
 
   const handleCancelRide = async () => {
     if (!rideData?.data?._id) return;
