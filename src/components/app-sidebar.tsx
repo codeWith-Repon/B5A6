@@ -16,10 +16,12 @@ import Logo from '@/assets/icon/Logo';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { getSidebarItems } from '@/utils/getSidebarItems';
 import AvatarComponent from './modules/Rider/avater';
+import DriverStatusToggler from './modules/Driver/DriverStatusToggler';
+import Sos from './modules/Driver/Sos';
+import { role } from '@/constants/role';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: userData } = useUserInfoQuery(undefined);
-
+  const { data: userData, isLoading } = useUserInfoQuery(undefined);
   const data = {
     navMain: getSidebarItems(userData?.data?.role),
   };
@@ -48,9 +50,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <div className='flex items-center gap-4 m-4'>
-        <AvatarComponent />
-        <span>Profile</span>
+      <div className='flex flex-col gap-1'>
+        {userData?.data?.role === role.driver && (
+          <>
+            <Sos />
+            <DriverStatusToggler userData={userData} loading={isLoading} />
+          </>
+        )}
+        <div className='flex items-center gap-4 px-4 mb-4 py-2 border'>
+          <AvatarComponent />
+          <span>Profile</span>
+        </div>
       </div>
       <SidebarRail />
     </Sidebar>

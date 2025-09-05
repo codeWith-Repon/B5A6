@@ -55,7 +55,16 @@ export function Profile() {
         </div>
         <div className='grid grid-cols-12 mb-4'>
           <div className='col-span-4 rounded-md overflow-hidden'>
-            <h3 className='text-lg font-medium mb-2'>Profile Picture</h3>
+            <h3 className='text-lg font-medium mb-2'>
+              <span
+                className={
+                  userInfo?.data?.image?.length === 0 ? 'text-red-500' : ''
+                }
+              >
+                Profile Picture
+              </span>{' '}
+              {userInfo?.data?.image?.length === 0 ? 'N/A' : ''}
+            </h3>
             <img
               src={userInfo?.data?.image}
               className='w-full rounded-md'

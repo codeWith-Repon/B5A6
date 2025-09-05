@@ -1,4 +1,4 @@
-import type { IDriverStatus } from "."
+import type { DriverOnlineStatus, IDriverStatus } from "."
 
 export interface IVehicle {
     driver?: string
@@ -85,6 +85,7 @@ export interface IDriverUpdate {
     licenseNumber?: string
     experience?: number
     status?: IDriverStatus
+    availabilityStatus?: DriverOnlineStatus
 }
 
 export interface IGetFreeDrivers {

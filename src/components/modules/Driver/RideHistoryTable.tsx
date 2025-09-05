@@ -51,8 +51,8 @@ const RideHistoryTable = ({ rideData, isLoading }: IRideHistoryTableProps) => {
                 <TableCell className='font-medium px-4'>
                   {ride?.user?.name}
                 </TableCell>
-                <TableCell>{rideData?.data[0]?.pickupLocation}</TableCell>
-                <TableCell>{rideData?.data[0]?.dropLocation}</TableCell>
+                <TableCell>{ride.pickupLocation}</TableCell>
+                <TableCell>{ride.dropLocation}</TableCell>
               </TableRow>
             ))
           ) : (
