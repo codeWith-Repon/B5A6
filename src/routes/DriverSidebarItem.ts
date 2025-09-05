@@ -1,3 +1,4 @@
+import Rejected from "@/pages/Driver/Rejected";
 import { lazy } from "react";
 
 const Completed = lazy(() => import("@/pages/Driver/Completed"))
@@ -16,6 +17,11 @@ export const driverSidebarItems = [
                 title: "Completed Ride",
                 url: "/driver/ride-completed",
                 component: Completed
+            },
+            {
+                title: "Rejected Ride",
+                url: "/driver/ride-rejected",
+                component: Rejected
             }
         ]
     }

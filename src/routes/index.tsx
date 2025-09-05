@@ -17,6 +17,8 @@ import { role } from '@/constants/role';
 import type { IRole } from '@/types';
 import Faq from '@/pages/Faq';
 import Contact from '@/pages/Contact';
+import Support from '@/pages/Support';
+import { Profile } from '@/pages/User/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,14 @@ export const router = createBrowserRouter([
       {
         Component: WithAuth(Driver, role.rider as IRole),
         path: 'driver/register',
+      },
+      {
+        Component: Profile,
+        path: '/profile',
+      },
+      {
+        Component: Support,
+        path: '/support',
       },
     ],
   },

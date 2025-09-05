@@ -1,23 +1,21 @@
 import RideHistoryTable from '@/components/modules/Driver/RideHistoryTable';
 import { rideStatus } from '@/constants/rideStatus';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
-import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
 import { useGetRideRequestQuery } from '@/redux/features/ride/ride.api';
 
-const Completed = () => {
+const Cancelled = () => {
   const { data: userData } = useUserInfoQuery(undefined);
-  const { data: driver } = useGetDriversQuery(
-    { user: userData?.data?._id },
-    { skip: !userData?.data?._id }
-  );
   const {
     data: rideData,
     isLoading,
     isFetching,
     isUninitialized,
   } = useGetRideRequestQuery(
-    { driver: driver?.data[0]?._id, rideStatus: rideStatus.completed },
-    { skip: !driver?.data[0]?._id }
+    {
+      user: userData?.data?._id,
+      rideStatus: rideStatus.cancelled,
+    },
+    { skip: !userData?.data?._id }
   );
 
   const loading = isLoading || isFetching || isUninitialized;
@@ -29,4 +27,4 @@ const Completed = () => {
   );
 };
 
-export default Completed;
+export default Cancelled;

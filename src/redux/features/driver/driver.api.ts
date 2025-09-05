@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IDriverStatus, IResponse } from "@/types";
-import type { IDriver, IDriverResponse, IGetResponse, IMeta, IVehicle, IVehicleResponse } from "@/types/driver.types";
+import type { IResponse } from "@/types";
+import { type IGetFreeDrivers, type IDriver, type IDriverResponse, type IDriverUpdate, type IGetResponse, type IMeta, type IVehicle, type IVehicleResponse } from "@/types/driver.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -49,13 +49,36 @@ export const authApi = baseApi.injectEndpoints({
             providesTags: ["Driver"]
         }),
 
-        updateDriver: builder.mutation<IDriverResponse, { id: string, data: { status: IDriverStatus } }>({
+        updateDriver: builder.mutation<IDriverResponse, { id: string, data: IDriverUpdate }>({
             query: ({ id, data }) => ({
                 url: `/driver/update/${id}`,
                 method: "patch",
                 data
             }),
             invalidatesTags: ["Driver"]
+        }),
+
+        logInDriver: builder.query({
+            query: (driverId) => ({
+                url: `/driver/${driverId}`,
+                method: "GET"
+            })
+        }),
+
+        updateVehicle: builder.mutation<IVehicleResponse, { id: string, data: IVehicle | FormData }>({
+            query: ({ id, data }) => ({
+                url: `/vehicle/update/${id}`,
+                method: "PATCH",
+                data
+            }),
+            invalidatesTags: ["Driver"]
+        }),
+
+        getFreeDrivers: builder.query<IResponse<IGetFreeDrivers[]>, void>({
+            query: () => ({
+                url: "/driver/free-drivers",
+                method: "GET"
+            })
         }),
 
     })
@@ -66,5 +89,8 @@ export const {
     useRegisterDriverMutation,
     useGetVehicleQuery,
     useGetDriversQuery,
-    useUpdateDriverMutation
+    useUpdateDriverMutation,
+    useLogInDriverQuery,
+    useUpdateVehicleMutation,
+    useGetFreeDriversQuery
 } = authApi

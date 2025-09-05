@@ -19,8 +19,11 @@ import carouselImage2 from "./images/circle-thum_1_0.jpg"
 import carouselImage3 from "./images/circle-thum_1_1.jpg"
 import banner from "./images/love-driving-dsktp.jpg"
 import findUs from "./images/findus-map_0.jpg"
+import hero from "./images/hero.jpg"
 
-
+export const heroImage = {
+    hero
+}
 export {
     map,
     car,

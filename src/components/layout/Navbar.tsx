@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
 import GetRide from '../modules/Rider/GetRide';
+import AvatarComponent from '../modules/Rider/avater';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -30,7 +31,6 @@ const navigationLinks = [
   { href: '/about', label: 'About', role: 'PUBLIC' },
   { href: '/faq', label: 'Faq', role: 'PUBLIC' },
   { href: '/contact', label: 'Contact', role: 'PUBLIC' },
-  { href: '/driver/register', label: 'Become a driver', role: role.rider },
   { href: '/admin', label: 'Dashboard', role: role.admin },
   { href: '/rider', label: 'Dashboard', role: role.rider },
   { href: '/admin', label: 'Dashboard', role: role.superAdmin },
@@ -48,7 +48,7 @@ export default function Navbar() {
     dispatch(authApi.util.resetApiState());
     toast.success('Logout successful');
   };
-  console.log(userInfo);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -95,18 +95,6 @@ export default function Navbar() {
                     }
                     return null;
                   })}
-
-                  {userInfo?.success &&
-                    userInfo?.data?.role !== 'DRIVER' &&
-                    userInfo?.data?.role !== 'ADMIN' &&
-                    userInfo?.data?.role !== 'SUPER_ADMIN' && (
-                      <NavigationMenuItem className='ml-auto'>
-                        <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
-                          {/* Get ride */}
-                          <GetRide />
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
@@ -116,14 +104,9 @@ export default function Navbar() {
             <ModeToggle />
             <div className='hidden md:block'>
               {userInfo?.data?.email ? (
-                <Button
-                  onClick={handleLogout}
-                  size='sm'
-                  className='text-sm'
-                  variant='outline'
-                >
-                  Log Out
-                </Button>
+                <AvatarComponent
+                  
+                />
               ) : (
                 <Button asChild size='sm' className='text-sm'>
                   <Link to={'/login'}>Log In</Link>

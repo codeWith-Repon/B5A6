@@ -1,7 +1,15 @@
+import DataTable from '@/components/modules/Admin/DataTable';
+import { driverStatus } from '@/constants/driverStatus';
+import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
+
 const ApproveDrivers = () => {
+  const { data: drivers, isLoading: driverLoading } = useGetDriversQuery({
+    status: driverStatus.approved,
+  });
+
   return (
     <div>
-      <h1>This is ApproveDrivers component</h1>
+      <DataTable drivers={drivers} driverLoading={driverLoading} approved />
     </div>
   );
 };

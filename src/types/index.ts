@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { IDriverResponse, IMeta } from "./driver.types";
+import type { driverOnlineStatus } from "@/constants/driverStatus";
 
 export interface IResponse<T> {
     statusCode: number
@@ -44,6 +45,8 @@ export type IRole =
     | "DRIVER"
 
 export type IDriverStatus = "PENDING" | "APPROVED" | "SUSPENDED"
+export type DriverOnlineStatus =
+    (typeof driverOnlineStatus)[keyof typeof driverOnlineStatus];
 
 export interface IDriver {
     data: IDriverResponse[]

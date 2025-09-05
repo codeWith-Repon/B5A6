@@ -4,7 +4,7 @@ import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
 import { useGetRideRequestQuery } from '@/redux/features/ride/ride.api';
 
-const Completed = () => {
+const Rejected = () => {
   const { data: userData } = useUserInfoQuery(undefined);
   const { data: driver } = useGetDriversQuery(
     { user: userData?.data?._id },
@@ -16,7 +16,7 @@ const Completed = () => {
     isFetching,
     isUninitialized,
   } = useGetRideRequestQuery(
-    { driver: driver?.data[0]?._id, rideStatus: rideStatus.completed },
+    { driver: driver?.data[0]?._id, rideStatus: rideStatus.rejected },
     { skip: !driver?.data[0]?._id }
   );
 
@@ -29,4 +29,4 @@ const Completed = () => {
   );
 };
 
-export default Completed;
+export default Rejected;

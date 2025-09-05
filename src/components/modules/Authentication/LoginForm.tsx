@@ -87,11 +87,17 @@ export function LoginForm({
         error.data.message === 'Password does not match'
       ) {
         toast.error(error.data.message || 'Password does not match');
+      } else if (error.data.message === 'User is deleted!') {
+        toast.error(error.data.message || 'User is deleted!');
       } else {
         toast.error('Something went wrong');
       }
       console.log('login failed', error);
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    window.open(`${config.baseUrl}/auth/google`, '_self');
   };
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -106,7 +112,7 @@ export function LoginForm({
               <Button
                 variant='outline'
                 className='w-full cursor-pointer'
-                onClick={() => window.open(`${config.baseUrl}/auth/google`)}
+                onClick={handleGoogleSignIn}
               >
                 <GoogleSvg />
                 Sign in with Google

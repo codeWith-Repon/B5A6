@@ -29,7 +29,8 @@ import { useEffect, useState } from 'react';
 import type { IVehicle } from '@/types/driver.types';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
+import Spinner from '@/utils/spinner';
 
 const vehicleSchema = z.object({
   brand: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -46,15 +47,19 @@ export function VehicleForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [registerVehicle, { isLoading }] = useRegisterVehicleMutation();
-  const { data: userData } = useUserInfoQuery(undefined);
+  const { data: userData, isLoading: userLoading } =
+    useUserInfoQuery(undefined);
   const [userId, setUserId] = useState<string>('');
   const [vehicleParams, setVehicleParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userData?.success) {
       setUserId(userData?.data?._id);
+    } else {
+      navigate('/login');
     }
-  }, [userData]);
+  }, [userData, navigate]);
 
   const form = useForm<z.infer<typeof vehicleSchema>>({
     resolver: zodResolver(vehicleSchema),
@@ -65,6 +70,10 @@ export function VehicleForm({
       vehicleLicense: '',
     },
   });
+
+  if (userLoading) {
+    return <Spinner />;
+  }
 
   const onSubmit = async (data: z.infer<typeof vehicleSchema>) => {
     const vehicleData: IVehicle = {

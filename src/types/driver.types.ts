@@ -1,11 +1,12 @@
+import type { DriverOnlineStatus, IDriverStatus } from "."
 
 export interface IVehicle {
-    driver: string
-    vehicleType: string
-    brand: string
-    model: string
+    driver?: string
+    vehicleType?: string
+    brand?: string
+    model?: string
     images?: string[]
-    vehicleLicense: string
+    vehicleLicense?: string
 }
 
 export interface IVehicleResponse {
@@ -78,4 +79,25 @@ export interface IMeta {
     limit: number
     total: number
     totalPage: number
+}
+
+export interface IDriverUpdate {
+    licenseNumber?: string
+    experience?: number
+    status?: IDriverStatus
+    availabilityStatus?: DriverOnlineStatus
+}
+
+export interface IGetFreeDrivers {
+    _id: string
+    user: {
+        name: string
+        email: string
+        phone: string
+    }
+    vehicle: string
+    licenseNumber: string
+    experience: number
+    availabilityStatus: string
+    status: string
 }
