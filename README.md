@@ -1,27 +1,27 @@
-# 🚖 Ride Management System – Frontend (React + Redux Toolkit + RTK Query)
+# Ride Management System – Frontend (React + Redux Toolkit + RTK Query)
 
 A **production-grade, fully responsive, and role-based ride booking platform** (similar to Uber/Pathao) built with **React, Redux Toolkit, RTK Query, Tailwind CSS**.  
 Supports **Rider, Driver, and Admin dashboards** with real-time updates, secure authentication, and a professional UI/UX.
 
 ---
 
-## 🌐 Live Demo
+## Live Demo
 
 - **Frontend:** [Ride Booking Frontend](https://ridebooking-lilac.vercel.app/)
 - **Backend API:** [Ride Booking Backend](https://ride-booking-apis.vercel.app/)
 
 ---
 
-## 📖 Project Overview
+## Project Overview
 
 This platform allows **Riders** to book rides, **Drivers** to accept/manage rides, and **Admins** to monitor the entire system.  
 The project features **role-based dashboards, responsive design, live ride tracking, emergency SOS functionality**.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🌍 Public Pages
+### Public Pages
 
 - Home (Hero, Features, Testimonials, CTA, Promotions)
 - About Us (Company background, mission, team)
@@ -31,7 +31,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 🔑 Authentication & Authorization
+### Authentication & Authorization
 
 - JWT-based login & registration
 - Role selection (Rider/Driver)
@@ -41,7 +41,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 👤 Rider Dashboard
+### Rider Dashboard
 
 - Ride request form (Pickup, Destination, Fare estimate, Payment)
 - Ride history (Search, Filter, Pagination)
@@ -51,7 +51,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 🚗 Driver Dashboard
+### Driver Dashboard
 
 - Online/Offline toggle
 - Incoming requests (Accept/Reject)
@@ -62,7 +62,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 🛠️ Admin Dashboard
+### Admin Dashboard
 
 - User management (Search, Filter, Block/Unblock, Approve/Suspend)
 - Ride oversight (All rides with advanced filters)
@@ -71,7 +71,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 🚨 Emergency / SOS
+### Emergency / SOS
 
 - Floating SOS button (Active ride only)
 - Options: Call Police, Notify Emergency Contact (Email/Phone), Share Location
@@ -81,7 +81,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-### 📊 General UI/UX Enhancements
+### General UI/UX Enhancements
 
 - Responsive Navbar (Role-based)
 - Sidebar + Profile dropdown
@@ -93,17 +93,17 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-## 🔮 Upcoming Features
+## Upcoming Features
 
-- ✅ **Auto Driver Selection** (System automatically assigns nearest/available driver – no manual selection)
-- ✅ **Emergency Phone Number** (Now users can add both email)
-- ✅ **Payment System Integration** (Stripe/PayPal/bKash/Nagad support for cashless payments)
-- ✅ **Live Ride Tracking** (Real-time map updates for riders & drivers)
-- ✅ **Real-time Updates with Socket.io** (Instant ride status updates, notifications, and live communication)
+- **Auto Driver Selection** (System automatically assigns nearest/available driver – no manual selection)
+- **Emergency Phone Number** (Now users can add both email)
+- **Payment System Integration** (Stripe/PayPal/bKash/Nagad support for cashless payments)
+- **Live Ride Tracking** (Real-time map updates for riders & drivers)
+- **Real-time Updates with Socket.io** (Instant ride status updates, notifications, and live communication)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend:** React, Redux Toolkit, RTK Query, Tailwind CSS, TypeScript  
 **Backend:** Node.js, Express.js, MongoDB, JWT, bcrypt  
@@ -113,7 +113,7 @@ The project features **role-based dashboards, responsive design, live ride track
 
 ---
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### Run Project
 
@@ -140,21 +140,21 @@ VITE_BASE_URL=https://ride-booking-apis.vercel.app/api/v1
 
 add this your .env file
 
-🔑 Demo Credentials
+Demo Credentials
 
 Use these accounts to test different roles:
 
-🛡️ Super Admin / Admin
+Super Admin / Admin
 
 - Email: superadmin@super.com
 - Password: Repon@123
 
-🚗 Driver
+Driver
 
 - Email: reponahmedofficial@gmail.com
 - Password: Repon@123
 
-👤 Rider
+Rider
 
 - Email: repon7253@gmail.com
 - Password: Repon@123
