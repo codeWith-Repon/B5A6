@@ -67,8 +67,8 @@ export function RegisterForm({
         ? {
             username: 'user',
             email: 'repon4008@gmail.com',
-            password: 'R@123456',
-            confirmPassword: 'R@123456',
+            password: 'Repon@123',
+            confirmPassword: 'Repon@123',
           }
         : {
             username: '',
