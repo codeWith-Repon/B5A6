@@ -48,6 +48,7 @@ export default function Navbar() {
     dispatch(authApi.util.resetApiState());
     toast.success('Logout successful');
   };
+  console.log(userInfo, 'userinfo')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -103,7 +104,7 @@ export default function Navbar() {
           <div className='flex items-center gap-2'>
             <ModeToggle />
             <div className='hidden md:block'>
-              {userInfo?.data?.email ? (
+              {userInfo?.success ? (
                 <AvatarComponent
                   
                 />
