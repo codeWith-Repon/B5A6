@@ -16,7 +16,10 @@ const CurrentRide = () => {
     data: rideData,
     isLoading: rideLoading,
     isError,
-  } = useGetCurrentRideQuery(undefined);
+  } = useGetCurrentRideQuery(undefined, {
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
   const [updateRideStatus] = useUpdateRideStatusMutation();
   const [sendEmergencyMessage, { isLoading: sosLoading }] =

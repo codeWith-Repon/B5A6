@@ -1,69 +1,165 @@
-# React + TypeScript + Vite
+# 🚖 Ride Management System – Frontend (React + Redux Toolkit + RTK Query)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **production-grade, fully responsive, and role-based ride booking platform** (similar to Uber/Pathao) built with **React, Redux Toolkit, RTK Query, Tailwind CSS**.  
+Supports **Rider, Driver, and Admin dashboards** with real-time updates, secure authentication, and a professional UI/UX.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 Live Demo
 
-## Expanding the ESLint configuration
+- **Frontend:** [Ride Booking Frontend](https://ridebooking-lilac.vercel.app/)
+- **Backend API:** [Ride Booking Backend](https://ride-booking-apis.vercel.app/)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📖 Project Overview
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+This platform allows **Riders** to book rides, **Drivers** to accept/manage rides, and **Admins** to monitor the entire system.  
+The project features **role-based dashboards, responsive design, live ride tracking, emergency SOS functionality**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## ✨ Features
+
+### 🌍 Public Pages
+
+- Home (Hero, Features, Testimonials, CTA, Promotions)
+- About Us (Company background, mission, team)
+- Features (Rider, Driver, Admin capabilities)
+- Contact (Validated form)
+- FAQ (Searchable)
+
+---
+
+### 🔑 Authentication & Authorization
+
+- JWT-based login & registration
+- Role selection (Rider/Driver)
+- Persistent session management
+- Account status handling (Blocked/Suspended → Redirect with info)
+- Logout functionality
+
+---
+
+### 👤 Rider Dashboard
+
+- Ride request form (Pickup, Destination, Fare estimate, Payment)
+- Ride history (Search, Filter, Pagination)
+- Ride details (Map, Driver info, Status timeline)
+- Profile management (Name, Phone, Password)
+- SOS button (Call Police, Notify Contact, Share Location)
+
+---
+
+### 🚗 Driver Dashboard
+
+- Online/Offline toggle
+- Incoming requests (Accept/Reject)
+- Active ride management (Accepted → Picked Up → Completed/Cancelled)
+- Earnings dashboard (Charts: Daily/Weekly/Monthly)
+- Ride history (Search, Filter, Pagination)
+- Profile management (Vehicle details, Password update)
+
+---
+
+### 🛠️ Admin Dashboard
+
+- User management (Search, Filter, Block/Unblock, Approve/Suspend)
+- Ride oversight (All rides with advanced filters)
+- Analytics dashboard (Charts: Ride volume, Revenue trends, Driver activity)
+- Profile management
+
+---
+
+### 🚨 Emergency / SOS
+
+- Floating SOS button (Active ride only)
+- Options: Call Police, Notify Emergency Contact (Email/Phone), Share Location
+- Pre-saved emergency contacts
+- Location sharing via SMS/WhatsApp/email
+- Real-time feedback (toast/confirmation messages)
+
+---
+
+### 📊 General UI/UX Enhancements
+
+- Responsive Navbar (Role-based)
+- Sidebar + Profile dropdown
+- Data tables with search & filter
+- Recharts (Bar, Line, Pie)
+- Skeleton loaders & smooth transitions
+- Lazy-loading for heavy assets (Maps, Tables)
+- Global error handling with toast notifications
+
+---
+
+## 🔮 Upcoming Features
+
+- ✅ **Auto Driver Selection** (System automatically assigns nearest/available driver – no manual selection)
+- ✅ **Emergency Phone Number** (Now users can add both email)
+- ✅ **Payment System Integration** (Stripe/PayPal/bKash/Nagad support for cashless payments)
+- ✅ **Live Ride Tracking** (Real-time map updates for riders & drivers)
+- ✅ **Real-time Updates with Socket.io** (Instant ride status updates, notifications, and live communication)
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:** React, Redux Toolkit, RTK Query, Tailwind CSS, TypeScript  
+**Backend:** Node.js, Express.js, MongoDB, JWT, bcrypt  
+**Visualization:** Recharts  
+**Notifications:** react-hot-toast  
+**Maps:** Google Maps API / Leaflet.js
+
+---
+
+## 🚀 Setup Instructions
+
+### Run Project
+
+```bash
+# Clone the repository
+git clone https://github.com/codeWith-Repon/ride-management-frontend
+cd ride-management-frontend
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Frontend Environment Variable
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+VITE_BASE_URL=https://ride-booking-apis.vercel.app/api/v1
 ```
+
+add this your .env file
+
+🔑 Demo Credentials
+
+Use these accounts to test different roles:
+
+🛡️ Super Admin / Admin
+
+- Email: superadmin@super.com
+- Password: Repon@123
+
+🚗 Driver
+
+- Email: reponahmedofficial@gmail.com
+- Password: Repon@123
+
+👤 Rider
+
+- Email: repon7253@gmail.com
+- Password: Repon@123
+
+![Home Page](screenshots/home.png)  
+![Rider Dashboard](screenshots/rider-dashboard.png)  
+![Driver Dashboard](screenshots/driver-dashboard.png)  
+![Admin Dashboard](screenshots/admin-dashboard.png)
