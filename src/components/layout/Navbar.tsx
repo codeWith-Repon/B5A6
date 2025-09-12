@@ -24,6 +24,7 @@ import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
 import GetRide from '../modules/Rider/GetRide';
 import AvatarComponent from '../modules/Rider/avater';
+import Spinner from '@/utils/spinner';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -38,7 +39,7 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
-  const { data: userInfo } = useUserInfoQuery(undefined);
+  const { data: userInfo, isLoading, isFetching, isUninitialized } = useUserInfoQuery(undefined);
   const [logOut] = useLogOutMutation();
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ export default function Navbar() {
     dispatch(authApi.util.resetApiState());
     toast.success('Logout successful');
   };
-  console.log(userInfo, 'userinfo')
+  // console.log(userInfo, 'userinfo');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +60,10 @@ export default function Navbar() {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (isLoading || isFetching || isUninitialized) {
+    return <Spinner />;
+  }
 
   return (
     <header
@@ -105,9 +110,7 @@ export default function Navbar() {
             <ModeToggle />
             <div className='hidden md:block'>
               {userInfo?.success ? (
-                <AvatarComponent
-                  
-                />
+                <AvatarComponent />
               ) : (
                 <Button asChild size='sm' className='text-sm'>
                   <Link to={'/login'}>Log In</Link>
