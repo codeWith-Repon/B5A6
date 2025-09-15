@@ -89,6 +89,8 @@ export function LoginForm({
         toast.error(error.data.message || 'Password does not match');
       } else if (error.data.message === 'User is deleted!') {
         toast.error(error.data.message || 'User is deleted!');
+      } else if (error.data === 'Network Error') {
+        toast.error('Network Error');
       } else {
         toast.error('Something went wrong');
       }

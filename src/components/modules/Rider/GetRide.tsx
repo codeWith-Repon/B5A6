@@ -48,7 +48,6 @@ const formSchema = z.object({
 const GetRide = () => {
   const { data: freeDrivers, isLoading: isLoadingFreeDrivers } =
     useGetFreeDriversQuery(undefined);
-  console.log('Free Drivers data:', freeDrivers?.data);
 
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({

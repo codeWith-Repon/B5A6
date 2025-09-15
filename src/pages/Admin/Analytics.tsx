@@ -1,7 +1,9 @@
+import AdminStats from "@/components/modules/Stats/AdminStats";
+
 const Analytics = () => {
   return (
     <div>
-      <h1>This is Analytics component</h1>
+      <AdminStats />
     </div>
   );
 };

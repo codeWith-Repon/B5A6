@@ -159,7 +159,6 @@ Rider
 - Email: repon7253@gmail.com
 - Password: Repon@123
 
-![Home Page](screenshots/home.png)  
-![Rider Dashboard](screenshots/rider-dashboard.png)  
-![Driver Dashboard](screenshots/driver-dashboard.png)  
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Home Page](./public/screenshot/Screenshot1.png)  
+![Admin Dashboard](./public/screenshot/Screenshot2.png)
+![Rider Dashboard](./public/screenshot/Screenshot3.png)
