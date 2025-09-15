@@ -1,4 +1,4 @@
-import UserDriverBarChart from './userDriverBarchart';
+import UserDriverBarChart from './userDriverBarChart';
 import UserLineChart from './UserLineChart';
 
 const AdminStats = () => {
