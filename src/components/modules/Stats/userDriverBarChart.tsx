@@ -1,4 +1,5 @@
 import { useUserDriverStatsQuery } from '@/redux/features/Stats/stats.api';
+import { LoaderCircle } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -18,7 +19,9 @@ const UserDriverBarChart = () => {
   return (
     <div className='w-full  h-[400px] bg-secondary rounded-xl shadow px-3 py-6'>
       {isLoading ? (
-        <div className='flex justify-center items-center w-full h-full'>Loading...</div>
+        <div className='flex justify-center items-center w-full h-full'>
+          <LoaderCircle className='animate-spin' />
+        </div>
       ) : (
         <ResponsiveContainer width='100%' height='100%'>
           <BarChart

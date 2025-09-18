@@ -1,4 +1,5 @@
 import { useMonthlyUserStatsQuery } from '@/redux/features/Stats/stats.api';
+import { LoaderCircle } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -19,7 +20,7 @@ export default function UserLineChart() {
     <div className='w-full  h-[400px] bg-secondary rounded-xl shadow px-3 py-6'>
       {isLoading ? (
         <div className='flex justify-center items-center w-full h-full'>
-          Loading...
+          <LoaderCircle className='animate-spin' />
         </div>
       ) : (
         <ResponsiveContainer width='100%' height='100%'>
@@ -36,7 +37,7 @@ export default function UserLineChart() {
           >
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis dataKey='week' />
-          <YAxis />
+            <YAxis />
             <Tooltip />
             <Legend />
             <Line
