@@ -39,15 +39,20 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
-  const { data: userInfo, isLoading, isFetching, isUninitialized } = useUserInfoQuery(undefined);
+  const { data: userInfo, isLoading, isFetching } = useUserInfoQuery(undefined);
   const [logOut] = useLogOutMutation();
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const handleLogout = () => {
-    logOut(undefined);
-    dispatch(authApi.util.resetApiState());
-    toast.success('Logout successful');
+  const handleLogout = async () => {
+    try {
+      await logOut(undefined);
+      await dispatch(authApi.util.resetApiState());
+      toast.success('Logout successful');
+    } catch (error) {
+      console.error(error);
+      toast.error('Logout failed');
+    }
   };
   // console.log(userInfo, 'userinfo');
 
@@ -61,7 +66,9 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (isLoading || isFetching || isUninitialized) {
+  console.log(userInfo, 'userinfo');
+
+  if (isLoading || isFetching) {
     return <Spinner />;
   }
 
@@ -110,7 +117,7 @@ export default function Navbar() {
             <ModeToggle />
             <div className='hidden md:block'>
               {userInfo?.success ? (
-                <AvatarComponent />
+                <AvatarComponent  />
               ) : (
                 <Button asChild size='sm' className='text-sm'>
                   <Link to={'/login'}>Log In</Link>

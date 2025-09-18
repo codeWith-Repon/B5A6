@@ -20,15 +20,20 @@ import { toast } from 'sonner';
 
 export default function AvatarComponent() {
   const navigate = useNavigate();
-  const [logOut] = useLogOutMutation();
   const dispatch = useAppDispatch();
 
   const { data: userInfo } = useUserInfoQuery(undefined);
+  const [logOut] = useLogOutMutation();
 
-  const handleLogout = () => {
-    logOut(undefined);
-    dispatch(authApi.util.resetApiState());
-    toast.success('Logout successful');
+  const handleLogout = async () => {
+    try {
+      await logOut(undefined);
+      await dispatch(authApi.util.resetApiState());
+      toast.success('Logout successful');
+    } catch (error) {
+      console.error(error);
+      toast.error('Logout failed');
+    }
   };
 
   const avatarName = userInfo?.data?.name
