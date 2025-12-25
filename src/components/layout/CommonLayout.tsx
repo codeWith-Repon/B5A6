@@ -1,6 +1,6 @@
 import type React from 'react';
-import Footer from './Footer';
 import Navbar from './Navbar';
+import { Footer } from './Footer';
 
 interface IProps {
   children: React.ReactNode;

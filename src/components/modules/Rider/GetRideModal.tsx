@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { useNavigate } from 'react-router';
 
-const GetRideModal = () => {
+interface IProps {
+  heroClass?: string;
+}
+
+const GetRideModal = ({ heroClass }: IProps) => {
   const { data } = useUserInfoQuery(undefined);
   const navigate = useNavigate();
 
@@ -21,7 +25,7 @@ const GetRideModal = () => {
         <Button
           size='lg'
           onClick={handleClick}
-          className='border bg-primary border-primary text-white hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer'
+          className={`border bg-primary border-primary text-white hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer ${heroClass}`}
         >
           Get Ride
         </Button>
