@@ -23,8 +23,8 @@ import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
 import GetRide from '../modules/Rider/GetRide';
 import AvatarComponent from '../modules/Rider/avater';
-import Spinner from '@/utils/spinner';
 import { Car } from 'lucide-react';
+import Loader from '../shared/Loader';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -80,9 +80,8 @@ export default function Navbar() {
     }
   }, [hash, pathname]);
 
-  if (isLoading || isFetching) {
-    return <Spinner />;
-  }
+  if (isLoading || isFetching)
+    return <Loader fullPage={true} text='Initializing System...' />;
 
   return (
     <header
