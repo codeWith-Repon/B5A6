@@ -1,4 +1,3 @@
-import Logo from '@/assets/icon/Logo';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -11,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { ModeToggle } from './ModeToggler';
 import { useEffect, useState } from 'react';
 import {
@@ -25,12 +24,15 @@ import { role } from '@/constants/role';
 import GetRide from '../modules/Rider/GetRide';
 import AvatarComponent from '../modules/Rider/avater';
 import Spinner from '@/utils/spinner';
+import { Car } from 'lucide-react';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: '/', label: 'Home', role: 'PUBLIC' },
+  { href: '#services', label: 'Services', role: 'PUBLIC' },
+  { href: '#features', label: 'Features', role: 'PUBLIC' },
   { href: '/about', label: 'About', role: 'PUBLIC' },
-  { href: '/faq', label: 'Faq', role: 'PUBLIC' },
+  { href: '#faq', label: 'Faq', role: 'PUBLIC' },
   { href: '/contact', label: 'Contact', role: 'PUBLIC' },
   { href: '/admin', label: 'Dashboard', role: role.admin },
   { href: '/rider', label: 'Dashboard', role: role.rider },
@@ -43,6 +45,7 @@ export default function Navbar() {
   const [logOut] = useLogOutMutation();
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const { hash, pathname } = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -66,7 +69,16 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  console.log(userInfo, 'userinfo');
+  useEffect(() => {
+    if (hash) {
+      const element = document.getElementById(hash.replace('#', ''));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [hash, pathname]);
 
   if (isLoading || isFetching) {
     return <Spinner />;
@@ -84,13 +96,26 @@ export default function Navbar() {
           <div className='flex items-center gap-2'>
             {/* Main nav */}
             <div className='flex items-center gap-6'>
-              <Link to='/' className='text-primary hover:text-primary/90'>
-                <Logo />
+              <Link
+                to='/'
+                className='text-primary hover:text-primary/90 flex items-center gap-1 '
+              >
+                <div className='p-2 rounded-lg bg-primary text-primary-foreground'>
+                  <Car className='w-5 h-5' />
+                </div>
+                <span className='font-bold text-lg dark:text-white'>
+                  RideFlow
+                </span>
               </Link>
               {/* Navigation menu */}
               <NavigationMenu className='max-md:hidden'>
                 <NavigationMenuList className='gap-2 flex-wrap md:flex-nowrap'>
                   {navigationLinks.map((link) => {
+                    const isHashLink = link.href.startsWith('#');
+                    const navigateLink = isHashLink
+                      ? `/${link.href}`
+                      : link.href;
+
                     if (
                       link.role === 'PUBLIC' ||
                       link.role === userInfo?.data?.role
@@ -101,7 +126,7 @@ export default function Navbar() {
                             asChild
                             className='text-muted-foreground hover:text-primary py-1.5 font-medium'
                           >
-                            <Link to={link.href}>{link.label}</Link>
+                            <Link to={navigateLink}>{link.label}</Link>
                           </NavigationMenuLink>
                         </NavigationMenuItem>
                       );
@@ -117,7 +142,7 @@ export default function Navbar() {
             <ModeToggle />
             <div className='hidden md:block'>
               {userInfo?.success ? (
-                <AvatarComponent  />
+                <AvatarComponent />
               ) : (
                 <Button asChild size='sm' className='text-sm'>
                   <Link to={'/login'}>Log In</Link>

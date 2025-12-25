@@ -5,7 +5,7 @@ import { landingData } from '@/data/landingData';
 export function ServicesSection() {
   const { services } = landingData;
   return (
-    <section className='py-20 bg-background'>
+    <section id='services' className='py-20 bg-background'>
       <div className='container mx-auto px-4'>
         {/* Header */}
         <div className='max-w-2xl mx-auto text-center space-y-4 mb-16'>
