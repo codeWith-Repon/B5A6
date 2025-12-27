@@ -1,7 +1,7 @@
 import { LoginForm } from '@/components/modules/Authentication/LoginForm';
+import Loader from '@/components/shared/Loader';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
-import Spinner from '@/utils/spinner';
-import { Car } from 'lucide-react';
+import { Car, HatGlasses } from 'lucide-react';
 import { Link, Navigate } from 'react-router';
 
 const Login = () => {
@@ -11,7 +11,15 @@ const Login = () => {
   }
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <Loader
+        animate={false}
+        icon={HatGlasses}
+        iconSize={27}
+        fullPage={true}
+        text='Authenticating...'
+      />
+    );
   }
   return (
     <div className='min-h-svh content-center'>

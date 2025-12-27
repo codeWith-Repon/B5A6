@@ -66,9 +66,9 @@ export function RegisterForm({
       config.environment === 'development'
         ? {
             username: 'user',
-            email: 'repon4008@gmail.com',
-            password: 'Repon@123',
-            confirmPassword: 'Repon@123',
+            email: 'jhonDoe@gmail.com',
+            password: 'R1234567@',
+            confirmPassword: 'R1234567@',
           }
         : {
             username: '',

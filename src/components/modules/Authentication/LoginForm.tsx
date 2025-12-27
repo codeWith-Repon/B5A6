@@ -56,7 +56,7 @@ export function LoginForm({
       config.environment === 'development'
         ? {
             email: 'superadmin@super.com',
-            password: 'Repon@123',
+            password: 'R1234567@',
           }
         : {
             email: '',
@@ -199,12 +199,12 @@ export function LoginForm({
               </Button>
             )}
 
-            <div className='flex items-center justify-center gap-3'>
+            <div className='flex flex-wrap items-center justify-center gap-3'>
               <Button
                 variant='secondary'
                 className='cursor-pointer'
                 onClick={() =>
-                  handleAutoLogin('superadmin@super.com', 'Repon@123')
+                  handleAutoLogin('superAdmin@gmail.com', 'R1234567@')
                 }
                 disabled={isLoading}
               >
@@ -214,10 +214,18 @@ export function LoginForm({
               <Button
                 variant='outline'
                 className='cursor-pointer'
-                onClick={() => handleAutoLogin('repon4008@gmail.com', 'Repon@123')}
+                onClick={() => handleAutoLogin('repon7253@gmail.com', 'R1234567@')}
                 disabled={isLoading}
               >
                 Login as User
+              </Button>
+              <Button
+                variant='outline'
+                className='cursor-pointer'
+                onClick={() => handleAutoLogin('driver@gmail.com', 'R1234567@')}
+                disabled={isLoading}
+              >
+                Login as Driver
               </Button>
             </div>
 

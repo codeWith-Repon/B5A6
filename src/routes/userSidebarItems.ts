@@ -3,20 +3,20 @@ import { lazy } from "react";
 
 const CompletedRide = lazy(() => import("@/pages/User/CompletedRide"))
 const RideRequest = lazy(() => import("@/pages/Driver/RideRequest"))
-const Activity = lazy(() => import("@/pages/User/Activity"))
+// const Activity = lazy(() => import("@/pages/User/Activity"))
 const CurrentRide = lazy(() => import("@/pages/User/CurrentRide"))
 
 export const userSidebarItems = [
-    {
-        title: "Activity",
-        items: [
-            {
-                title: "Your Activity",
-                url: "/rider/activity",
-                component: Activity
-            }
-        ]
-    },
+    // {
+    //     title: "Activity",
+    //     items: [
+    //         {
+    //             title: "Your Activity",
+    //             url: "/rider/activity",
+    //             component: Activity
+    //         }
+    //     ]
+    // },
     {
         title: "History",
         items: [
