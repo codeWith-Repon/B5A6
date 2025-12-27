@@ -98,6 +98,13 @@ export function LoginForm({
     }
   };
 
+  const handleAutoLogin = (email: string, password: string) => {
+    form.setValue('email', email);
+    form.setValue('password', password);
+
+    onSubmit({ email, password });
+  };
+
   const handleGoogleSignIn = () => {
     window.open(`${config.baseUrl}/auth/google`, '_self');
   };
@@ -191,6 +198,28 @@ export function LoginForm({
                 Sign in
               </Button>
             )}
+
+            <div className='flex items-center justify-center gap-3'>
+              <Button
+                variant='secondary'
+                className='cursor-pointer'
+                onClick={() =>
+                  handleAutoLogin('superadmin@super.com', 'Repon@123')
+                }
+                disabled={isLoading}
+              >
+                Login as Admin
+              </Button>
+
+              <Button
+                variant='outline'
+                className='cursor-pointer'
+                onClick={() => handleAutoLogin('repon4008@gmail.com', 'Repon@123')}
+                disabled={isLoading}
+              >
+                Login as User
+              </Button>
+            </div>
 
             <div className='text-center text-sm'>
               don&apos;t have an account?{' '}
