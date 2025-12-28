@@ -62,20 +62,12 @@ export function RegisterForm({
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
-    defaultValues:
-      config.environment === 'development'
-        ? {
-            username: 'user',
-            email: 'jhonDoe@gmail.com',
-            password: 'R1234567@',
-            confirmPassword: 'R1234567@',
-          }
-        : {
-            username: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-          },
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {

@@ -52,16 +52,10 @@ export function LoginForm({
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
-    defaultValues:
-      config.environment === 'development'
-        ? {
-            email: 'superAdmin@gmail.com',
-            password: 'R1234567@',
-          }
-        : {
-            email: '',
-            password: '',
-          },
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
@@ -214,7 +208,9 @@ export function LoginForm({
               <Button
                 variant='outline'
                 className='cursor-pointer'
-                onClick={() => handleAutoLogin('repon7253@gmail.com', 'R1234567@')}
+                onClick={() =>
+                  handleAutoLogin('repon7253@gmail.com', 'R1234567@')
+                }
                 disabled={isLoading}
               >
                 Login as User
