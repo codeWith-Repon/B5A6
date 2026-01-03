@@ -22,7 +22,7 @@ export function FAQSection() {
   }, [searchTerm, faqs]);
 
   return (
-    <section id='faq' className='py-20 bg-gray-50'>
+    <section id='faq' className='py-20 bg-gray-50 dark:bg-gray-800/10'>
       <div className='container mx-auto px-4'>
         {/* Header */}
         <div className='max-w-2xl mx-auto text-center space-y-4 mb-10'>

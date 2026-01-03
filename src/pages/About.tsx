@@ -1,157 +1,16 @@
-import { Button } from '@/components/ui/button';
+import { BrandStoryHeroSection } from '@/components/modules/HomePage/About/BrandStory';
+import { CompanyStatisticsSection } from '@/components/modules/HomePage/About/CompanyStatisticsSection';
+import { CoreValuesSection } from '@/components/modules/HomePage/About/CoreValuesSection';
+import { JoinTeamCTASection } from '@/components/modules/HomePage/About/JoinTeamCTASection';
 
-interface About3Props {
-  title?: string;
-  description?: string;
-  mainImage?: {
-    src: string;
-    alt: string;
-  };
-  secondaryImage?: {
-    src: string;
-    alt: string;
-  };
-  breakout?: {
-    src: string;
-    alt: string;
-    title?: string;
-    description?: string;
-    buttonText?: string;
-    buttonUrl?: string;
-  };
-  companiesTitle?: string;
-  companies?: Array<{
-    src: string;
-    alt: string;
-  }>;
-  achievementsTitle?: string;
-  achievementsDescription?: string;
-  achievements?: Array<{
-    label: string;
-    value: string;
-  }>;
-}
-
-const defaultCompanies = [
-  {
-    src: 'https://cdn.dribbble.com/userupload/15245737/file/original-04d9d0cdf95d94fb0bc01b62eea9f8ee.jpg?resize=1024x768&vertical=center',
-    alt: 'Uber',
-  },
-  {
-    src: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Lyft_logo.svg',
-    alt: 'Lyft',
-  },
-  {
-    src: 'https://cdn.dribbble.com/userupload/14957309/file/original-a9536ed4c38063ca51ff13095724a738.jpg?resize=1024x768&vertical=center',
-    alt: 'Bolt',
-  },
-];
-
-const defaultAchievements = [
-  { label: 'Rides Completed', value: '50,000+' },
-  { label: 'Active Drivers', value: '2,500+' },
-  { label: 'Happy Riders', value: '45,000+' },
-  { label: 'Cities Covered', value: '30+' },
-];
-
-const About = ({
-  title = 'About Ride Management',
-  description = 'Our Ride Management System simplifies booking, tracking, and completing rides with real-time updates. Whether you’re a rider or a driver, we ensure a seamless experience with reliability, transparency, and safety at every step.',
-  mainImage = {
-    src: 'https://img.freepik.com/premium-photo/cropped-hand-man-driving-car_1048944-12760614.jpg?w=1480',
-    alt: 'Ride booking illustration',
-  },
-  secondaryImage = {
-    src: 'https://img.freepik.com/free-vector/location-tracking-abstract-concept-illustration_335657-2245.jpg',
-    alt: 'Ride tracking illustration',
-  },
-  breakout = {
-    src: 'https://img.freepik.com/free-vector/taxi-service-smartphone-application_74855-4445.jpg',
-    alt: 'logo',
-    title: 'Smart Ride Booking & Tracking',
-    description:
-      'Book rides instantly, track your driver in real-time, and manage payments all in one place. Designed to provide efficiency for drivers and comfort for riders.',
-    buttonText: 'Explore Rides',
-    buttonUrl: '/',
-  },
-  companiesTitle = 'Trusted by Riders and Drivers',
-  companies = defaultCompanies,
-  achievementsTitle = 'Our Ride Achievements',
-  achievementsDescription = 'We are committed to building a safe and efficient ride ecosystem. Here are some of the milestones we’ve achieved together with our riders and drivers:',
-  achievements = defaultAchievements,
-}: About3Props = {}) => {
+const About = () => {
   return (
-    <section className='py-15'>
-      <div className='container mx-auto'>
-        <div className='mb-14 grid gap-5 text-center md:grid-cols-2 md:text-left'>
-          <h1 className='text-5xl font-semibold'>{title}</h1>
-          <p className='text-muted-foreground'>{description}</p>
-        </div>
-        <div className='grid gap-7 lg:grid-cols-3'>
-          <img
-            src={mainImage.src}
-            alt={mainImage.alt}
-            className='size-full max-h-[620px] rounded-xl object-cover lg:col-span-2'
-          />
-          <div className='flex flex-col gap-7 md:flex-row lg:flex-col'>
-            <div className='flex flex-col justify-between gap-6 rounded-xl bg-muted p-7 md:w-1/2 lg:w-auto'>
-              <img
-                src={breakout.src}
-                alt={breakout.alt}
-                className='mr-auto h-12'
-              />
-              <div>
-                <p className='mb-2 text-lg font-semibold'>{breakout.title}</p>
-                <p className='text-muted-foreground'>{breakout.description}</p>
-              </div>
-              <Button variant='outline' className='mr-auto' asChild>
-                <a href={breakout.buttonUrl} target='_blank'>
-                  {breakout.buttonText}
-                </a>
-              </Button>
-            </div>
-            <img
-              src={secondaryImage.src}
-              alt={secondaryImage.alt}
-              className='grow basis-0 rounded-xl object-cover md:w-1/2 lg:min-h-0 lg:w-auto'
-            />
-          </div>
-        </div>
-        <div className='py-32'>
-          <p className='text-center'>{companiesTitle} </p>
-          <div className='mt-8 flex flex-wrap justify-center gap-8'>
-            {companies.map((company, idx) => (
-              <div className='flex items-center gap-3' key={company.src + idx}>
-                <img
-                  src={company.src}
-                  alt={company.alt}
-                  className='h-6 w-auto md:h-8'
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className='relative overflow-hidden rounded-xl bg-muted p-10 md:p-16'>
-          <div className='flex flex-col gap-4 text-center md:text-left'>
-            <h2 className='text-4xl font-semibold'>{achievementsTitle}</h2>
-            <p className='max-w-xl text-muted-foreground'>
-              {achievementsDescription}
-            </p>
-          </div>
-          <div className='mt-10 flex flex-wrap justify-between gap-10 text-center'>
-            {achievements.map((item, idx) => (
-              <div className='flex flex-col gap-4' key={item.label + idx}>
-                <p>{item.label}</p>
-                <span className='text-4xl font-semibold md:text-5xl'>
-                  {item.value}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className='pointer-events-none absolute -top-1 right-1 z-10 hidden h-full w-full bg-[linear-gradient(to_right,hsl(var(--muted-foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--muted-foreground))_1px,transparent_1px)] [mask-image:linear-gradient(to_bottom_right,#000,transparent,transparent)] bg-[size:80px_80px] opacity-15 md:block'></div>
-        </div>
-      </div>
-    </section>
+    <div>
+      <BrandStoryHeroSection />
+      <CoreValuesSection />
+      <CompanyStatisticsSection />
+      <JoinTeamCTASection />
+    </div>
   );
 };
 

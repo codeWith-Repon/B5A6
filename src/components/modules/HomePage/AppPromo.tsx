@@ -7,7 +7,7 @@ export function AppPromo() {
   return (
     <section className='py-24  overflow-hidden relative'>
       <div
-        className='absolute inset-0 opacity-80 pointer-events-none'
+        className='absolute inset-0 opacity-30 pointer-events-none'
         style={{
           backgroundImage: `url(${cubeImage})`,
           backgroundRepeat: 'repeat',
@@ -36,7 +36,7 @@ export function AppPromo() {
               {landingData.appPromo.description}
             </p>
             <div className='flex flex-col sm:flex-row gap-4 pt-4'>
-              <Button className='flex items-center justify-center gap-2 bg-black hover:bg-black/90 text-white font-semibold px-6 py-6 text-base'>
+              <Button className='flex items-center justify-center gap-2 bg-black hover:bg-black/90 text-white dark:bg-slate-300/30 font-semibold px-6 py-6 text-base'>
                 <Apple className='w-5 h-5' />
                 App Store
               </Button>

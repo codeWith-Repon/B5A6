@@ -19,6 +19,7 @@ import Faq from '@/pages/Faq';
 import Contact from '@/pages/Contact';
 import Support from '@/pages/Support';
 import { Profile } from '@/pages/User/Profile';
+import NotFound from '@/pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -94,5 +95,9 @@ export const router = createBrowserRouter([
   {
     Component: Unauthorized,
     path: '/unauthorized',
+  },
+  {
+    Component: NotFound,
+    path: '*',
   },
 ]);
