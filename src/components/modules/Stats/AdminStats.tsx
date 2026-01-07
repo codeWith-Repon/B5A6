@@ -1,9 +1,27 @@
+import { useUserDriverStatsQuery } from '@/redux/features/Stats/stats.api';
 import DashboardFilter from './DashboardFilter';
 import DashboardStatCards from './DashboardStatCards';
 import UserDriverBarChart from './userDriverBarChart';
 import UserLineChart from './UserLineChart';
+import { useSearchParams } from 'react-router';
 
 const AdminStats = () => {
+  const [searchParams] = useSearchParams();
+
+
+  const month = searchParams.get('month');
+  const year = searchParams.get('year');
+  const status = searchParams.get('status');
+
+  const { data: barData, isLoading } = useUserDriverStatsQuery({
+    month: month ? Number(month) : undefined,
+    year: year ? Number(year) : new Date().getFullYear(),
+    status: status ?? undefined,
+  });
+
+  const data = barData?.data?.stats;
+
+
   return (
     <div className='flex flex-col  gap-4'>
       <div className='mb-3'>
@@ -18,10 +36,8 @@ const AdminStats = () => {
         <DashboardStatCards />
       </div>
       <DashboardFilter />
-      <div className='flex flex-col lg:flex-row gap-4'>
-        <UserDriverBarChart />
-        <UserLineChart />
-      </div>
+      <UserDriverBarChart data={data} isLoading={isLoading} />
+      <UserLineChart />
     </div>
   );
 };
