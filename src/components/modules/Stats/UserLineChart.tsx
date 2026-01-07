@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import CustomTooltip from './CustomTooltip';
+import { useSearchParams } from 'react-router';
 
 interface UserStatusData {
   week: string;
@@ -25,6 +26,9 @@ interface UserLineChartProps {
 }
 
 const UserLineChart = ({ data, isLoading }: UserLineChartProps) => {
+  const [searchParams] = useSearchParams();
+  const filteredStatus = searchParams.get('status')?.toLowerCase();
+
   const defaultData: UserStatusData[] = [
     { week: 'Week 1', active: 100, inactive: 10, blocked: 4 },
     { week: 'Week 2', active: 150, inactive: 12, blocked: 9 },
@@ -38,16 +42,25 @@ const UserLineChart = ({ data, isLoading }: UserLineChartProps) => {
     ? data
     : defaultData;
 
-  console.log(
-    data?.map((item) => item.active > 0).some((item) => item === true)
-  );
-
   const ChartSkeleton = () => (
     <div className='space-y-3'>
       <Skeleton className='h-8 w-32' />
       <Skeleton className='h-80 w-full' />
     </div>
   );
+
+  // Define colors
+  const STATUS_COLORS = {
+    active: { stroke: 'var(--chart-1)', gradient: 'activeGradient' },
+    inactive: { stroke: 'var(--chart-2)', gradient: 'inactiveGradient' },
+    blocked: { stroke: 'var(--chart-3)', gradient: 'blockedGradient' },
+  };
+
+  // Reduce opacity for non-filtered lines
+  const getLineOpacity = (status: 'active' | 'inactive' | 'blocked') => {
+    if (!filteredStatus) return 1; // no filter, all lines normal
+    return filteredStatus === status ? 1 : 0.2; // highlight filtered, fade others
+  };
 
   return (
     <Card className='p-6 backdrop-blur-sm transition-all'>
@@ -151,31 +164,34 @@ const UserLineChart = ({ data, isLoading }: UserLineChartProps) => {
                 type='monotone'
                 dataKey='active'
                 name='Active'
-                stroke='var(--chart-1)'
+                stroke={STATUS_COLORS.active.stroke}
                 strokeWidth={3}
                 dot={{ r: 5 }}
                 activeDot={{ r: 7 }}
-                fill='url(#activeGradient)'
+                fill={`url(#${STATUS_COLORS.active.gradient})`}
+                opacity={getLineOpacity('active')}
               />
               <Line
                 type='monotone'
                 dataKey='inactive'
                 name='Inactive'
-                stroke='var(--chart-2)'
+                stroke={STATUS_COLORS.inactive.stroke}
                 strokeWidth={3}
                 dot={{ r: 5 }}
                 activeDot={{ r: 7 }}
-                fill='url(#inactiveGradient)'
+                fill={`url(#${STATUS_COLORS.inactive.gradient})`}
+                opacity={getLineOpacity('inactive')}
               />
               <Line
                 type='monotone'
                 dataKey='blocked'
                 name='Blocked'
-                stroke='var(--chart-3)'
+                stroke={STATUS_COLORS.blocked.stroke}
                 strokeWidth={3}
                 dot={{ r: 5 }}
                 activeDot={{ r: 7 }}
-                fill='url(#blockedGradient)'
+                fill={`url(#${STATUS_COLORS.blocked.gradient})`}
+                opacity={getLineOpacity('blocked')}
               />
             </LineChart>
           </ResponsiveContainer>
