@@ -9,7 +9,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUpdateUrl } from '@/hooks/useUpdateUrl';
 import { Calendar } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 const STATUS_FILTERS = [
@@ -18,15 +18,6 @@ const STATUS_FILTERS = [
   { label: 'Inactive', value: 'INACTIVE' },
   { label: 'Blocked', value: 'BLOCKED' },
 ];
-
-const currentMonth = new Date().getMonth() + 1;
-const Months = Array.from({ length: currentMonth }, (_, index) => {
-  const date = new Date(new Date().getFullYear(), index, 1);
-  return {
-    label: new Intl.DateTimeFormat('en-Us', { month: 'long' }).format(date),
-    value: String(index + 1),
-  };
-});
 
 const StartYear = 2025;
 const CurrentYear = new Date().getFullYear();
@@ -37,7 +28,7 @@ const Years = Array.from({ length: CurrentYear - StartYear + 1 }, (_, index) =>
 const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
   const [searchParams] = useSearchParams();
   const [selectedMonth, setSelectedMonth] = useState(
-    searchParams.get('month') ?? Months[Months.length - 1].value
+    searchParams.get('month') ?? String(new Date().getMonth() + 1)
   );
   const [selectedYear, setSelectedYear] = useState(
     searchParams.get('year') ?? CurrentYear.toString()
@@ -47,6 +38,20 @@ const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
   );
 
   const updateURL = useUpdateUrl();
+
+  // Dynamically generate months based on selected year
+  const Months = useMemo(() => {
+    const maxMonth =
+      Number(selectedYear) === CurrentYear ? new Date().getMonth() + 1 : 12;
+    return Array.from({ length: maxMonth }, (_, index) => {
+      const date = new Date(Number(selectedYear), index, 1);
+
+      return {
+        label: new Intl.DateTimeFormat('en-Us', { month: 'long' }).format(date),
+        value: String(index + 1),
+      };
+    });
+  }, [selectedYear]);
 
   const handleMonthChange = (value: string) => {
     updateURL({
