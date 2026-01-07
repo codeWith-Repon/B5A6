@@ -79,29 +79,30 @@ const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
   };
 
   return (
-    <Card className='dark:border-slate-700/50 dark:bg-slate-900/40 backdrop-blur-sm p-6 dark:hover:border-slate-600/50 hover:border-slate-300 transition-all duration-300'>
+    <Card className='p-6 backdrop-blur-sm border border-border rounded-lg transition-all duration-300 hover:border-ring/20 bg-card text-card-foreground dark:bg-card dark:text-card-foreground'>
       <div className='space-y-4'>
-        <h3 className='text-lg font-semibold text-white flex items-center gap-2'>
-          <Calendar className='w-5 h-5 dark:text-blue-400 text-blue-600' />
+        <h3 className='text-lg font-semibold flex items-center gap-2 text-foreground'>
+          <Calendar className='w-5 h-5 text-primary dark:text-primary' />
           Filters & Controls
         </h3>
 
         {/* Date Selectors */}
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          {/* Month */}
           <div className='space-y-2'>
-            <label className='block text-sm font-medium dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Month
             </label>
             <Select value={selectedMonth} onValueChange={handleMonthChange}>
-              <SelectTrigger className='dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800/70 hover:bg-slate-50 transition-colors w-full'>
+              <SelectTrigger className='w-full bg-card border border-border text-card-foreground hover:bg-muted/10 transition-colors'>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className='dark:bg-slate-800 dark:border-slate-700 '>
+              <SelectContent className='bg-card border border-border'>
                 {Months.map((month) => (
                   <SelectItem
                     key={month.value}
                     value={month.value}
-                    className='dark:text-slate-200 hover:bg-slate-700 cursor-pointer'
+                    className='cursor-pointer hover:bg-muted/20'
                   >
                     {month.label}
                   </SelectItem>
@@ -110,20 +111,21 @@ const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
             </Select>
           </div>
 
+          {/* Year */}
           <div className='space-y-2'>
-            <label className='block text-sm font-medium dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Year
             </label>
             <Select value={selectedYear} onValueChange={handleYearChange}>
-              <SelectTrigger className='dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800/70 hover:bg-slate-50 transition-colors w-full'>
+              <SelectTrigger className='w-full bg-card border border-border text-card-foreground hover:bg-muted/10 transition-colors'>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className='dark:bg-slate-800 dark:border-slate-700'>
+              <SelectContent className='bg-card border border-border'>
                 {Years.map((year) => (
                   <SelectItem
                     key={year}
                     value={year}
-                    className='dark:text-slate-200 hover:bg-slate-700 cursor-pointer'
+                    className='cursor-pointer hover:bg-muted/20'
                   >
                     {year}
                   </SelectItem>
@@ -135,16 +137,16 @@ const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
 
         {/* Status Filter Tabs */}
         <div className='space-y-2'>
-          <label className='block text-sm font-medium dark:text-slate-300'>
+          <label className='block text-sm font-medium text-muted-foreground'>
             User Status
           </label>
           <Tabs value={statusFilter} onValueChange={handleStatusChange}>
-            <TabsList className='grid w-full grid-cols-2 md:grid-cols-4 dark:bg-slate-800/50 border dark:border-slate-700/50 border-slate-50'>
+            <TabsList className='grid w-full grid-cols-2 md:grid-cols-4 border border-border bg-card'>
               {STATUS_FILTERS.map((filter) => (
                 <TabsTrigger
                   key={filter.value}
                   value={filter.value}
-                  className='dark:data-[state=active]:bg-blue-600/30 dark:data-[state=active]:text-blue-300 data-[state=active]:border-b-2 data-[state=active]:border-blue-500 transition-all duration-200 cursor-pointer'
+                  className='cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-primary text-card-foreground hover:bg-muted/20'
                 >
                   {filter.label}
                 </TabsTrigger>
@@ -153,10 +155,10 @@ const DashboardFilter = ({ isLoading }: { isLoading?: boolean }) => {
           </Tabs>
         </div>
 
-        {/* Loading indicator */}
+        {/* Loading Indicator */}
         {isLoading && (
-          <div className='flex items-center gap-2 text-xs dark:text-slate-400'>
-            <div className='animate-spin w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full' />
+          <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+            <div className='animate-spin w-3 h-3 border-2 border-primary border-t-transparent rounded-full' />
             Loading charts...
           </div>
         )}

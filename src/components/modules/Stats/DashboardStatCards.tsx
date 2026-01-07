@@ -30,10 +30,10 @@ const stats: IStatCard[] = [
 ];
 
 const Stat_Icons = {
-  0: <User className='w-8 h-8 dark:text-blue-400 text-blue-600' />,
-  1: <Car className='w-8 h-8 dark:text-amber-400 text-amber-600' />,
-  2: <DollarSign className='w-8 h-8 dark:text-green-400 text-green-600 ' />,
-  3: <TrendingUp className='w-8 h-8 dark:text-purple-400 text-purple-600 ' />,
+  0: <User className='w-8 h-8 text-chart-1 dark:text-chart-1' />,
+  1: <Car className='w-8 h-8 text-chart-2 dark:text-chart-2' />,
+  2: <DollarSign className='w-8 h-8 text-chart-3 dark:text-chart-3' />,
+  3: <TrendingUp className='w-8 h-8 text-chart-4 dark:text-chart-4' />,
 } as const;
 
 const DashboardStatCards = () => {

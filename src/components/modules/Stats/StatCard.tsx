@@ -1,8 +1,8 @@
 import { Card } from '@/components/ui/card';
-import { COLOR_MAP } from '@/constants/dashboard';
 
 export type ColorKey = 'blue' | 'amber' | 'green' | 'purple';
-interface IStateCardProps {
+
+interface IStatCardProps {
   title: string;
   value: string | number;
   change: string;
@@ -20,8 +20,35 @@ const StatCard = ({
   color,
   onClick,
   className = '',
-}: IStateCardProps) => {
-    const colors = COLOR_MAP[color];
+}: IStatCardProps) => {
+  const colorMap: Record<
+    ColorKey,
+    { bg: string; border: string; accent: string }
+  > = {
+    blue: {
+      bg: 'bg-card dark:bg-card', 
+      border: 'border-primary', 
+      accent: 'text-primary', 
+    },
+    amber: {
+      bg: 'bg-card dark:bg-card',
+      border: 'border-secondary',
+      accent: 'text-secondary',
+    },
+    green: {
+      bg: 'bg-card dark:bg-card',
+      border: 'border-green-500/20',
+      accent: 'text-green-500',
+    },
+    purple: {
+      bg: 'bg-card dark:bg-card',
+      border: 'border-accent',
+      accent: 'text-accent',
+    },
+  };
+
+  const colors = colorMap[color];
+
   return (
     <Card
       className={`relative overflow-hidden ${colors.border} ${
@@ -32,17 +59,28 @@ const StatCard = ({
     >
       <div className='flex items-center justify-between'>
         <div className='flex-1'>
-          <p className='text-slate-800/90 dark:text-slate-400 text-sm font-medium mb-2'>{title}</p>
-          <p className='text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white leading-tight'>
+          <p className='text-sm font-medium text-muted-foreground mb-2'>
+            {title}
+          </p>
+          <p className='text-2xl sm:text-3xl font-bold text-foreground leading-tight'>
             {value}
           </p>
         </div>
-        <div className='flex-shrink-0 ml-2'>{icon}</div>
+        <div className={`flex-shrink-0 ml-2 ${colors.accent}`}>{icon}</div>
       </div>
-      <p className='text-xs text-green-400 font-medium'>{change}</p>
+      <p className='text-xs text-muted-foreground font-medium mt-2'>{change}</p>
 
+      {/* Decorative blur circle */}
       <div
-        className={`absolute -right-12 -top-12 w-32 h-32 rounded-full blur-3xl opacity-80 bg-${color}-500`}
+        className={`absolute -right-12 -top-12 w-32 h-32 rounded-full blur-3xl opacity-30 ${
+          color === 'blue'
+            ? 'bg-chart-1'
+            : color === 'amber'
+            ? 'bg-chart-2'
+            : color === 'green'
+            ? 'bg-chart-3'
+            : 'bg-chart-4'
+        }`}
       />
     </Card>
   );

@@ -35,7 +35,7 @@ const AdminStats = () => {
       <div className='w-full'>
         <DashboardStatCards />
       </div>
-      <DashboardFilter />
+      <DashboardFilter isLoading={isLoading} />
       <UserDriverBarChart data={data} isLoading={isLoading} />
       <UserLineChart />
     </div>
