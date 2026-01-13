@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useMonthlyUserStatsQuery,
   useUserDriverStatsQuery,
@@ -7,6 +8,7 @@ import DashboardStatCards from './DashboardStatCards';
 import UserDriverBarChart from './userDriverBarChart';
 import UserLineChart from './UserLineChart';
 import { useSearchParams } from 'react-router';
+import { MOCK_DATA_MAP, STATUS_MOCK_LINE_DATA } from '@/data/StatsMockData';
 
 const AdminStats = () => {
   const [searchParams] = useSearchParams();
@@ -27,8 +29,26 @@ const AdminStats = () => {
     status,
   });
 
-  const barChartData = barData?.data?.stats ?? [];
-  const lineChartData = lineData?.data?.stats ?? [];
+  const processChartData = (apiData: any, data: any) => {
+    const actualStats = apiData?.data?.stats ?? [];
+    const status = searchParams.get('status')?.toUpperCase() || 'DEFAULT';
+
+    // Calculate total volume
+    const totalVolume = actualStats.reduce(
+      (acc: number, curr: any) => acc + (curr.users || 0) + (curr.drivers || 0),
+      0
+    );
+
+    if (!barLoading && totalVolume < 10) {
+      // Return specific mock data based on the current filter status
+      return data[status] || data.DEFAULT;
+    }
+
+    return actualStats;
+  };
+
+  const barChartData = processChartData(barData, MOCK_DATA_MAP);
+  const lineChartData = processChartData(lineData, STATUS_MOCK_LINE_DATA);
 
   return (
     <div className='flex flex-col  gap-4'>

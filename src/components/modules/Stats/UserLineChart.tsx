@@ -29,19 +29,6 @@ const UserLineChart = ({ data, isLoading }: UserLineChartProps) => {
   const [searchParams] = useSearchParams();
   const filteredStatus = searchParams.get('status')?.toLowerCase();
 
-  const defaultData: UserStatusData[] = [
-    { week: 'Week 1', active: 100, inactive: 10, blocked: 4 },
-    { week: 'Week 2', active: 150, inactive: 12, blocked: 9 },
-    { week: 'Week 3', active: 120, inactive: 4, blocked: 16 },
-    { week: 'Week 4', active: 110, inactive: 9, blocked: 20 },
-  ];
-
-  const chartData = data
-    ?.map((item) => item.active > 0)
-    .some((item) => item === true)
-    ? data
-    : defaultData;
-
   const ChartSkeleton = () => (
     <div className='space-y-3'>
       <Skeleton className='h-8 w-32' />
@@ -77,7 +64,7 @@ const UserLineChart = ({ data, isLoading }: UserLineChartProps) => {
         ) : (
           <ResponsiveContainer width='100%' height={350}>
             <LineChart
-              data={chartData}
+              data={data}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
             >
               {/* Gradients */}

@@ -22,18 +22,7 @@ interface UserDriverBarChartProps {
 }
 
 const UserDriverBarChart = ({ data, isLoading }: UserDriverBarChartProps) => {
-  const showData = data
-    ?.map((item) => item.users > 0)
-    .some((item) => item === true);
-
-  const weeklyRegistrationData = showData
-    ? data
-    : [
-        { week: 'Week 1', users: 1200, drivers: 320 },
-        { week: 'Week 2', users: 1450, drivers: 380 },
-        { week: 'Week 3', users: 1800, drivers: 520 },
-        { week: 'Week 4', users: 2100, drivers: 650 },
-      ];
+ 
 
   const ChartSkeleton = () => (
     <div className='space-y-3'>
@@ -56,7 +45,7 @@ const UserDriverBarChart = ({ data, isLoading }: UserDriverBarChartProps) => {
           <ChartSkeleton />
         ) : (
           <ResponsiveContainer width='100%' height={350}>
-            <BarChart data={weeklyRegistrationData}>
+            <BarChart data={data}>
               <defs>
                 <linearGradient id='usersGradient' x1='0' y1='0' x2='0' y2='1'>
                   <stop
