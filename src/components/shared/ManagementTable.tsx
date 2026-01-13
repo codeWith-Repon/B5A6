@@ -126,9 +126,7 @@ function ManagementTable<T>({
                 </TableHead>
               ))}
 
-              {hasActions && (
-                <TableHead className='w-[70px]'>Actions</TableHead>
-              )}
+              {hasActions && <TableHead className='w-17.5'>Actions</TableHead>}
             </TableRow>
           </TableHeader>
 
