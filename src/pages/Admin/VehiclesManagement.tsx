@@ -1,4 +1,5 @@
 import { vehicleColumns } from '@/components/modules/Admin/VehicleManagement/VehicleColumn';
+import ViewVehicleDetails from '@/components/modules/Admin/VehicleManagement/ViewVehicleDetails';
 import ManagementTable from '@/components/shared/ManagementTable';
 import SearchFilter from '@/components/shared/SearchFilter';
 import SelectFilter from '@/components/shared/SelectFilter';
@@ -6,10 +7,13 @@ import TablePagination from '@/components/shared/TablePagination';
 import { TableSkeleton } from '@/components/shared/TableSkeleton';
 import { VEHICLE_OPTIONS } from '@/constants/driverStatus';
 import { useGetAllVehiclesQuery } from '@/redux/features/Vehicle/vehicle.api';
+import type { IVehicle } from '@/types/vehicle.types';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 const VehiclesManagement = () => {
   const [searchParams] = useSearchParams();
+  const [viewing, setViewing] = useState<string | null>(null);
 
   const sortBy = searchParams.get('sortBy');
   const sortOrder = searchParams.get('sortOrder');
@@ -32,6 +36,10 @@ const VehiclesManagement = () => {
     page,
     limit,
   });
+
+  const handleView = (vehicle: IVehicle) => {
+    setViewing(vehicle._id);
+  };
 
   return (
     <div className='w-full mx-auto space-y-5'>
@@ -64,7 +72,7 @@ const VehiclesManagement = () => {
             columns={vehicleColumns}
             getRowKey={(row) => row._id}
             isRefreshing={isLoading}
-            // onView={handleView}
+            onView={handleView}
           />
           <TablePagination
             currentPage={data?.meta?.page || 1}
@@ -72,6 +80,12 @@ const VehiclesManagement = () => {
           />
         </>
       )}
+
+      <ViewVehicleDetails
+        open={!!viewing}
+        onClose={() => setViewing(null)}
+        Id={viewing!}
+      />
     </div>
   );
 };

@@ -22,7 +22,15 @@ export const vehicleApi = baseApi.injectEndpoints({
                 response: IResponse<IPaginatedResponse<IVehicle>>
             ) => response.data,
         }),
+
+        getVehicleById: builder.query<IVehicle, string>({
+            query: (id) => ({
+                url: `/vehicle/${id}`,
+                method: "GET",
+            }),
+            transformResponse: (response: IResponse<IVehicle>) => response.data,
+        }),
     }),
 })
 
-export const { useGetAllVehiclesQuery } = vehicleApi
+export const { useGetAllVehiclesQuery, useGetVehicleByIdQuery } = vehicleApi
