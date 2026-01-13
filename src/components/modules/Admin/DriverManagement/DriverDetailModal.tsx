@@ -29,7 +29,7 @@ interface DetailModalProps {
   isLoading?: boolean;
 }
 
-export function DetailModal({
+export function DriverDetailModal({
   open,
   onOpenChange,
   data,

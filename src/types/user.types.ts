@@ -18,5 +18,6 @@ export interface IUser {
     auths: IAuth[]
     createdAt: string
     updatedAt: string
+    emergencyContactEmail?: string[]
     __v: number
 }

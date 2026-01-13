@@ -1,4 +1,5 @@
 import { userColumns } from '@/components/modules/Admin/UserManagement/UserColumn';
+import ViewUserDetails from '@/components/modules/Admin/UserManagement/ViewUserDetails';
 import ManagementTable from '@/components/shared/ManagementTable';
 import RefreshButton from '@/components/shared/RefreshButton';
 import SearchFilter from '@/components/shared/SearchFilter';
@@ -8,10 +9,13 @@ import { TableSkeleton } from '@/components/shared/TableSkeleton';
 import { role } from '@/constants/role';
 import { UserStatus } from '@/constants/userStatus';
 import { useGetAllUsersQuery } from '@/redux/features/User/user.api';
+import type { IUser } from '@/types/user.types';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 const UserManagement = () => {
   const [searchParams] = useSearchParams();
+  const [viewing, setViewing] = useState<string | null>(null);
 
   const sortBy = searchParams.get('sortBy');
   const sortOrder = searchParams.get('sortOrder');
@@ -39,6 +43,10 @@ const UserManagement = () => {
     page,
     limit,
   });
+
+  const handleView = (user: IUser) => {
+    setViewing(user._id);
+  };
 
   return (
     <div className='w-full mx-auto space-y-5'>
@@ -106,7 +114,7 @@ const UserManagement = () => {
             columns={userColumns}
             getRowKey={(row) => row._id}
             isRefreshing={isLoading}
-            // onView={handleView}
+            onView={handleView}
           />
           <TablePagination
             currentPage={data?.meta?.page || 1}
@@ -114,6 +122,12 @@ const UserManagement = () => {
           />
         </>
       )}
+
+      <ViewUserDetails
+        open={!!viewing}
+        onClose={() => setViewing(null)}
+        Id={viewing!}
+      />
     </div>
   );
 };

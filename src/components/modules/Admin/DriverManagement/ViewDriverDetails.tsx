@@ -1,5 +1,5 @@
 import { useGetDriverByIdQuery } from '@/redux/features/driver/driver.api';
-import { DetailModal } from './DetailModal';
+import { DriverDetailModal } from './DriverDetailModal';
 
 interface IViewDriverDetailsProps {
   open: boolean;
@@ -10,9 +10,9 @@ const ViewDriverDetails = ({ open, onClose, Id }: IViewDriverDetailsProps) => {
   const { data, isLoading } = useGetDriverByIdQuery(Id, { skip: !Id });
 
   if (!data) return null;
-  
+
   return (
-    <DetailModal
+    <DriverDetailModal
       open={open}
       onOpenChange={onClose}
       data={data.data}
