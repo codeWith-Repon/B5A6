@@ -2,11 +2,13 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  CheckCircle2,
   Edit,
   Eye,
   Loader2,
   MoreHorizontal,
   Trash,
+  XCircle,
 } from 'lucide-react';
 import React, { useTransition } from 'react';
 import {
@@ -21,6 +23,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Button } from '../ui/button';
@@ -39,6 +42,8 @@ interface ManagementTableProps<T> {
   onView?: (row: T) => void;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
+  onApprove?: (row: T) => void;
+  onSuspend?: (row: T) => void;
   getRowKey: (row: T) => string;
   emptyMessage?: string;
   isRefreshing?: boolean;
@@ -49,12 +54,15 @@ function ManagementTable<T>({
   columns = [],
   onView,
   onEdit,
+  onApprove,
+  onSuspend,
   onDelete,
   getRowKey,
   emptyMessage = 'No records found.',
   isRefreshing = false,
 }: ManagementTableProps<T>) {
-  const hasActions = onView || onEdit || onDelete;
+  const hasActions = onView || onEdit || onDelete || onApprove || onSuspend;
+  const hasStatusActions = onApprove || onSuspend;
   const [searchParams] = useSearchParams();
   const [, startTransition] = useTransition();
   const navigate = useNavigate();
@@ -165,6 +173,29 @@ function ManagementTable<T>({
                               View
                             </DropdownMenuItem>
                           )}
+
+                          {hasStatusActions && <DropdownMenuSeparator />}
+
+                          {onApprove && (
+                            <DropdownMenuItem
+                              onClick={() => onApprove(item)}
+                              className='text-green-700 dark:text-green-400'
+                            >
+                              <CheckCircle2 className='h-4 w-4 mr-2' />
+                              Approve
+                            </DropdownMenuItem>
+                          )}
+
+                          {onSuspend && (
+                            <DropdownMenuItem
+                              onClick={() => onSuspend(item)}
+                              className='text-red-700 dark:text-red-400'
+                            >
+                              <XCircle className='h-4 w-4 mr-2' />
+                              Suspended
+                            </DropdownMenuItem>
+                          )}
+
                           {onEdit && (
                             <DropdownMenuItem onClick={() => onEdit(item)}>
                               <Edit className='mr-2 h-4 w-4' />

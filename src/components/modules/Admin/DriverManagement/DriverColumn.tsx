@@ -15,7 +15,7 @@ const statusConfig: Record<string, { variant: any; className?: string }> = {
     variant: 'secondary',
     className: 'bg-amber-500 text-white hover:bg-amber-600',
   },
-  REJECTED: {
+  SUSPENDED: {
     variant: 'destructive',
   },
 };
@@ -41,7 +41,7 @@ export const driverColumns: Column<IDriverResponse>[] = [
           {row.vehicle.vehicleType} • {row.vehicle.vehicleLicense}
         </p>
       </div>
-    )
+    ),
   },
   {
     header: 'License',
@@ -79,7 +79,7 @@ export const driverColumns: Column<IDriverResponse>[] = [
           {row.availabilityStatus}
         </Badge>
       );
-    }
+    },
   },
   {
     header: 'Status',
@@ -90,7 +90,7 @@ export const driverColumns: Column<IDriverResponse>[] = [
           {row.status}
         </Badge>
       );
-    }
+    },
   },
   {
     header: 'Joined Date',

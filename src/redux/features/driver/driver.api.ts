@@ -48,7 +48,12 @@ export const authApi = baseApi.injectEndpoints({
             },
             providesTags: ["Driver"]
         }),
-
+        getDriverById: builder.query<IResponse<IDriverResponse>, string>({
+            query: (id) => ({
+                url: `/driver/${id}`,
+                method: "GET"
+            })
+        }),
         updateDriver: builder.mutation<IDriverResponse, { id: string, data: IDriverUpdate }>({
             query: ({ id, data }) => ({
                 url: `/driver/update/${id}`,
@@ -89,6 +94,7 @@ export const {
     useRegisterDriverMutation,
     useGetVehicleQuery,
     useGetDriversQuery,
+    useGetDriverByIdQuery,
     useUpdateDriverMutation,
     useLogInDriverQuery,
     useUpdateVehicleMutation,

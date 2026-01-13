@@ -32,7 +32,13 @@ export interface IUser {
     _id: string
     name: string
     email: string
-    isActive?: boolean
+    isActive?: string,
+    phone?: string;
+    role?: string;
+    isVerified?: boolean;
+    image?: string;
+    address?: string;
+    emergencyContactEmail?: string[]
 }
 
 export interface Vehicle {
