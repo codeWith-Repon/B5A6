@@ -78,9 +78,12 @@ const AllDriver = () => {
         <h1 className='text-4xl font-bold mb-3'>Driver Management</h1>
         <p className=''>Manage and oversee all drivers on the platform</p>
       </div>
-      <div className='flex gap-3'>
-        <SearchFilter />
 
+      <div className='md:max-w-md'>
+        <SearchFilter />
+      </div>
+
+      <div className='flex gap-3 flex-wrap'>
         <div className='flex gap-3 items-center'>
           <span className='font-semibold'>Select Status :</span>
           <SelectFilter

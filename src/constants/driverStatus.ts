@@ -11,6 +11,6 @@ export const driverOnlineStatus = {
 } as const
 
 export const VEHICLE_OPTIONS = [
-    { label: 'Car', value: 'car' },
-    { label: 'Motorbike', value: 'motorbike' },
+    { label: 'Car', value: 'CAR' },
+    { label: 'Bike', value: 'BIKE' },
 ];

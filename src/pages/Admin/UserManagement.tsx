@@ -54,9 +54,10 @@ const UserManagement = () => {
         <h1 className='text-4xl font-bold mb-3'>User Management</h1>
         <p className=''>Manage and oversee all user on the platform</p>
       </div>
-      <div className='flex gap-3'>
+      <div className='md:max-w-md'>
         <SearchFilter />
-
+      </div>
+      <div className='flex gap-3 flex-wrap items-center'>
         <div className='flex gap-3 items-center'>
           <span className='font-semibold'>Select Role :</span>
           <SelectFilter
