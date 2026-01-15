@@ -22,8 +22,6 @@ interface UserDriverBarChartProps {
 }
 
 const UserDriverBarChart = ({ data, isLoading }: UserDriverBarChartProps) => {
- 
-
   const ChartSkeleton = () => (
     <div className='space-y-3'>
       <Skeleton className='h-8 w-32' />
@@ -35,9 +33,9 @@ const UserDriverBarChart = ({ data, isLoading }: UserDriverBarChartProps) => {
     <Card className='p-6 backdrop-blur-sm transition-all'>
       <div className='space-y-6'>
         <div>
-          <h3 className='text-lg font-semibold'>Weekly Registration</h3>
+          <h3 className='text-lg font-semibold'>Weekly Users</h3>
           <p className='text-sm text-muted-foreground'>
-            New user registrations compared to driver sign-ups
+            Number of users and drivers per week
           </p>
         </div>
 
