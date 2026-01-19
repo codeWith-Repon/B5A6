@@ -1,4 +1,3 @@
-import GetRideModal from '@/components/modules/Rider/GetRideModal';
 import { VerifyRideOtp } from '@/components/modules/Rider/VerifyRideOtp';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +8,7 @@ import {
 } from '@/redux/features/Rider/rider.api';
 import { useSendEmergencyMessageMutation } from '@/redux/features/SOS/sos.api';
 import Spinner from '@/utils/spinner';
+import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
 const CurrentRide = () => {
@@ -20,6 +20,8 @@ const CurrentRide = () => {
     pollingInterval: 3000,
     skipPollingIfUnfocused: true,
   });
+
+  const navigate = useNavigate();
 
   const [updateRideStatus] = useUpdateRideStatusMutation();
   const [sendEmergencyMessage, { isLoading: sosLoading }] =
@@ -93,7 +95,13 @@ const CurrentRide = () => {
             </Button>
           )
         ) : (
-          <GetRideModal />
+          <Button
+            size='lg'
+            onClick={() => navigate('/get-ride')}
+            className={`border bg-primary border-primary text-white hover:bg-white hover:text-black transition-colors duration-300 cursor-pointer`}
+          >
+            Get Ride
+          </Button>
         )}
 
         {rideData?.data &&

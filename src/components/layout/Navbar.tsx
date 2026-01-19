@@ -21,7 +21,6 @@ import {
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
-import GetRide from '../modules/Rider/GetRide';
 import AvatarComponent from '../modules/Rider/avater';
 import { Car } from 'lucide-react';
 import Loader from '../shared/Loader';
@@ -218,7 +217,7 @@ export default function Navbar() {
                         <NavigationMenuItem>
                           <NavigationMenuLink className='text-muted-foreground hover:text-primary py-1.5 font-medium cursor-pointer'>
                             {/* Get ride */}
-                            <GetRide />
+                            <Link to='/get-ride'>Get Ride</Link>
                           </NavigationMenuLink>
                         </NavigationMenuItem>
                       )}

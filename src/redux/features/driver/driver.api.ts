@@ -79,13 +79,13 @@ export const authApi = baseApi.injectEndpoints({
             invalidatesTags: ["Driver"]
         }),
 
-        getFreeDrivers: builder.query<IResponse<IGetFreeDrivers[]>, void>({
+        getFreeDrivers: builder.query<IGetFreeDrivers[], void>({
             query: () => ({
                 url: "/driver/free-drivers",
                 method: "GET"
-            })
+            }),
+            transformResponse: (response: IResponse<IGetFreeDrivers[]>) => response.data
         }),
-
     })
 })
 

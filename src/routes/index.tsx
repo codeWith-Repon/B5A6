@@ -20,6 +20,7 @@ import Contact from '@/pages/Contact';
 import Support from '@/pages/Support';
 import { Profile } from '@/pages/User/Profile';
 import NotFound from '@/pages/NotFound';
+import GetRide from '@/pages/GetRide';
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
       {
         Component: WithAuth(Driver, role.rider as IRole),
         path: 'driver/register',
+      },
+      {
+        Component: GetRide,
+        path: '/get-ride',
       },
       {
         Component: Profile,

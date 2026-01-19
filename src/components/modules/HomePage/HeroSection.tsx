@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { landingData } from '@/data/landingData';
-import { Link } from 'react-router';
-import GetRideModal from '../Rider/GetRideModal';
+import { Link, useNavigate } from 'react-router';
 
 const HeroSection = () => {
   const { title, subtitle, ctaSecondary, image } = landingData.hero;
+  const navigate = useNavigate();
 
   return (
     <section className='relative h-[70vh] min-h-[600px] w-full overflow-hidden flex items-center justify-center'>
@@ -32,8 +32,13 @@ const HeroSection = () => {
         </div>
 
         <div className='flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200'>
-          <GetRideModal heroClass='text-lg px-8 h-14 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all border hover:bg-primary/20 hover:text-white' />
-
+          <Button
+            size='lg'
+            onClick={() => navigate('/get-ride')}
+            className=' bg-primary border-primary text-white duration-300 cursor-pointer text-lg px-8 h-14 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all border hover:bg-primary/20 hover:text-white'
+          >
+            Get Ride
+          </Button>
           <Button
             size='lg'
             variant='outline'

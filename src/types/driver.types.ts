@@ -94,16 +94,36 @@ export interface IDriverUpdate {
     availabilityStatus?: DriverOnlineStatus
 }
 
+// export interface IGetFreeDrivers {
+//     _id: string
+//     user: {
+//         name: string
+//         email: string
+//         phone: string
+//     }
+//     vehicle: string
+//     licenseNumber: string
+//     experience: number
+//     availabilityStatus: string
+//     status: string
+// }
+
 export interface IGetFreeDrivers {
-    _id: string
+    _id: string;
     user: {
-        name: string
-        email: string
-        phone: string
-    }
-    vehicle: string
-    licenseNumber: string
-    experience: number
-    availabilityStatus: string
-    status: string
+        name: string;
+        email: string;
+        image: string;
+        phone: string;
+    };
+    vehicle: {
+        vehicleType: string;
+        brand: string;
+        model: string;
+        images: string[];
+    };
+    licenseNumber: string;
+    experience: number;
+    availabilityStatus: 'ONLINE' | 'OFFLINE';
+    status: string;
 }
