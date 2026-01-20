@@ -44,8 +44,8 @@ const VehiclesManagement = () => {
   return (
     <div className='w-full mx-auto space-y-5'>
       <div className=''>
-        <h1 className='text-4xl font-bold mb-3'>User Management</h1>
-        <p className=''>Manage and oversee all user on the platform</p>
+        <h1 className='text-4xl font-bold mb-3'>Vehicles Management</h1>
+        <p className=''>Manage and oversee all vehicles on the platform</p>
       </div>
 
       <div className='md:max-w-md'>
