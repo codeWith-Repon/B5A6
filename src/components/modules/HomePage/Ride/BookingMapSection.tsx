@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react';
 import {
   MapPin,
   Navigation,
@@ -7,19 +8,102 @@ import {
   Milestone,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+} from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine';
+
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { MapClickHandler } from './MapClickerHandler';
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 interface BookingMapSectionProps {
   pickupLocation: string;
   dropLocation: string;
+  onPickupChange?: (val: string) => void;
+  onDropChange?: (val: string) => void;
+}
+
+
+// 🛡️ CHANGE: New Component to draw the Route Line
+function RoutingMachine({
+  start,
+  end,
+}: {
+  start: [number, number] | null;
+  end: [number, number] | null;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!start || !end) return;
+
+    const routingControl = (L as any).Routing.control({
+      waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
+      lineOptions: { styles: [{ color: '#f97316', weight: 5 }] },
+      show: false,
+      addWaypoints: false,
+    }).addTo(map);
+
+    return () => {
+      if (routingControl) {
+        map.removeControl(routingControl);
+      }
+    };
+  }, [map, start, end]);
+
+  return null;
 }
 
 export function BookingMapSection({
   pickupLocation,
   dropLocation,
+  onPickupChange,
+  onDropChange,
 }: BookingMapSectionProps) {
   const [clickMode, setClickMode] = useState<'pickup' | 'drop' | null>(null);
 
+  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(
+    null,
+  );
+  const [dropCoords, setDropCoords] = useState<[number, number] | null>(null);
+
   const isRouteActive = pickupLocation && dropLocation;
+
+  useEffect(() => {
+    const getCoords = async (
+      query: string,
+      setter: (c: [number, number]) => void,
+    ) => {
+      if (!query || query.length < 3) return;
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${query}`,
+        );
+        const data = await res.json();
+        if (data.length > 0)
+          setter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    getCoords(pickupLocation, setPickupCoords);
+    getCoords(dropLocation, setDropCoords);
+  }, [pickupLocation, dropLocation]);
 
   return (
     <div className='space-y-4'>
@@ -39,7 +123,7 @@ export function BookingMapSection({
             className='animate-pulse border-primary text-primary bg-primary/5 px-3 py-1'
           >
             <MousePointerClick className='w-3 h-3 mr-2' />
-            Set {clickMode}
+            Set {clickMode} on Map
           </Badge>
         )}
       </div>
@@ -47,63 +131,34 @@ export function BookingMapSection({
       <div
         className={`relative w-full h-112.5 rounded-4xl  shadow-2xl overflow-hidden transition-all duration-700 ${isRouteActive ? 'ring-4 ring-primary/10' : ''}`}
       >
-        {/* Animated Background Engine */}
-        <div
-          className={`absolute inset-0 transition-colors duration-1000 ${isRouteActive && 'bg-muted'}`}
+        <MapContainer
+          center={[23.8103, 90.4125]}
+          zoom={13}
+          zoomControl={true}
+          style={{ height: '100%', width: '100%', zIndex: 0 }}
         >
-          <svg
-            className='absolute inset-0 w-full h-full opacity-20'
-            preserveAspectRatio='none'
-          >
-            <defs>
-              <pattern
-                id='grid-active'
-                width='50'
-                height='50'
-                patternUnits='userSpaceOnUse'
-              >
-                <path
-                  d='M 50 0 L 0 0 0 50'
-                  fill='none'
-                  stroke={isRouteActive ? '#f97316' : '#cbd5e1'}
-                  strokeWidth='0.5'
-                />
-              </pattern>
-            </defs>
-            <rect width='100%' height='100%' fill='url(#grid-active)' />
-          </svg>
+          <TileLayer
+            attribution='&copy; OpenStreetMap contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
 
-          {/* Motion Glow Effect */}
-          {isRouteActive && (
-            <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.15),transparent_70%)] animate-pulse' />
-          )}
-        </div>
+          {/* Markers */}
+          {pickupCoords && <Marker position={pickupCoords} />}
+          {dropCoords && <Marker position={dropCoords} />}
 
-        {/* The Route Line (Only shows when both selected) */}
-        {isRouteActive && (
-          <svg className='absolute inset-0 w-full h-full z-10 pointer-events-none'>
-            <path
-              d='M 120 150 Q 250 250 380 350'
-              fill='none'
-              stroke='url(#routeGradient)'
-              strokeWidth='4'
-              strokeDasharray='10, 8'
-              className='animate-[dash_20s_linear_infinite]'
-            />
-            <defs>
-              <linearGradient
-                id='routeGradient'
-                x1='0%'
-                y1='0%'
-                x2='100%'
-                y2='0%'
-              >
-                <stop offset='0%' stopColor='var(--color-primary)' />
-                <stop offset='100%' stopColor='#fb923c' />
-              </linearGradient>
-            </defs>
-          </svg>
-        )}
+          {/* Route Line */}
+          <RoutingMachine start={pickupCoords} end={dropCoords} />
+
+          {/* Click Handler */}
+          <MapClickHandler
+            mode={clickMode}
+            onSelect={(addr) => {
+              if (clickMode === 'pickup') onPickupChange?.(addr);
+              if (clickMode === 'drop') onDropChange?.(addr);
+              setClickMode(null);
+            }}
+          />
+        </MapContainer>
 
         {/* Active Stats Overlay */}
         {isRouteActive && (
@@ -133,50 +188,6 @@ export function BookingMapSection({
           </div>
         )}
 
-        {/* Centered Guide (Visible only when empty) */}
-        {!pickupLocation && !dropLocation && (
-          <div className='relative h-full flex items-center justify-center z-20'>
-            <div className='text-center p-8 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/20 shadow-2xl animate-in zoom-in-95 duration-500'>
-              <div className='w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-12 hover:rotate-0 transition-transform duration-500'>
-                <Navigation className='text-white w-8 h-8' />
-              </div>
-              <h4 className='font-black text-lg'>Where to?</h4>
-              <p className='text-xs text-muted-foreground max-w-45 mx-auto'>
-                Tap the buttons below to mark your journey on the map.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Pickup Marker */}
-        {pickupLocation && (
-          <div className='absolute top-37.5 left-30 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer'>
-            <div className='relative'>
-              <span className='absolute -inset-3.75 rounded-full bg-primary/20 animate-ping' />
-              <div className='w-12 h-12 bg-primary rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.5)] flex items-center justify-center border-2 border-white rotate-45 group-hover:rotate-0 transition-transform'>
-                <MapPin className='w-6 h-6 text-white -rotate-45 group-hover:rotate-0 transition-transform' />
-              </div>
-            </div>
-            <div className='absolute top-14 left-1/2 -translate-x-1/2 bg-chart-4 text-white px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-white/20 uppercase tracking-tighter'>
-              Pickup: {pickupLocation.split(',')[0]}
-            </div>
-          </div>
-        )}
-
-        {/* Drop Marker */}
-        {dropLocation && (
-          <div className='absolute top-87.5 left-95 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer'>
-            <div className='relative'>
-              <span className='absolute -inset-3.75 rounded-full bg-orange-400/20 animate-ping' />
-              <div className='w-12 h-12 bg-ring rounded-2xl shadow-2xl flex items-center justify-center border-4 border-white rotate-45 group-hover:rotate-0 transition-transform'>
-                <MapPin className='w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform' />
-              </div>
-            </div>
-            <div className='absolute top-14 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap shadow-lg uppercase tracking-tighter'>
-              Drop: {dropLocation.split(',')[0]}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Control Actions */}

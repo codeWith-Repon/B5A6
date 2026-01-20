@@ -56,6 +56,8 @@ const GetRide = () => {
               <BookingMapSection
                 pickupLocation={pickupLocation}
                 dropLocation={dropLocation}
+                onPickupChange={setPickupLocation} 
+                onDropChange={setDropLocation}
               />
             </div>
 
