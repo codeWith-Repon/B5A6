@@ -4,13 +4,22 @@ import { BookingMapSection } from '@/components/modules/HomePage/Ride/BookingMap
 import { LocationInputSection } from '@/components/modules/HomePage/Ride/LocationInputSection';
 import { useGetFreeDriversQuery } from '@/redux/features/driver/driver.api';
 import { useBookRideMutation } from '@/redux/features/Rider/rider.api';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 
 const GetRide = () => {
-  const [pickupLocation, setPickupLocation] = useState('');
-  const [dropLocation, setDropLocation] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [pickupLocation, setPickupLocation] = useState(
+    searchParams.get('pickup') || '',
+  );
+  const [dropLocation, setDropLocation] = useState(
+    searchParams.get('drop') || '',
+  );
+  const [distance, setDistance] = useState(searchParams.get('distance') || '');
+  const [time, setTime] = useState(searchParams.get('time') || '');
+
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
 
   const navigate = useNavigate();
@@ -18,6 +27,16 @@ const GetRide = () => {
   const { data, isLoading } = useGetFreeDriversQuery(undefined);
 
   const [bookRide, { isLoading: bookRideLoading }] = useBookRideMutation();
+
+  useEffect(() => {
+    const params: any = {};
+    if (pickupLocation) params.pickup = pickupLocation;
+    if (dropLocation) params.drop = dropLocation;
+    if (distance) params.distance = distance;
+    if (time) params.time = time;
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickupLocation, dropLocation, distance]);
 
   const onSubmit = async (data: string) => {
     const bookingData = {
@@ -56,8 +75,12 @@ const GetRide = () => {
               <BookingMapSection
                 pickupLocation={pickupLocation}
                 dropLocation={dropLocation}
-                onPickupChange={setPickupLocation} 
+                onPickupChange={setPickupLocation}
                 onDropChange={setDropLocation}
+                onRouteUpdate={(dist, dur) => {
+                  setDistance(dist);
+                  setTime(dur);
+                }}
               />
             </div>
 
@@ -72,6 +95,7 @@ const GetRide = () => {
                 isLoading={isLoading}
                 onSubmitLoading={bookRideLoading}
                 onSubmit={onSubmit}
+                distance={distance}
               />
             </div>
           </div>

@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react';
-import {  useMap } from 'react-leaflet';
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 export function RoutingMachine({
@@ -32,6 +33,7 @@ export function RoutingMachine({
 
     const itineraryDiv = routingControl.getContainer();
     if (itineraryRef.current) {
+      itineraryRef.current.innerHTML = '';
       itineraryRef.current.appendChild(itineraryDiv);
     }
 
@@ -43,12 +45,19 @@ export function RoutingMachine({
       onRouteFound(`${dist} km`, `${time} min`);
     });
 
+    routingControl.on('routingerror', (e: any) => {
+      console.error('Routing error:', e);
+      onRouteFound('Route not found', 'N/A');
+    });
+
     return () => {
       if (routingControl) {
         map.removeControl(routingControl);
       }
+      if (itineraryRef.current) {
+        itineraryRef.current.innerHTML = '';
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, start, end]);
 
   return null;

@@ -33,6 +33,7 @@ interface BookingMapSectionProps {
   dropLocation: string;
   onPickupChange?: (val: string) => void;
   onDropChange?: (val: string) => void;
+  onRouteUpdate?: (distance: string, time: string) => void;
 }
 
 export function BookingMapSection({
@@ -40,6 +41,7 @@ export function BookingMapSection({
   dropLocation,
   onPickupChange,
   onDropChange,
+  onRouteUpdate,
 }: BookingMapSectionProps) {
   const [clickMode, setClickMode] = useState<'pickup' | 'drop' | null>(null);
   const [showItinerary, setShowItinerary] = useState(false);
@@ -103,7 +105,7 @@ export function BookingMapSection({
       }
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${query}`,
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`,
         );
         const data = await res.json();
         if (data.length > 0)
@@ -177,7 +179,10 @@ export function BookingMapSection({
               start={pickupCoords}
               end={dropCoords}
               itineraryRef={itineraryRef}
-              onRouteFound={(d, t) => setRouteInfo({ distance: d, time: t })}
+              onRouteFound={(d, t) => {
+                setRouteInfo({ distance: d, time: t });
+                onRouteUpdate?.(d, t);
+              }}
             />
           ) : null}
 
@@ -196,14 +201,22 @@ export function BookingMapSection({
         {isRouteActive && (
           <div className='absolute bottom-6 left-1/2 -translate-x-1/2 z-1000 flex flex-col items-center gap-2'>
             <div className='flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl shadow-xl border border-slate-200'>
-              <span className='font-bold text-sm text-slate-800'>
-                {routeInfo.distance}
-              </span>
-              <div className='w-px h-4 bg-slate-300' />
-              <span className='font-bold text-sm text-slate-800'>
-                {routeInfo.time}
-              </span>
-
+              {routeInfo.distance === 'Route not found' ? (
+                <span className='font-bold text-sm text-destructive flex items-center gap-1'>
+                  <MapPinOffIcon size={14} /> Route not found
+                </span>
+              ) : (
+                <>
+                  {' '}
+                  <span className='font-bold text-sm text-slate-800'>
+                    {routeInfo.distance}
+                  </span>
+                  <div className='w-px h-4 bg-slate-300' />
+                  <span className='font-bold text-sm text-slate-800'>
+                    {routeInfo.time}
+                  </span>
+                </>
+              )}
               <button
                 onClick={() => setShowItinerary(!showItinerary)}
                 className='ml-2 p-1 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors'
