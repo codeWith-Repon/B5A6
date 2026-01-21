@@ -1,25 +1,136 @@
-import { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useRef, useState } from 'react';
 import {
   MapPin,
   Navigation,
-  Clock,
   MousePointerClick,
-  Milestone,
+  ChevronDown,
+  MapPinOffIcon,
+  ChevronUp,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine';
+
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { MapClickHandler } from './MapClickerHandler';
+import { RoutingMachine } from './RoutingMachine';
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 interface BookingMapSectionProps {
   pickupLocation: string;
   dropLocation: string;
+  onPickupChange?: (val: string) => void;
+  onDropChange?: (val: string) => void;
+  onRouteUpdate?: (distance: string, time: string) => void;
 }
 
 export function BookingMapSection({
   pickupLocation,
   dropLocation,
+  onPickupChange,
+  onDropChange,
+  onRouteUpdate,
 }: BookingMapSectionProps) {
   const [clickMode, setClickMode] = useState<'pickup' | 'drop' | null>(null);
+  const [showItinerary, setShowItinerary] = useState(false);
+  const [routeInfo, setRouteInfo] = useState({
+    distance: '0 km',
+    time: '0 min',
+  });
+  const itineraryRef = useRef<HTMLDivElement | null>(null);
+
+  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(
+    null,
+  );
+  const [dropCoords, setDropCoords] = useState<[number, number] | null>(null);
+
+  const params = new URLSearchParams(window.location.search);
 
   const isRouteActive = pickupLocation && dropLocation;
+
+  useEffect(() => {
+    const p = params.get('pickup');
+    const d = params.get('drop');
+    if (p && !pickupLocation) onPickupChange?.(p);
+    if (d && !dropLocation) onDropChange?.(d);
+  }, []);
+
+  useEffect(() => {
+    if (pickupLocation) {
+      params.set('pickup', pickupLocation);
+    } else {
+      params.delete('pickup');
+    }
+
+    if (dropLocation) {
+      params.set('drop', dropLocation);
+    } else {
+      params.delete('drop');
+    }
+
+    if (isRouteActive && routeInfo.distance !== '0 km') {
+      params.set('distance', routeInfo.distance);
+      params.set('time', routeInfo.time);
+    } else {
+      params.delete('distance');
+      params.delete('time');
+    }
+
+    const newRelativePathQuery =
+      window.location.pathname +
+      (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState(null, '', newRelativePathQuery);
+  }, [pickupLocation, dropLocation, routeInfo, params]);
+
+  useEffect(() => {
+    const getCoords = async (
+      query: string,
+      setter: (c: [number, number] | null) => void,
+    ) => {
+      if (!query || query.length < 3) {
+        setter(null);
+        return;
+      }
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`,
+        );
+        const data = await res.json();
+        if (data.length > 0)
+          setter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    getCoords(pickupLocation, setPickupCoords);
+    getCoords(dropLocation, setDropCoords);
+  }, [pickupLocation, dropLocation]);
+
+  useEffect(() => {
+    const mapContainer = document.querySelector(
+      '.leaflet-container',
+    ) as HTMLElement;
+    if (mapContainer) {
+      if (clickMode) {
+        mapContainer.style.cursor = 'crosshair';
+      } else {
+        mapContainer.style.cursor = 'column-resize';
+      }
+    }
+  }, [clickMode]);
 
   return (
     <div className='space-y-4'>
@@ -39,7 +150,7 @@ export function BookingMapSection({
             className='animate-pulse border-primary text-primary bg-primary/5 px-3 py-1'
           >
             <MousePointerClick className='w-3 h-3 mr-2' />
-            Set {clickMode}
+            Set {clickMode} on Map
           </Badge>
         )}
       </div>
@@ -47,136 +158,97 @@ export function BookingMapSection({
       <div
         className={`relative w-full h-112.5 rounded-4xl  shadow-2xl overflow-hidden transition-all duration-700 ${isRouteActive ? 'ring-4 ring-primary/10' : ''}`}
       >
-        {/* Animated Background Engine */}
-        <div
-          className={`absolute inset-0 transition-colors duration-1000 ${isRouteActive && 'bg-muted'}`}
+        <MapContainer
+          center={[23.8103, 90.4125]}
+          zoom={13}
+          zoomControl={true}
+          style={{ height: '100%', width: '100%', zIndex: 0 }}
         >
-          <svg
-            className='absolute inset-0 w-full h-full opacity-20'
-            preserveAspectRatio='none'
-          >
-            <defs>
-              <pattern
-                id='grid-active'
-                width='50'
-                height='50'
-                patternUnits='userSpaceOnUse'
-              >
-                <path
-                  d='M 50 0 L 0 0 0 50'
-                  fill='none'
-                  stroke={isRouteActive ? '#f97316' : '#cbd5e1'}
-                  strokeWidth='0.5'
-                />
-              </pattern>
-            </defs>
-            <rect width='100%' height='100%' fill='url(#grid-active)' />
-          </svg>
+          <TileLayer
+            attribution='&copy; OpenStreetMap contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
 
-          {/* Motion Glow Effect */}
-          {isRouteActive && (
-            <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.15),transparent_70%)] animate-pulse' />
-          )}
-        </div>
+          {/* Markers */}
+          {pickupCoords && <Marker position={pickupCoords} />}
+          {dropCoords && <Marker position={dropCoords} />}
 
-        {/* The Route Line (Only shows when both selected) */}
-        {isRouteActive && (
-          <svg className='absolute inset-0 w-full h-full z-10 pointer-events-none'>
-            <path
-              d='M 120 150 Q 250 250 380 350'
-              fill='none'
-              stroke='url(#routeGradient)'
-              strokeWidth='4'
-              strokeDasharray='10, 8'
-              className='animate-[dash_20s_linear_infinite]'
+          {/* Route Line */}
+          {pickupCoords && dropCoords ? (
+            <RoutingMachine
+              start={pickupCoords}
+              end={dropCoords}
+              itineraryRef={itineraryRef}
+              onRouteFound={(d, t) => {
+                setRouteInfo({ distance: d, time: t });
+                onRouteUpdate?.(d, t);
+              }}
             />
-            <defs>
-              <linearGradient
-                id='routeGradient'
-                x1='0%'
-                y1='0%'
-                x2='100%'
-                y2='0%'
-              >
-                <stop offset='0%' stopColor='var(--color-primary)' />
-                <stop offset='100%' stopColor='#fb923c' />
-              </linearGradient>
-            </defs>
-          </svg>
-        )}
+          ) : null}
+
+          {/* Click Handler */}
+          <MapClickHandler
+            mode={clickMode}
+            onSelect={(addr) => {
+              if (clickMode === 'pickup') onPickupChange?.(addr);
+              if (clickMode === 'drop') onDropChange?.(addr);
+              setClickMode(null);
+            }}
+          />
+        </MapContainer>
 
         {/* Active Stats Overlay */}
         {isRouteActive && (
-          <div className='absolute top-6 left-1/2 -translate-x-1/2 z-1 flex gap-3 animate-in fade-in slide-in-from-top-4 duration-1000'>
-            <div className='bg-card/90 backdrop-blur-md border border-border px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-3'>
-              <div className='bg-primary/20 p-2 rounded-xl'>
-                <Milestone className='w-4 h-4 text-primary' />
-              </div>
-              <div>
-                <p className='text-[10px] uppercase text-muted-foreground font-bold leading-none'>
-                  Distance
-                </p>
-                <p className='text-sm font-black'>4.8 km</p>
-              </div>
-            </div>
-            <div className='bg-card/90 backdrop-blur-md border border-border px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-3'>
-              <div className='bg-emerald-500/20 p-2 rounded-xl'>
-                <Clock className='w-4 h-4 text-emerald-500' />
-              </div>
-              <div>
-                <p className='text-[10px] uppercase text-muted-foreground font-bold leading-none'>
-                  Time
-                </p>
-                <p className='text-sm font-black'>12 min</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Centered Guide (Visible only when empty) */}
-        {!pickupLocation && !dropLocation && (
-          <div className='relative h-full flex items-center justify-center z-20'>
-            <div className='text-center p-8 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/20 shadow-2xl animate-in zoom-in-95 duration-500'>
-              <div className='w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-12 hover:rotate-0 transition-transform duration-500'>
-                <Navigation className='text-white w-8 h-8' />
-              </div>
-              <h4 className='font-black text-lg'>Where to?</h4>
-              <p className='text-xs text-muted-foreground max-w-45 mx-auto'>
-                Tap the buttons below to mark your journey on the map.
-              </p>
+          <div className='absolute bottom-6 left-1/2 -translate-x-1/2 z-1000 flex flex-col items-center gap-2'>
+            <div className='flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl shadow-xl border border-slate-200'>
+              {routeInfo.distance === 'Route not found' ? (
+                <span className='font-bold text-sm text-destructive flex items-center gap-1'>
+                  <MapPinOffIcon size={14} /> Route not found
+                </span>
+              ) : (
+                <>
+                  {' '}
+                  <span className='font-bold text-sm text-slate-800'>
+                    {routeInfo.distance}
+                  </span>
+                  <div className='w-px h-4 bg-slate-300' />
+                  <span className='font-bold text-sm text-slate-800'>
+                    {routeInfo.time}
+                  </span>
+                </>
+              )}
+              <button
+                onClick={() => setShowItinerary(!showItinerary)}
+                className='ml-2 p-1 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors'
+              >
+                {showItinerary ? (
+                  <ChevronDown size={18} />
+                ) : (
+                  <MapPinOffIcon size={18} />
+                )}
+              </button>
             </div>
           </div>
         )}
 
-        {/* Pickup Marker */}
-        {pickupLocation && (
-          <div className='absolute top-37.5 left-30 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer'>
-            <div className='relative'>
-              <span className='absolute -inset-3.75 rounded-full bg-primary/20 animate-ping' />
-              <div className='w-12 h-12 bg-primary rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.5)] flex items-center justify-center border-2 border-white rotate-45 group-hover:rotate-0 transition-transform'>
-                <MapPin className='w-6 h-6 text-white -rotate-45 group-hover:rotate-0 transition-transform' />
-              </div>
-            </div>
-            <div className='absolute top-14 left-1/2 -translate-x-1/2 bg-chart-4 text-white px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-white/20 uppercase tracking-tighter'>
-              Pickup: {pickupLocation.split(',')[0]}
-            </div>
+        <div
+          className={`absolute top-4 right-4 z-1001 w-72 max-h-[80%] overflow-y-auto bg-white/95 backdrop-blur shadow-2xl rounded-3xl border border-slate-200 transition-all duration-300 transform ${
+            showItinerary
+              ? 'translate-x-0 opacity-100'
+              : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className='p-4 border-b border-slate-100 sticky top-0 bg-white flex justify-between items-center'>
+            <h4 className='font-black text-slate-800'>Route Directions</h4>
+            <button onClick={() => setShowItinerary(false)}>
+              <ChevronUp size={20} />
+            </button>
           </div>
-        )}
-
-        {/* Drop Marker */}
-        {dropLocation && (
-          <div className='absolute top-87.5 left-95 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer'>
-            <div className='relative'>
-              <span className='absolute -inset-3.75 rounded-full bg-orange-400/20 animate-ping' />
-              <div className='w-12 h-12 bg-ring rounded-2xl shadow-2xl flex items-center justify-center border-4 border-white rotate-45 group-hover:rotate-0 transition-transform'>
-                <MapPin className='w-6 h-6 -rotate-45 group-hover:rotate-0 transition-transform' />
-              </div>
-            </div>
-            <div className='absolute top-14 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap shadow-lg uppercase tracking-tighter'>
-              Drop: {dropLocation.split(',')[0]}
-            </div>
-          </div>
-        )}
+          <div
+            ref={itineraryRef}
+            className='p-2 text-sm text-slate-600 custom-scrollbar'
+          />
+        </div>
       </div>
 
       {/* Control Actions */}

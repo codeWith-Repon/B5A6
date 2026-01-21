@@ -14,6 +14,7 @@ interface AvailableDriversSectionProps {
   isLoading?: boolean;
   onSubmit: (data: any) => void;
   onSubmitLoading?: boolean;
+  distance?: string;
 }
 
 export function AvailableDriversSection({
@@ -25,6 +26,7 @@ export function AvailableDriversSection({
   isLoading,
   onSubmit,
   onSubmitLoading,
+  distance,
 }: AvailableDriversSectionProps) {
   return (
     <>
@@ -43,7 +45,21 @@ export function AvailableDriversSection({
           </Badge>
         </div>
 
-        {!pickupLocation || !dropLocation ? (
+        {distance === 'Route not found' ? (
+          <div className='bg-red-500/10 border-2 border-dashed border-red-500/20 rounded-3xl p-6 text-center space-y-4'>
+            <div className='bg-red-500/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto'>
+              <Car className='text-red-500 w-6 h-6' />
+            </div>
+            <div className='space-y-1'>
+              <p className='text-sm font-medium text-red-500'>
+                Route not found
+              </p>
+              <p className='text-xs text-red-500'>
+                Please enter a valid address.
+              </p>
+            </div>
+          </div>
+        ) : !pickupLocation || !dropLocation ? (
           <div className='bg-muted/30 border-2 border-dashed border-muted-foreground/20 rounded-3xl p-10 text-center space-y-4'>
             <div className='bg-muted w-12 h-12 rounded-full flex items-center justify-center mx-auto'>
               <Car className='text-muted-foreground w-6 h-6' />
