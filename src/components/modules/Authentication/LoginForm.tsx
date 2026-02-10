@@ -18,7 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import GoogleSvg from '@/assets/googleSvg';
 import { useForm } from 'react-hook-form';
 import config from '@/config';
@@ -28,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useLoginMutation } from '@/redux/features/auth/auth.api';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 const signInSchema = z.object({
   email: z.email().min(1, { error: 'Email is required' }),
@@ -48,6 +49,7 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [Login, { isLoading }] = useLoginMutation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -58,13 +60,19 @@ export function LoginForm({
     },
   });
 
+  useEffect(() => {
+    console.log('Current Location State:', location.state);
+  }, [location]);
+
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
       const result = await Login(data).unwrap();
 
       if (result.success) {
         toast.success('Login successful');
-        navigate('/');
+        const redirectTo = location.state?.from || '/';
+
+        navigate(redirectTo, { replace: true });
       }
       console.log('login result', result);
     } catch (error: any) {

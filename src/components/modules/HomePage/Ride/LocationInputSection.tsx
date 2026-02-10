@@ -15,27 +15,53 @@ export function LocationInputSection({
   onDropChange,
 }: LocationInputSectionProps) {
   const [isPickupFocused, setIsPickupFocused] = useState(false);
-  const [isDropFocused, setIsDropFocused] = useState(false);
-
-  const suggestions = [
-    'Home',
-    'Office',
-    'Airport',
-    'Train Station',
-    'Shopping Mall',
-    'Hospital',
-  ];
-
-  const handleUseCurrentLocation = () => {
-    onPickupChange('Current Location (Click on map to set)');
-  };
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const swapLocations = () => {
     const temp = pickupLocation;
     onPickupChange(dropLocation);
     onDropChange(temp);
   };
- 
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsLoadingLocation(true);
+    console.log('Fetching location...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log('Coordinates found:', latitude, longitude);
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+          );
+          const data = await res.json();
+          const address = data.display_name || `${latitude}, ${longitude}`;
+
+          onPickupChange(address);
+          setIsPickupFocused(false);
+        } catch (error) {
+          console.error('Reverse Geocoding Error:', error);
+          onPickupChange(`${latitude}, ${longitude}`);
+        } finally {
+          setIsLoadingLocation(false);
+        }
+      },
+      (error) => {
+        setIsLoadingLocation(false);
+        console.error('Geolocation Permission Denied/Error:', error);
+        alert('Please enable location permissions in your browser.');
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
+    );
+  };
+
   return (
     <div className='space-y-4'>
       {/* Header */}
@@ -57,8 +83,17 @@ export function LocationInputSection({
               <MapPin className='w-5 h-5 text-primary shrink-0' />
               <input
                 type='text'
-                placeholder='Enter pickup location or click on map'
-                value={pickupLocation}
+                placeholder={
+                  isLoadingLocation
+                    ? 'Locating you...'
+                    : 'Enter pickup location...'
+                }
+                value={
+                  isLoadingLocation
+                    ? 'Fetching current location...'
+                    : pickupLocation
+                }
+                readOnly={isLoadingLocation}
                 onChange={(e) => onPickupChange(e.target.value)}
                 onFocus={() => setIsPickupFocused(true)}
                 onBlur={() => setIsPickupFocused(false)}
@@ -70,26 +105,17 @@ export function LocationInputSection({
             {isPickupFocused && (
               <div className='absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-10'>
                 <button
-                  onClick={handleUseCurrentLocation}
-                  className='w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-center gap-3 border-b border-border cursor-pointer'
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleUseCurrentLocation();
+                  }}
+                  className='w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-center gap-3 cursor-pointer'
                 >
                   <Navigation className='w-4 h-4 text-primary' />
                   <span className='text-sm font-medium'>
                     Use Current Location
                   </span>
                 </button>
-                {suggestions.map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onMouseDown={() => {
-                      onPickupChange(suggestion);
-                      setIsPickupFocused(false);
-                    }}
-                    className='w-full px-4 py-3 text-left hover:bg-muted transition-colors text-sm cursor-pointer'
-                  >
-                    {suggestion}
-                  </button>
-                ))}
               </div>
             )}
           </div>
@@ -131,29 +157,9 @@ export function LocationInputSection({
                 placeholder='Enter drop location or click on map'
                 value={dropLocation}
                 onChange={(e) => onDropChange(e.target.value)}
-                onFocus={() => setIsDropFocused(true)}
-                onBlur={() => setIsDropFocused(false)}
                 className='flex-1 bg-transparent outline-none text-foreground placeholder:text-foreground/50'
               />
             </div>
-
-            {/* Suggestions dropdown for drop */}
-            {isDropFocused && (
-              <div className='absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-10'>
-                {suggestions.map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onMouseDown={() => {
-                      onDropChange(suggestion);
-                      setIsDropFocused(false);
-                    }}
-                    className='w-full px-4 py-3 text-left hover:bg-muted transition-colors text-sm cursor-pointer'
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
 
