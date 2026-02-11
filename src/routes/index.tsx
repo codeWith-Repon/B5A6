@@ -22,6 +22,7 @@ import { Profile } from '@/pages/User/Profile';
 import NotFound from '@/pages/NotFound';
 import GetRide from '@/pages/GetRide';
 import BookingDetails from '@/pages/BookingDetails';
+import RideHistory from '@/pages/RideHistory';
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
       {
         Component: WithAuth(BookingDetails, role.rider as IRole),
         path: '/confirm-booking',
+      },
+      {
+        Component: WithAuth(RideHistory),
+        path: '/ride-history',
       },
       {
         Component: Profile,

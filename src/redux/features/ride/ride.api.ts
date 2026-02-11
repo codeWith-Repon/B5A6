@@ -27,11 +27,19 @@ export const authApi = baseApi.injectEndpoints({
                 data: { fare }
             }),
             invalidatesTags: ["CurrentRide"]
+        }),
+
+        getRideHistory: builder.query({
+            query: () => ({
+                url: "ride/history",
+                method: "GET",
+            })
         })
     })
 })
 
 export const {
     useGetRideRequestQuery,
-    useSetRideFareMutation
+    useSetRideFareMutation,
+    useGetRideHistoryQuery
 } = authApi
