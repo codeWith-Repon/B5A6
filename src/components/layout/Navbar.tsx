@@ -21,9 +21,10 @@ import {
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/redux/hook';
 import { role } from '@/constants/role';
-import AvatarComponent from '../modules/Rider/avater';
+import { UserProfileDropdown } from '../modules/Rider/UserProfileDropdown';
 import { Car } from 'lucide-react';
 import Loader from '../shared/Loader';
+import { NotificationDropdown } from '../modules/HomePage/NotificationDropdown';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -89,7 +90,7 @@ export default function Navbar() {
       }`}
     >
       <div>
-        <div className='flex h-16 items-center justify-between gap-4 mx-auto container max-w-[1370px]'>
+        <div className='flex h-16 items-center justify-between gap-4 mx-auto container max-w-342.5'>
           {/* Left side */}
           <div className='flex items-center gap-2'>
             {/* Main nav */}
@@ -137,14 +138,21 @@ export default function Navbar() {
           </div>
           {/* Right side */}
           <div className='flex items-center gap-2'>
-            <ModeToggle />
             <div className='hidden md:block'>
+              <ModeToggle />
+            </div>
+            <div className='flex items-center gap-2'>
               {userInfo?.success ? (
-                <AvatarComponent />
+                <>
+                  <NotificationDropdown />
+                  <UserProfileDropdown />
+                </>
               ) : (
-                <Button asChild size='sm' className='text-sm'>
-                  <Link to={'/login'}>Log In</Link>
-                </Button>
+                <>
+                  <Button asChild size='sm' className='text-sm'>
+                    <Link to={'/login'}>Log In</Link>
+                  </Button>
+                </>
               )}
             </div>
 
@@ -170,7 +178,7 @@ export default function Navbar() {
                   >
                     <path
                       d='M4 12L20 12'
-                      className='origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]'
+                      className='origin-center -translate-y-1.75 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315'
                     />
                     <path
                       d='M4 12H20'
@@ -178,7 +186,7 @@ export default function Navbar() {
                     />
                     <path
                       d='M4 12H20'
-                      className='origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]'
+                      className='origin-center translate-y-1.75 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-135'
                     />
                   </svg>
                 </Button>
