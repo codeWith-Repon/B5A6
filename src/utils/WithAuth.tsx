@@ -8,7 +8,7 @@ export const WithAuth = (Component: ComponentType, requiredRole?: IRole) => {
     const { data, isLoading } = useUserInfoQuery(undefined);
     const location = useLocation();
 
-    if (!data?.data?.email) {
+    if (!isLoading && !data?.data?.email) {
       const fullPath = `${location.pathname}${location.search}`;
       return <Navigate to='/login' state={{ from: fullPath }} replace />;
     }
