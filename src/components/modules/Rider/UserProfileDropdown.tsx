@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { User, History, LogOut, Star } from 'lucide-react';
+import { User, History, LogOut, Star, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '@/redux/hook';
 import {
@@ -20,109 +20,137 @@ export function UserProfileDropdown() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data: userInfo } = useUserInfoQuery(undefined);
+  const { data: userInfo, isLoading } = useUserInfoQuery(undefined);
   const [logOut] = useLogOutMutation();
 
   const handleLogout = async () => {
     try {
-      await logOut(undefined);
+      await logOut(undefined).unwrap();
       await dispatch(authApi.util.resetApiState());
       toast.success('Logout successful');
-    } catch (error) {
+      navigate('/login');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error(error);
       toast.error('Logout failed');
     }
   };
 
-  const avatarName = userInfo?.data?.name
-    .split(' ')
-    .map((part: string) => part[0])
-    .join('')
-    .toUpperCase();
-
   const user = userInfo?.data;
 
-  console.log(userInfo, 'user in fo lfsa');
+  // Loading state handling to prevent crashes
+  if (isLoading || !user) {
+    return <div className='w-10 h-10 rounded-full bg-muted animate-pulse' />;
+  }
+
+  const avatarName = user?.name
+    ?.split(' ')
+    .map((part: string) => part[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className='w-10 h-10 cursor-pointer'>
-            <AvatarImage src={user.image} />
-            <AvatarFallback className='rounded-full w-10 h-10 p-0 bg-linear-to-br from-primary to-secondary'>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className='relative group focus:outline-none'>
+          <div className='absolute -inset-0.5 bg-linear-to-r from-primary to-secondary rounded-full opacity-30 group-hover:opacity-100 transition duration-300 blur-[2px]'></div>
+          <Avatar className='w-10 h-10 cursor-pointer border-2 border-background relative'>
+            <AvatarImage src={user.image} className='object-cover' />
+            <AvatarFallback className='bg-primary text-white font-bold text-xs'>
               {avatarName}
             </AvatarFallback>
           </Avatar>
-        </DropdownMenuTrigger>
+        </button>
+      </DropdownMenuTrigger>
 
-        <DropdownMenuContent className='w-56' align='end'>
-          {/* User info */}
-          <div className='p-4 border-b border-border'>
-            <div className='flex items-center gap-3'>
-              <Avatar className='w-10 h-10 cursor-pointer'>
-                <AvatarImage src={user.image} />
-                <AvatarFallback className='rounded-full w-10 h-10 p-0 bg-linear-to-br from-primary to-secondary'>
-                  {avatarName}
-                </AvatarFallback>
-              </Avatar>
-              <div className='flex-1 min-w-0'>
-                <p className='font-semibold text-foreground truncate'>
-                  {user.name}
-                </p>
-                <p className='text-xs text-foreground/60 truncate'>
-                  {user.email}
-                </p>
-              </div>
-            </div>
-
-            {/* User stats */}
-            <div className='mt-3 grid grid-cols-2 gap-2'>
-              <div className='bg-muted rounded p-2 text-center'>
-                <p className='text-xs text-foreground/60'>Rating</p>
-                <div className='flex items-center justify-center gap-1 mt-1'>
-                  <Star className='w-3.5 h-3.5 fill-yellow-400 text-yellow-400' />
-                  <p className='text-sm font-semibold'>{user.rating ?? 4.2}</p>
-                </div>
-              </div>
-              <div className='bg-muted rounded p-2 text-center'>
-                <p className='text-xs text-foreground/60'>Total Rides</p>
-                <p className='text-sm font-semibold mt-1'>
-                  {user.totalRides ?? 8}
-                </p>
-              </div>
+      <DropdownMenuContent
+        className='w-72 mt-2 p-2 rounded-[20px] shadow-2xl border-border/50'
+        align='end'
+      >
+        {/* User Info Section with subtle background */}
+        <div className='p-4 mb-2 rounded-xl bg-muted/30 border border-border/40'>
+          <div className='flex items-center gap-3'>
+            <Avatar className='w-12 h-12 border-2 border-background shadow-sm'>
+              <AvatarImage src={user.image} />
+              <AvatarFallback className='bg-primary text-white font-black text-sm'>
+                {avatarName}
+              </AvatarFallback>
+            </Avatar>
+            <div className='flex-1 min-w-0'>
+              <p className='font-black text-foreground text-sm uppercase italic tracking-tighter truncate'>
+                {user.name}
+              </p>
+              <p className='text-[11px] text-muted-foreground truncate font-medium'>
+                {user.email}
+              </p>
             </div>
           </div>
 
-          {/* Menu items */}
+          <div className='mt-4 flex gap-2'>
+            <div className='flex-1 bg-background rounded-lg p-2 border border-border/50 flex flex-col items-center justify-center shadow-sm'>
+              <span className='text-[9px] font-black uppercase text-muted-foreground tracking-widest'>
+                Rating
+              </span>
+              <div className='flex items-center gap-1 mt-0.5'>
+                <Star className='w-3 h-3 fill-yellow-400 text-yellow-400' />
+                <span className='text-xs font-bold'>
+                  {user.rating ?? '4.2'}
+                </span>
+              </div>
+            </div>
+            <div className='flex-1 bg-background rounded-lg p-2 border border-border/50 flex flex-col items-center justify-center shadow-sm'>
+              <span className='text-[9px] font-black uppercase text-muted-foreground tracking-widest'>
+                Trips
+              </span>
+              <span className='text-xs font-bold mt-0.5'>
+                {user.totalRides ?? '12'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Items */}
+        <div className='space-y-1'>
           <DropdownMenuItem
-            onClick={() => {
-              navigate(`/profile`);
-            }}
-            className='gap-2 cursor-pointer'
+            onClick={() => navigate(`/profile`)}
+            className='flex items-center justify-between py-3 px-3 cursor-pointer rounded-xl focus:bg-primary/5 group'
           >
-            <User className='w-4 h-4' />
-            <span>View Profile</span>
+            <div className='flex items-center gap-3'>
+              <div className='p-2 rounded-lg bg-primary/10 text-primary group-focus:bg-primary group-focus:text-white transition-colors duration-200'>
+                <User className='w-4 h-4 group-focus:text-white' />
+              </div>
+              <span className='font-bold text-sm'>My Account</span>
+            </div>
+            <ChevronRight className='w-4 h-4 text-muted-foreground opacity-50' />
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => navigate('/ride-history')}
-            className='gap-2 cursor-pointer'
+            className='flex items-center justify-between py-3 px-3 cursor-pointer rounded-xl focus:bg-primary/5 group'
           >
-            <History className='w-4 h-4' />
-            <span>Ride History</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem className='gap-2 cursor-pointer text-red-600'>
-            <div className='flex gap-2 items-center' onClick={handleLogout}>
-              <LogOut className='w-4 h-4' />
-              <span>Logout</span>
+            <div className='flex items-center gap-3'>
+              <div className='p-2 rounded-lg bg-primary/10 text-primary group-focus:bg-primary group-focus:text-white transition-colors'>
+                <History className='w-4 h-4 group-focus:text-white' />
+              </div>
+              <span className='font-bold text-sm'>Ride History</span>
             </div>
+            <ChevronRight className='w-4 h-4 text-muted-foreground opacity-50' />
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+
+          <DropdownMenuSeparator className='my-2 bg-border/40' />
+
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className='flex items-center  py-3 px-3 cursor-pointer rounded-xl focus:bg-primary/5 group'
+          >
+            <div className='p-2 rounded-lg bg-primary/10 text-primary group-focus:bg-primary group-focus:text-white transition-colors'>
+              <LogOut className='w-4 h-4 group-focus:text-white' />
+            </div>
+            <span>Logout</span>
+          </DropdownMenuItem>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
