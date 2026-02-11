@@ -14,11 +14,11 @@ import {
 import { Link, NavLink } from 'react-router';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { getSidebarItems } from '@/utils/getSidebarItems';
-import AvatarComponent from './modules/Rider/avater';
 import DriverStatusToggler from './modules/Driver/DriverStatusToggler';
 import Sos from './modules/Driver/Sos';
 import { role } from '@/constants/role';
 import { Car } from 'lucide-react';
+import { UserProfileDropdown } from './modules/Rider/UserProfileDropdown';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData, isLoading } = useUserInfoQuery(undefined);
@@ -29,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarContent className='mt-4'>
-        <div className='border-b pb-[11px]'>
+        <div className='border-b pb-2.75'>
           <Link
             to='/'
             className='text-primary hover:text-primary/90 flex items-center gap-1 px-4'
@@ -60,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   {item.items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <NavLink to={item.url} className="px-0">
+                        <NavLink to={item.url} className='px-0'>
                           {({ isActive }) => (
                             <div
                               className={`flex items-center gap-3 px-4 py-5 rounded-lg transition-all duration-200 w-full ${
@@ -96,7 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </>
         )}
         <div className='flex items-center gap-4 px-4 mb-4 py-2 border'>
-          <AvatarComponent />
+          <UserProfileDropdown />
           <span>Profile</span>
         </div>
       </div>
