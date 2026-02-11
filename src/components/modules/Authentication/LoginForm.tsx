@@ -217,7 +217,7 @@ export function LoginForm({
                 variant='outline'
                 className='cursor-pointer'
                 onClick={() =>
-                  handleAutoLogin('repon7253@gmail.com', 'R1234567@')
+                  handleAutoLogin('partian55@gmail.com', 'Repon@123')
                 }
                 disabled={isLoading}
               >
