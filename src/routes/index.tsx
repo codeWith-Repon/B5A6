@@ -23,6 +23,7 @@ import NotFound from '@/pages/NotFound';
 import GetRide from '@/pages/GetRide';
 import BookingDetails from '@/pages/BookingDetails';
 import RideHistory from '@/pages/RideHistory';
+import CurrentRidePage from '@/pages/CurrentRide';
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       {
         Component: WithAuth(RideHistory),
         path: '/ride-history',
+      },
+      {
+        Component: WithAuth(CurrentRidePage),
+        path: '/current-ride',
       },
       {
         Component: Profile,
