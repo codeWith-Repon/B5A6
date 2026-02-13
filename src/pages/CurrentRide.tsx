@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
+import OtpVerification from '@/components/modules/Ride/Otpverification';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ export default function CurrentRidePage() {
             />
           </div>
 
-          <div className='lg:col-span-5 space-y-6'>
+          <div className='lg:col-span-5 space-y-6 mt-15'>
             {/* Driver/Rider Information Card */}
             {role === 'RIDER' && (
               <div className='bg-card border p-6 rounded-4xl shadow-sm relative overflow-hidden'>
@@ -143,6 +144,10 @@ export default function CurrentRidePage() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {ride.rideStatus === 'ACCEPTED' && role === 'RIDER' && !ride.isOtpVerified && (
+              <OtpVerification rideId={ride._id} />
             )}
 
             {/* Journey & Fare Details */}

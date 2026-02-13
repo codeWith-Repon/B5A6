@@ -52,7 +52,7 @@ const BookingDetails = () => {
       const r = await bookRide(bookingData).unwrap();
       console.log(r);
       toast.success('Ride Request Sent Successfully');
-      navigate('/');
+      navigate('/current-ride');
     } catch (error: any) {
       toast.error(error?.data?.message || 'Failed to book ride');
     }
