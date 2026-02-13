@@ -12,11 +12,15 @@ import { useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
+import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
   const { data: response, isLoading } = useGetCurrentRideQuery(undefined);
+  const { data: userResponse } = useUserInfoQuery(undefined);
   const ride = response?.data;
+
+  const role = userResponse?.data?.role;
 
   if (isLoading)
     return (
@@ -70,8 +74,8 @@ export default function CurrentRidePage() {
           </div>
 
           <div className='lg:col-span-5 space-y-6'>
-            {/* Driver Information Card */}
-            {ride.driver && (
+            {/* Driver/Rider Information Card */}
+            {role === 'RIDER' && (
               <div className='bg-card border p-6 rounded-4xl shadow-sm relative overflow-hidden'>
                 <div className='absolute -top-4 -right-4 opacity-5 text-primary'>
                   <User size={120} />
@@ -108,6 +112,34 @@ export default function CurrentRidePage() {
                         License: {ride?.driver?.licenseNumber}
                       </Badge>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === 'DRIVER' && (
+              <div className='bg-card border p-6 rounded-4xl shadow-sm relative overflow-hidden'>
+                <div className='absolute -top-4 -right-4 opacity-5 text-primary'>
+                  <User size={120} />
+                </div>
+                <h3 className='text-xs font-black uppercase text-muted-foreground mb-4 flex items-center gap-2'>
+                  <ShieldCheck size={14} className='text-primary' /> Driver
+                  Details
+                </h3>
+                <div className='flex items-center gap-4'>
+                  <Avatar className='w-20 h-20 border-4 border-primary/10'>
+                    <AvatarImage src={ride?.user?.image} />
+                    <AvatarFallback className='bg-primary text-white font-black'>
+                      {ride?.user?.name?.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className='text-xl font-black uppercase italic leading-none'>
+                      {ride?.user?.name}
+                    </h2>
+                    <p className='text-xs font-bold text-muted-foreground mt-1 flex items-center gap-1'>
+                      <Mail size={12} /> {ride?.user?.email}
+                    </p>
                   </div>
                 </div>
               </div>
