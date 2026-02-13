@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export default function CurrentRidePage() {
               Ride Status:
             </span>
             <Badge className='bg-primary text-white rounded-full px-4 italic font-black uppercase tracking-tighter'>
-              {ride.rideStatus}
+              {ride?.rideStatus}
             </Badge>
           </div>
         </div>
@@ -63,11 +64,10 @@ export default function CurrentRidePage() {
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
           <div className='lg:col-span-7'>
             <BookingMapSection
-              pickupLocation={ride.pickupLocation}
-              dropLocation={ride.dropLocation}
+              pickupLocation={ride?.pickupLocation}
+              dropLocation={ride?.dropLocation}
             />
           </div>
-
 
           <div className='lg:col-span-5 space-y-6'>
             {/* Driver Information Card */}
@@ -82,7 +82,7 @@ export default function CurrentRidePage() {
                 </h3>
                 <div className='flex items-center gap-4'>
                   <Avatar className='w-20 h-20 border-4 border-primary/10'>
-                    <AvatarImage src={ride.driver.user.image} />
+                    <AvatarImage src={ride?.driver?.user?.image} />
                     <AvatarFallback className='bg-primary text-white font-black'>
                       {ride?.driver?.user?.name?.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
@@ -92,20 +92,20 @@ export default function CurrentRidePage() {
                       {ride?.driver?.user?.name}
                     </h2>
                     <p className='text-xs font-bold text-muted-foreground mt-1 flex items-center gap-1'>
-                      <Mail size={12} /> {ride.driver.user.email}
+                      <Mail size={12} /> {ride?.driver?.user?.email}
                     </p>
                     <div className='mt-2 flex gap-2 flex-wrap'>
                       <Badge
                         variant='outline'
                         className='text-[9px] font-bold uppercase'
                       >
-                        Exp: {ride.driver.experience} Year
+                        Exp: {ride?.driver?.experience} Year
                       </Badge>
                       <Badge
                         variant='outline'
                         className='text-[9px] font-bold uppercase'
                       >
-                        License: {ride.driver.licenseNumber}
+                        License: {ride?.driver?.licenseNumber}
                       </Badge>
                     </div>
                   </div>
@@ -189,6 +189,13 @@ export default function CurrentRidePage() {
                     {ride.paymentStatus}
                   </p>
                 </div>
+              </div>
+
+              <div className='pt-4 border-t'>
+                <ChangeRideStatus
+                  rideId={ride._id}
+                  currentStatus={ride.rideStatus}
+                />
               </div>
             </div>
           </div>
