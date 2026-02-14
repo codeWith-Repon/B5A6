@@ -23,6 +23,10 @@ export default function CurrentRidePage() {
 
   const role = userResponse?.data?.role;
 
+  const isInactiveStatus = ['COMPLETED', 'CANCELLED', 'REJECTED'].includes(
+    ride?.rideStatus || '',
+  );
+
   if (isLoading)
     return (
       <div className='h-screen flex items-center justify-center font-black animate-pulse text-primary italic'>
@@ -30,7 +34,7 @@ export default function CurrentRidePage() {
       </div>
     );
 
-  if (!ride)
+  if (!ride || isInactiveStatus)
     return (
       <div className='h-screen flex flex-col items-center justify-center space-y-4'>
         <p className='text-xl font-bold opacity-50 uppercase italic'>
@@ -146,9 +150,9 @@ export default function CurrentRidePage() {
               </div>
             )}
 
-            {ride.rideStatus === 'ACCEPTED' && role === 'RIDER' && !ride.isOtpVerified && (
-              <OtpVerification rideId={ride._id} />
-            )}
+            {ride.rideStatus === 'ACCEPTED' &&
+              role === 'RIDER' &&
+              !ride.isOtpVerified && <OtpVerification rideId={ride._id} />}
 
             {/* Journey & Fare Details */}
             <div className='bg-card border p-6 rounded-4xl shadow-sm space-y-6'>

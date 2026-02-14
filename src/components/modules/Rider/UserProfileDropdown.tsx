@@ -147,7 +147,7 @@ export function UserProfileDropdown() {
             <div className='p-2 rounded-lg bg-primary/10 text-primary group-focus:bg-primary group-focus:text-white transition-colors'>
               <LogOut className='w-4 h-4 group-focus:text-white' />
             </div>
-            <span>Logout</span>
+            <span className='font-bold text-sm'>Logout</span>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>

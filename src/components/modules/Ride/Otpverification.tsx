@@ -13,8 +13,7 @@ const OtpVerification = ({ rideId }: { rideId: string }) => {
       return toast.error('Please enter a valid 6-digit OTP');
     }
     try {
-      const res = await verifyRideOtp({ otp, rideId }).unwrap();
-      console.log(res);
+      await verifyRideOtp({ otp, rideId }).unwrap();
       setOtp('');
       toast.success('OTP verified successfully');
     } catch (error: any) {
