@@ -33,7 +33,6 @@ export const ChangeRideStatus = ({
     if (currentStatus === 'REQUESTED') {
       return (
         <Button
-          variant='destructive'
           className='w-full font-black uppercase italic py-6 rounded-2xl gap-2'
           onClick={() => handleUpdate('CANCELLED')}
           disabled={isLoading}
