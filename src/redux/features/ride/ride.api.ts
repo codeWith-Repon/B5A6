@@ -33,7 +33,8 @@ export const authApi = baseApi.injectEndpoints({
             query: () => ({
                 url: "ride/history",
                 method: "GET",
-            })
+            }),
+            providesTags: ["CurrentRide"]
         })
     })
 })
