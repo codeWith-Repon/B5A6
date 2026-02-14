@@ -3,12 +3,11 @@ import { AvailableDriversSection } from '@/components/modules/HomePage/Ride/Avai
 import { BookingMapSection } from '@/components/modules/HomePage/Ride/BookingMapSection';
 import { LocationInputSection } from '@/components/modules/HomePage/Ride/LocationInputSection';
 import { useGetFreeDriversQuery } from '@/redux/features/driver/driver.api';
-import { useBookRideMutation } from '@/redux/features/Rider/rider.api';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { toast } from 'sonner';
 
 const GetRide = () => {
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [pickupLocation, setPickupLocation] = useState(
@@ -26,7 +25,7 @@ const GetRide = () => {
 
   const { data, isLoading } = useGetFreeDriversQuery(undefined);
 
-  const [bookRide, { isLoading: bookRideLoading }] = useBookRideMutation();
+
 
   useEffect(() => {
     const params: any = {};
@@ -34,25 +33,19 @@ const GetRide = () => {
     if (dropLocation) params.drop = dropLocation;
     if (distance) params.distance = distance;
     if (time) params.time = time;
+    if (selectedDriver) params.driver = selectedDriver;
     setSearchParams(params, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickupLocation, dropLocation, distance]);
+  }, [pickupLocation, dropLocation, distance, selectedDriver]);
 
-  const onSubmit = async (data: string) => {
-    const bookingData = {
-      pickupLocation,
-      dropLocation,
-      driver: data,
-    };
-    try {
-      await bookRide(bookingData);
-      toast.success('Ride Request Sent Successfully');
-      navigate('/rider/current-ride');
-    } catch (error: any) {
-      toast.error(error?.data?.message);
-      console.log(error);
-    }
+  const onSubmit = async () => {
+    const currentParams = searchParams.toString();
+    const targetUrl = `/confirm-booking?${currentParams}`;
+
+    navigate(targetUrl);
   };
+
+  
 
   return (
     <div className='min-h-screen bg-background text-foreground'>
@@ -93,7 +86,6 @@ const GetRide = () => {
                 pickupLocation={pickupLocation}
                 dropLocation={dropLocation}
                 isLoading={isLoading}
-                onSubmitLoading={bookRideLoading}
                 onSubmit={onSubmit}
                 distance={distance}
               />

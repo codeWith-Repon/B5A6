@@ -36,20 +36,21 @@ export const riderApi = baseApi.injectEndpoints({
         }),
         updateRideStatus: builder.mutation({
             query: ({ rideId, rideStatus }) => ({
-                url: `ride/update-status/${rideId}`,
+                url: `/ride/update-status/${rideId}`,
                 method: "POST",
                 data: { rideStatus }
             }),
             invalidatesTags: ["CurrentRide", "RideRequest"]
         }),
         verifyRideOtp: builder.mutation({
-            query: (data: { otp: string }) => ({
-                url: "/ride/verify-otp",
+            query: ({ otp, rideId }) => ({
+                url: `ride/verify-otp/${rideId}`,
                 method: "POST",
-                data
-            })
+                data: { otp }
+            }),
+            invalidatesTags: ["CurrentRide", "RideRequest"]
         }),
-        
+
     }),
 })
 

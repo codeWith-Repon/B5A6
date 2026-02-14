@@ -15,6 +15,8 @@ export interface IRide {
   updatedAt: string
   __v: number
   payment: IPayment
+  paymentMethod?: string | null
+  paymentStatus?: string | null
 }
 
 export interface IPayment {

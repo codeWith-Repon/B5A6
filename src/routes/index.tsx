@@ -21,6 +21,9 @@ import Support from '@/pages/Support';
 import { Profile } from '@/pages/User/Profile';
 import NotFound from '@/pages/NotFound';
 import GetRide from '@/pages/GetRide';
+import BookingDetails from '@/pages/BookingDetails';
+import RideHistory from '@/pages/RideHistory';
+import CurrentRidePage from '@/pages/CurrentRide';
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +53,18 @@ export const router = createBrowserRouter([
       {
         Component: GetRide,
         path: '/get-ride',
+      },
+      {
+        Component: WithAuth(BookingDetails, role.rider as IRole),
+        path: '/confirm-booking',
+      },
+      {
+        Component: WithAuth(RideHistory),
+        path: '/ride-history',
+      },
+      {
+        Component: WithAuth(CurrentRidePage),
+        path: '/current-ride',
       },
       {
         Component: Profile,
