@@ -35,6 +35,13 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
             providesTags: ["CurrentRide"]
+        }),
+
+        getRideDetails: builder.query({
+            query: (rideId) => ({
+                url: `/ride/${rideId}`,
+                method: "GET",
+            })
         })
     })
 })
@@ -42,5 +49,6 @@ export const authApi = baseApi.injectEndpoints({
 export const {
     useGetRideRequestQuery,
     useSetRideFareMutation,
-    useGetRideHistoryQuery
+    useGetRideHistoryQuery,
+    useGetRideDetailsQuery
 } = authApi

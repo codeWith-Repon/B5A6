@@ -24,6 +24,7 @@ import GetRide from '@/pages/GetRide';
 import BookingDetails from '@/pages/BookingDetails';
 import RideHistory from '@/pages/RideHistory';
 import CurrentRidePage from '@/pages/CurrentRide';
+import RideDetailsPage from '@/pages/RideDetails';
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
       {
         Component: WithAuth(CurrentRidePage),
         path: '/current-ride',
+      },
+      {
+        Component: WithAuth(RideDetailsPage),
+        path: '/ride/:id',
       },
       {
         Component: Profile,
