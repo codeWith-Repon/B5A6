@@ -28,10 +28,24 @@ export function NotificationDropdown() {
   const unreadCount = notifications.filter((n: any) => !n.isRead).length;
 
   const handleNotificationClick = async (notification: any) => {
+    const rideId = notification.ride?._id;
+    const isFinished = ['COMPLETED', 'REJECTED', 'CANCELLED'].includes(
+      notification.ride?.rideStatus
+    );
+
+    const navigateTo = isFinished
+      ? `/ride/${rideId}`
+      : `/current-ride?pickup=${notification.ride?.pickupLocation}&drop=${notification.ride?.dropLocation}`;
+
     if (!notification.isRead) {
-      await markSingleAsRead(notification._id);
+      try {
+        await markSingleAsRead(notification._id).unwrap();
+      } catch (err) {
+        console.error('Failed to mark notification as read:', err);
+      }
     }
-    navigate(`/ride/${notification.ride?._id || notification.ride}`);
+
+    navigate(navigateTo);
   };
 
   return (

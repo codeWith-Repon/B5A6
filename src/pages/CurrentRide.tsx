@@ -14,18 +14,41 @@ import { Badge } from '@/components/ui/badge';
 import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import OtpVerification from '@/components/modules/Ride/Otpverification';
+import { useEffect, useMemo } from 'react';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
-  const { data: response, isLoading } = useGetCurrentRideQuery(undefined);
+  const {
+    data: response,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetCurrentRideQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 3000,
+  });
+
   const { data: userResponse } = useUserInfoQuery(undefined);
   const ride = response?.data;
-
   const role = userResponse?.data?.role;
 
-  const isInactiveStatus = ['COMPLETED', 'CANCELLED', 'REJECTED'].includes(
-    ride?.rideStatus || '',
-  );
+  const isInactiveStatus = useMemo(() => {
+    if (!ride) return false;
+    return ['COMPLETED', 'CANCELLED', 'REJECTED'].includes(ride.rideStatus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ride?.rideStatus]);
+
+  useEffect(() => {
+    const noRideFound = !isLoading && !isFetching && (!ride || isError);
+
+    if (noRideFound || isInactiveStatus) {
+      if (isInactiveStatus && ride?._id) {
+        navigate(`/ride/${ride._id}`, { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [ride, isInactiveStatus, isLoading, isFetching, isError, navigate]);
 
   if (isLoading)
     return (
