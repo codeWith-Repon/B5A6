@@ -9,8 +9,6 @@ import Verify from '@/pages/Verify';
 import { generateRoutes } from '@/utils/generateRoutes';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { adminSidebarItems } from './adminSidebarItems';
-import { driverSidebarItems } from './DriverSidebarItem';
-import { userSidebarItems } from './userSidebarItems';
 import Unauthorized from '@/pages/Unauthorized';
 import { WithAuth } from '@/utils/WithAuth';
 import { role } from '@/constants/role';
@@ -89,22 +87,22 @@ export const router = createBrowserRouter([
       ...generateRoutes(adminSidebarItems),
     ],
   },
-  {
-    Component: WithAuth(DashboardLayout, role.driver as IRole),
-    path: '/driver',
-    children: [
-      { index: true, element: <Navigate to='/driver/ride-request' /> },
-      ...generateRoutes(driverSidebarItems),
-    ],
-  },
-  {
-    Component: WithAuth(DashboardLayout, role.rider as IRole),
-    path: '/rider',
-    children: [
-      { index: true, element: <Navigate to='/rider/current-ride' /> },
-      ...generateRoutes(userSidebarItems),
-    ],
-  },
+  // {
+  //   Component: WithAuth(DashboardLayout, role.driver as IRole),
+  //   path: '/driver',
+  //   children: [
+  //     { index: true, element: <Navigate to='/driver/ride-request' /> },
+  //     ...generateRoutes(driverSidebarItems),
+  //   ],
+  // },
+  // {
+  //   Component: WithAuth(DashboardLayout, role.rider as IRole),
+  //   path: '/rider',
+  //   children: [
+  //     { index: true, element: <Navigate to='/rider/current-ride' /> },
+  //     ...generateRoutes(userSidebarItems),
+  //   ],
+  // },
   {
     Component: Login,
     path: '/login',

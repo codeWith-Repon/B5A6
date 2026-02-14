@@ -17,7 +17,7 @@ const CurrentRide = () => {
     isLoading: rideLoading,
     isError,
   } = useGetCurrentRideQuery(undefined, {
-    pollingInterval: 3000,
+    // pollingInterval: 3000,
     skipPollingIfUnfocused: true,
   });
 
