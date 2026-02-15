@@ -24,7 +24,7 @@ const Login = () => {
   return (
     <div className='min-h-svh content-center'>
       <div className='flex flex-col items-center justify-center'>
-        <div className='min-w-xs flex flex-col gap-4 items-center'>
+        <div className='min-w-xs flex flex-col gap-4 items-center md:p-0 p-4'>
           <Link
             to='/'
             className='text-primary hover:text-primary/90 flex items-center gap-1 '

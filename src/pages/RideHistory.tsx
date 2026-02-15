@@ -8,6 +8,8 @@ import { useGetRideHistoryQuery } from '@/redux/features/ride/ride.api';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import OtpVerification from '@/components/modules/Ride/Otpverification';
 import { ActiveRideSidebarCard } from '@/components/modules/Ride/ActiveRideSidebarCard';
+import Loader from '@/components/shared/Loader';
+import { History } from 'lucide-react';
 
 export default function RideHistory() {
   const navigate = useNavigate();
@@ -38,9 +40,13 @@ export default function RideHistory() {
 
   if (isLoading) {
     return (
-      <div className='p-10 text-center font-bold animate-pulse uppercase tracking-widest'>
-        Loading Your Rides...
-      </div>
+      <Loader
+        fullPage
+        text='Fetching Your Journeys...'
+        icon={History}
+        animate={false}
+        iconSize={30}
+      />
     );
   }
 
