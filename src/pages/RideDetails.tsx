@@ -17,7 +17,7 @@ export default function RideDetailsPage() {
   const navigate = useNavigate();
 
   const { data: rideResponse, isLoading: rideLoading } =
-    useGetRideDetailsQuery(id);
+    useGetRideDetailsQuery(id ?? '', { skip: !id });
   const { data: userResponse, isLoading: userLoading } =
     useUserInfoQuery(undefined);
 
@@ -35,7 +35,7 @@ export default function RideDetailsPage() {
   if (!ride) return <div className='p-10 text-center'>Ride not found!</div>;
 
   return (
-    <div className='min-h-screen bg-background p-4 lg:p-8'>
+    <div className='min-h-screen p-4 lg:p-8'>
       <div className='max-w-4xl mx-auto space-y-6'>
         {/* Navigation & Status */}
         <div className='flex items-center justify-between'>
@@ -54,8 +54,8 @@ export default function RideDetailsPage() {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           {/* Section 1: Journey Details */}
-          <div className='bg-card border p-6 rounded-3xl shadow-sm space-y-6'>
-            <h2 className='text-xl font-black italic uppercase tracking-tighter text-primary'>
+          <div className='glass border border-border/40 p-6 rounded-3xl shadow-xl shadow-primary/5 space-y-6'>
+            <h2 className='text-xl font-extrabold uppercase tracking-tight gradient-brand-text'>
               Journey Summary
             </h2>
 
@@ -112,8 +112,8 @@ export default function RideDetailsPage() {
           </div>
 
           {/* Section 2: Conditional User/Driver Info */}
-          <div className='bg-card border p-6 rounded-3xl shadow-sm space-y-6'>
-            <h2 className='text-xl font-black italic uppercase tracking-tighter text-primary'>
+          <div className='glass border border-border/40 p-6 rounded-3xl shadow-xl shadow-primary/5 space-y-6'>
+            <h2 className='text-xl font-extrabold uppercase tracking-tight gradient-brand-text'>
               {currentUserRole === 'RIDER' ? 'Driver Details' : 'Rider Details'}
             </h2>
 
@@ -194,7 +194,7 @@ export default function RideDetailsPage() {
         </div>
 
         {/* Bottom Section: Security Info */}
-        <div className='bg-muted/50 p-4 rounded-2xl flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase'>
+        <div className='glass-subtle border border-border/40 p-4 rounded-2xl flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider'>
           <div className='flex items-center gap-2'>
             <ShieldCheck size={14} className='text-primary' />
             Ride ID: {ride._id}

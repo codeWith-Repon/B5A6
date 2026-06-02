@@ -6,6 +6,7 @@ import { Home, MapPinOff, Undo2 } from 'lucide-react';
 const NotFound = () => {
   return (
     <div className='relative flex flex-col items-center justify-center min-h-[90vh] overflow-hidden px-4'>
+      <div className='aurora' aria-hidden />
       {/* Background "Dead End" Road Effect */}
       <div className='absolute inset-0 z-0 opacity-10 dark:opacity-5 pointer-events-none'>
         <div className='absolute top-1/2 left-0 w-full h-[2px] bg-dashed border-t-4 border-dashed border-foreground' />
@@ -40,7 +41,7 @@ const NotFound = () => {
           transition={{ delay: 0.5 }}
           className='mt-[-2rem]'
         >
-          <h2 className='text-3xl md:text-4xl font-bold tracking-tight'>
+          <h2 className='text-3xl md:text-4xl font-extrabold tracking-tight gradient-brand-text'>
             Oops! You've gone off-route.
           </h2>
           <p className='mt-4 text-muted-foreground text-lg max-w-md mx-auto'>

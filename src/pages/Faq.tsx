@@ -64,18 +64,29 @@ const Faq = ({
   ],
 }: Faq1Props) => {
   return (
-    <section className='py-20'>
+    <section className='relative py-20 px-4'>
       <div className='container max-w-3xl mx-auto'>
-        <h1 className='mb-4 text-3xl font-semibold md:mb-11 md:text-4xl'>
-          {heading}
-        </h1>
-        <Accordion type='single' collapsible>
+        <div className='text-center mb-10 space-y-3'>
+          <div className='inline-flex items-center gap-2 px-3 py-1 rounded-full glass border border-primary/30 text-xs font-semibold text-primary uppercase tracking-widest'>
+            FAQ
+          </div>
+          <h1 className='text-4xl md:text-5xl font-extrabold tracking-tight'>
+            <span className='text-foreground'>Frequently Asked</span>{' '}
+            <span className='gradient-brand-text'>Questions</span>
+          </h1>
+          <p className='text-muted-foreground'>{heading}</p>
+        </div>
+        <Accordion type='single' collapsible className='w-full space-y-3'>
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className='font-semibold hover:no-underline'>
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className='glass border border-border/40 rounded-2xl px-6 data-[state=open]:border-primary/40 data-[state=open]:shadow-xl data-[state=open]:shadow-primary/5 transition-all'
+            >
+              <AccordionTrigger className='font-semibold hover:no-underline hover:text-primary transition-colors'>
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className='text-muted-foreground'>
+              <AccordionContent className='text-muted-foreground leading-relaxed'>
                 {item.answer}
               </AccordionContent>
             </AccordionItem>

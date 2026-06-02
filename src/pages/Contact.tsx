@@ -6,7 +6,7 @@ import { MapPlaceholderSection } from '@/components/modules/Contact/MapPlacehold
 
 const Contact = () => {
   return (
-    <div className='min-h-screen bg-background text-foreground'>
+    <div className='min-h-screen text-foreground'>
       <ContactHeaderSection />
 
       <div className='container mx-auto px-4 py-15'>

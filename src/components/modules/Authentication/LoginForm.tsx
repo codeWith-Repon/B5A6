@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -29,6 +22,8 @@ import { useLoginMutation } from '@/redux/features/auth/auth.api';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
+import { tokenStorage } from '@/lib/tokenStorage';
+import { rideSocket } from '@/lib/socket';
 
 const signInSchema = z.object({
   email: z.email().min(1, { error: 'Email is required' }),
@@ -69,6 +64,11 @@ export function LoginForm({
       const result = await Login(data).unwrap();
 
       if (result.success) {
+        const token = result.data?.accessToken;
+        if (token) {
+          tokenStorage.set(token);
+          rideSocket.connect(token);
+        }
         toast.success('Login successful');
         const redirectTo = location.state?.from || '/';
 
@@ -111,141 +111,129 @@ export function LoginForm({
     window.open(`${config.baseUrl}/auth/google`, '_self');
   };
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader className='text-center'>
-          <CardTitle className='text-xl'>Welcome back</CardTitle>
-          <CardDescription>Sign in with your Google account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='grid gap-6'>
-            <div className='flex flex-col gap-4'>
-              <Button
-                variant='outline'
-                className='w-full cursor-pointer'
-                onClick={handleGoogleSignIn}
-              >
-                <GoogleSvg />
-                Sign in with Google
-              </Button>
-            </div>
-            <div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>
-              <span className='bg-card text-muted-foreground relative z-10 px-2'>
-                Or continue with
-              </span>
-            </div>
+    <div className={cn('flex flex-col gap-5', className)} {...props}>
+      <Button
+        variant='outline'
+        className='w-full h-11'
+        onClick={handleGoogleSignIn}
+      >
+        <GoogleSvg />
+        Sign in with Google
+      </Button>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='space-y-4'
-                id='login-form'
-              >
-                <FormField
-                  control={form.control}
-                  name='email'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='jhonDoe@gmail.com'
-                          type='email'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className='sr-only'>
-                        This is your email address.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      <div className='relative text-center text-xs uppercase tracking-widest text-muted-foreground'>
+        <div className='absolute inset-0 flex items-center'>
+          <div className='w-full border-t border-border/40' />
+        </div>
+        <span className='relative bg-transparent px-3 backdrop-blur-sm'>
+          Or continue with
+        </span>
+      </div>
 
-                <FormField
-                  control={form.control}
-                  name='password'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Password {...field} />
-                      </FormControl>
-                      <FormDescription className='sr-only'>
-                        This is your password.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-
-            {isLoading ? (
-              <Button
-                type='submit'
-                form='login-form'
-                className='w-full cursor-pointer'
-                disabled
-              >
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                Sign in
-              </Button>
-            ) : (
-              <Button
-                type='submit'
-                form='login-form'
-                className='w-full cursor-pointer'
-              >
-                Sign in
-              </Button>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='space-y-4'
+          id='login-form'
+        >
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='you@example.com'
+                    type='email'
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription className='sr-only'>
+                  This is your email address.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )}
+          />
 
-            <div className='flex flex-wrap items-center justify-center gap-3'>
-              <Button
-                variant='secondary'
-                className='cursor-pointer'
-                onClick={() =>
-                  handleAutoLogin('superAdmin@gmail.com', 'R1234567@')
-                }
-                disabled={isLoading}
-              >
-                Login as Admin
-              </Button>
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Password {...field} />
+                </FormControl>
+                <FormDescription className='sr-only'>
+                  This is your password.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
 
-              <Button
-                variant='outline'
-                className='cursor-pointer'
-                onClick={() =>
-                  handleAutoLogin('partian55@gmail.com', 'Repon@123')
-                }
-                disabled={isLoading}
-              >
-                Login as User
-              </Button>
-              <Button
-                variant='outline'
-                className='cursor-pointer'
-                onClick={() => handleAutoLogin('driver@gmail.com', 'R1234567@')}
-                disabled={isLoading}
-              >
-                Login as Driver
-              </Button>
-            </div>
+      {isLoading ? (
+        <Button type='submit' form='login-form' className='w-full' disabled>
+          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          Signing in...
+        </Button>
+      ) : (
+        <Button type='submit' form='login-form' className='w-full'>
+          Sign in
+        </Button>
+      )}
 
-            <div className='text-center text-sm'>
-              don&apos;t have an account?{' '}
-              <Link to='/register' className='underline underline-offset-4'>
-                sign up
-              </Link>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className='grid grid-cols-3 gap-2'>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={() => handleAutoLogin('superAdmin@gmail.com', 'R1234567@')}
+          disabled={isLoading}
+        >
+          Admin
+        </Button>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={() => handleAutoLogin('partian55@gmail.com', 'Repon@123')}
+          disabled={isLoading}
+        >
+          User
+        </Button>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={() => handleAutoLogin('driver@gmail.com', 'R1234567@')}
+          disabled={isLoading}
+        >
+          Driver
+        </Button>
+      </div>
 
-      <div className='text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4'>
-        By clicking continue, you agree to our <a href='#'>Terms of Service</a>{' '}
-        and <a href='#'>Privacy Policy</a>.
+      <div className='text-center text-sm text-muted-foreground'>
+        Don&apos;t have an account?{' '}
+        <Link
+          to='/register'
+          className='font-semibold text-primary hover:underline underline-offset-4'
+        >
+          Sign up
+        </Link>
+      </div>
+
+      <div className='text-muted-foreground text-center text-[11px] text-balance leading-relaxed'>
+        By continuing, you agree to our{' '}
+        <a href='#' className='hover:text-foreground underline underline-offset-4'>
+          Terms of Service
+        </a>{' '}
+        and{' '}
+        <a href='#' className='hover:text-foreground underline underline-offset-4'>
+          Privacy Policy
+        </a>
+        .
       </div>
     </div>
   );

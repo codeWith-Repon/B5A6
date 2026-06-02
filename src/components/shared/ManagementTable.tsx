@@ -105,9 +105,9 @@ function ManagementTable<T>({
 
   return (
     <>
-      <div className='rounded-lg border relative'>
+      <div className='glass rounded-2xl border border-border/40 relative overflow-hidden shadow-xl shadow-primary/5'>
         {isRefreshing && (
-          <div className='absolute inset-0 bg-background/50 backdrop-blur-[2px] flex items-center justify-center z-10 rounded-lg'>
+          <div className='absolute inset-0 bg-background/50 backdrop-blur-[2px] flex items-center justify-center z-10 rounded-2xl'>
             <div className='flex flex-col items-center gap-2'>
               <Loader2 className='h-6 w-6 animate-spin text-primary' />
               <p className='text-sm text-muted-foreground'>Refreshing...</p>

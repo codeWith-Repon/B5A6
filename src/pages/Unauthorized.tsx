@@ -1,28 +1,31 @@
 import { Button } from '@/components/ui/button';
+import { ShieldOff } from 'lucide-react';
 import { Link } from 'react-router';
 
 const Unauthorized = () => {
   return (
-    <div>
-      <section className='bg-sidebar-accent min-h-svh content-center'>
-        <div className='py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 '>
-          <div className='mx-auto max-w-screen-sm text-center'>
-            <h1 className='mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500'>
-              404
-            </h1>
-            <p className='mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white'>
-              Something's missing.
-            </p>
-            <p className='mb-4 text-lg font-light text-gray-500 dark:text-gray-400'>
-              Sorry, we can't find that page. You'll find lots to explore on the
-              home page.{' '}
-            </p>
-            <Button className='mt-5'>
-              <Link to={'/'}>Back to Homepage</Link>
-            </Button>
-          </div>
+    <div className='relative min-h-svh overflow-hidden flex items-center justify-center px-4'>
+      <div className='aurora' aria-hidden />
+      <div className='relative z-10 w-full max-w-md glass-strong rounded-3xl border border-border/40 shadow-2xl shadow-primary/10 p-8 md:p-10 text-center space-y-6'>
+        <div className='mx-auto w-20 h-20 rounded-2xl gradient-brand-soft border border-primary/30 flex items-center justify-center'>
+          <ShieldOff className='w-10 h-10 text-primary' />
         </div>
-      </section>
+        <div>
+          <h1 className='text-6xl font-extrabold tracking-tighter gradient-brand-text leading-none'>
+            403
+          </h1>
+          <p className='mt-3 text-2xl font-bold text-foreground'>
+            Access denied
+          </p>
+          <p className='mt-2 text-sm text-muted-foreground max-w-xs mx-auto'>
+            You don't have permission to access this page. Try a different
+            route or sign in with a different account.
+          </p>
+        </div>
+        <Button asChild size='lg' className='w-full rounded-xl'>
+          <Link to='/'>Back to Homepage</Link>
+        </Button>
+      </div>
     </div>
   );
 };

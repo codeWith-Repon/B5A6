@@ -39,15 +39,15 @@ export function Profile() {
   // console.log(driverInfo);
 
   return (
-    <Card className='w-full max-w-7xl mx-auto my-10 px-6'>
+    <Card className='w-full max-w-7xl mx-auto my-10 px-6 py-8'>
       <EditProfileDialog
         open={openProfileDialog}
         setOpen={setOpenProfileDialog}
         userInfo={userInfo}
       />
       <div>
-        <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
-          <h1 className='text-2xl font-bold'>My Profile</h1>
+        <div className='flex items-center justify-between border-b border-border/40 pb-3 mb-4'>
+          <h1 className='text-2xl font-extrabold tracking-tight gradient-brand-text'>My Profile</h1>
           <SquarePen
             className='cursor-pointer'
             onClick={() => setOpenProfileDialog(true)}
@@ -116,8 +116,8 @@ export function Profile() {
       {userInfo?.data?.role === role.driver && (
         <>
           <div>
-            <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
-              <h1 className='text-2xl font-bold'>Driver Information</h1>
+            <div className='flex items-center justify-between border-b border-border/40 pb-3 mb-4'>
+              <h1 className='text-2xl font-extrabold tracking-tight gradient-brand-text'>Driver Information</h1>
               <SquarePen
                 className='cursor-pointer'
                 onClick={() => setOpenDriverDialog(true)}
@@ -177,8 +177,8 @@ export function Profile() {
           </div>
 
           <div>
-            <div className='flex items-center justify-between border-b-2 border-dashed pb-3 mb-3'>
-              <h1 className='text-2xl font-bold'>Vehicle Information</h1>
+            <div className='flex items-center justify-between border-b border-border/40 pb-3 mb-4'>
+              <h1 className='text-2xl font-extrabold tracking-tight gradient-brand-text'>Vehicle Information</h1>
               <SquarePen
                 className='cursor-pointer'
                 onClick={() => setOpenVehicleDialog(true)}

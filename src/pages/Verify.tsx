@@ -111,9 +111,10 @@ const Verify = () => {
   };
 
   return (
-    <div className='grid place-content-center h-screen'>
+    <div className='relative grid place-content-center min-h-svh px-4 overflow-hidden'>
+      <div className='aurora' aria-hidden />
       {confirmed ? (
-        <Card className='w-full max-w-sm'>
+        <Card className='relative z-10 w-full max-w-sm'>
           <CardHeader>
             <CardTitle>One-Time Password</CardTitle>
             <CardDescription className='sr-only'>
@@ -189,9 +190,9 @@ const Verify = () => {
           </CardFooter>
         </Card>
       ) : (
-        <Card className='w-[300px] '>
+        <Card className='relative z-10 w-full max-w-sm'>
           <CardHeader>
-            <CardTitle>Verify your email address.</CardTitle>
+            <CardTitle className='text-xl'>Verify your email</CardTitle>
             <CardDescription>
               We will send you an OTP at
               <span className='underline font-semibold'> {email}</span>

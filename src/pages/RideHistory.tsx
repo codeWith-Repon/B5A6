@@ -51,23 +51,27 @@ export default function RideHistory() {
   }
 
   return (
-    <div className='min-h-screen bg-background text-foreground '>
+    <div className='min-h-screen text-foreground'>
       <div className='py-8'>
         <div className='container max-w-7xl mx-auto px-4'>
           {/* Header */}
           <div className='flex items-center gap-4 mb-8'>
             <button
               onClick={() => navigate(-1)}
-              className='p-2 hover:bg-muted rounded-full border border-border transition-colors'
+              className='p-2.5 glass border border-border/40 rounded-xl hover:border-primary/40 hover:bg-primary/10 transition-all'
             >
-              <ChevronLeft className='w-6 h-6' />
+              <ChevronLeft className='w-5 h-5' />
             </button>
             <div>
-              <h1 className='text-3xl font-black uppercase italic tracking-tighter'>
-                Ride History ({role})
+              <div className='inline-flex items-center gap-2 px-2 py-0.5 rounded-full glass border border-primary/30 text-[10px] font-bold text-primary uppercase tracking-widest mb-1'>
+                {role}
+              </div>
+              <h1 className='text-3xl font-extrabold tracking-tight'>
+                <span className='text-foreground'>Your</span>{' '}
+                <span className='gradient-brand-text'>journey</span>
               </h1>
-              <p className='text-muted-foreground text-sm font-medium'>
-                Tracking {rides.length} journey{rides.length !== 1 ? 's' : ''}
+              <p className='text-muted-foreground text-sm font-medium mt-1'>
+                {rides.length} ride{rides.length !== 1 ? 's' : ''} in total
               </p>
             </div>
           </div>
@@ -81,8 +85,8 @@ export default function RideHistory() {
               className={`lg:col-span-3 ${!currenRide ? 'lg:col-span-4' : ''}`}
             >
               {/* Filters and Search */}
-              <div className='bg-card border border-border rounded-3xl p-5 mb-8 shadow-sm'>
-                <div className='flex flex-col md:flex-row gap-4'>
+              <div className='glass rounded-2xl border border-border/40 p-4 mb-6'>
+                <div className='flex flex-col md:flex-row gap-3'>
                   <div className='relative flex-1'>
                     <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
                     <input
@@ -94,7 +98,7 @@ export default function RideHistory() {
                       }
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className='w-full pl-10 pr-4 py-2.5 bg-muted/50 rounded-xl border-none focus:ring-2 focus:ring-primary text-sm'
+                      className='w-full pl-10 pr-4 py-2.5 glass-subtle border border-border/40 rounded-xl focus:border-primary/60 focus:ring-2 focus:ring-primary/20 outline-none text-sm transition-all'
                     />
                   </div>
                   <div className='flex gap-2 overflow-x-auto pb-1 md:pb-0'>
@@ -113,10 +117,10 @@ export default function RideHistory() {
                         <button
                           key={status}
                           onClick={() => setFilterStatus(status)}
-                          className={`px-4 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap ${
+                          className={`px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
                             filterStatus === status
-                              ? 'bg-primary text-white'
-                              : 'bg-muted text-muted-foreground'
+                              ? 'gradient-brand text-white shadow-md shadow-primary/30'
+                              : 'glass-subtle border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/30'
                           }`}
                         >
                           {status}
@@ -129,9 +133,9 @@ export default function RideHistory() {
               {/* Rides list */}
               <div className='space-y-4'>
                 {filteredRides.length === 0 ? (
-                  <div className='bg-card border border-dashed border-border rounded-4xl p-16 text-center'>
-                    <MapPin className='w-12 h-12 text-muted-foreground/20 mx-auto mb-4' />
-                    <p className='text-lg font-bold uppercase tracking-tighter'>
+                  <div className='glass border border-dashed border-border/40 rounded-3xl p-16 text-center'>
+                    <MapPin className='w-12 h-12 text-muted-foreground/30 mx-auto mb-4' />
+                    <p className='text-lg font-bold uppercase tracking-wider text-muted-foreground'>
                       No rides found
                     </p>
                   </div>
@@ -151,10 +155,10 @@ export default function RideHistory() {
                     return (
                       <div
                         key={ride._id}
-                        className={`bg-card border border-border rounded-3xl overflow-hidden transition-all duration-300 ${
+                        className={`glass border border-border/40 rounded-2xl overflow-hidden transition-all duration-300 ${
                           expandedRideId === ride._id
-                            ? 'ring-2 ring-primary'
-                            : ''
+                            ? 'ring-2 ring-primary/40 shadow-xl shadow-primary/10 border-primary/40'
+                            : 'hover:border-primary/30'
                         }`}
                       >
                         {/* Main Summary */}
@@ -244,7 +248,7 @@ export default function RideHistory() {
                                 </div>
                               </div>
 
-                              <div className='bg-background rounded-2xl p-4 border border-border grid grid-cols-2 gap-4'>
+                              <div className='glass-subtle rounded-2xl p-4 border border-border/40 grid grid-cols-2 gap-4'>
                                 <div>
                                   <p className='text-[9px] font-black uppercase text-muted-foreground'>
                                     Payment
