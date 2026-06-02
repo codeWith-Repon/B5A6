@@ -1,33 +1,43 @@
 import config from '@/config';
-import axios from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios';
 
 export const axiosInstance = axios.create({
     baseURL: config.baseUrl,
-    withCredentials: true
+    withCredentials: true,
 });
 
-// Add a request interceptor
-axiosInstance.interceptors.request.use(function (config) {
-    // Do something before request is sent
-    return config;
-}, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-},
-    {
-        synchronous: true, runWhen: () => {
-            return true
+type RetriableConfig = AxiosRequestConfig & { _retry?: boolean };
+
+let refreshPromise: Promise<unknown> | null = null;
+
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const original = error.config as RetriableConfig | undefined;
+        const status = error.response?.status;
+
+        if (
+            status !== 401 ||
+            !original ||
+            original._retry ||
+            original.url?.includes('/auth/refresh-token') ||
+            original.url?.includes('/auth/login')
+        ) {
+            return Promise.reject(error);
+        }
+
+        original._retry = true;
+
+        try {
+            refreshPromise ??= axiosInstance
+                .post('/auth/refresh-token')
+                .finally(() => {
+                    refreshPromise = null;
+                });
+            await refreshPromise;
+            return axiosInstance(original);
+        } catch (refreshError) {
+            return Promise.reject(refreshError);
         }
     }
 );
-
-// Add a response interceptor
-axiosInstance.interceptors.response.use(function onFulfilled(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response;
-}, function onRejected(error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-});
