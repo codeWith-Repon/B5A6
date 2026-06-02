@@ -33,9 +33,11 @@ import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
 interface IProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  userInfo: {
-    data: IUser;
-  };
+  userInfo:
+    | {
+        data: IUser;
+      }
+    | undefined;
 }
 
 const formSchema = z.object({
@@ -75,10 +77,10 @@ export default function EditProfileDialog({ open, setOpen, userInfo }: IProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: userInfo.data?.name || '',
-      email: userInfo.data?.email || '',
-      address: userInfo.data?.address || '',
-      phone: userInfo.data?.phone || '',
+      name: userInfo?.data?.name || '',
+      email: userInfo?.data?.email || '',
+      address: userInfo?.data?.address || '',
+      phone: userInfo?.data?.phone || '',
     },
   });
 

@@ -110,7 +110,7 @@ export default function EditVehicleInfo({
         images.forEach((image) => formData.append('files', image as File));
         payload = formData;
       } else {
-        payload = { ...data };
+        payload = { ...data } as IVehicle;
       }
 
       await updateVehicle({

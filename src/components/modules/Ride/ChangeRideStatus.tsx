@@ -4,6 +4,7 @@ import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Loader2, XCircle, CheckCircle, Navigation, Flag } from 'lucide-react';
+import type { RideStatus } from '@/types';
 
 interface ChangeRideStatusProps {
   rideId: string;
@@ -19,7 +20,7 @@ export const ChangeRideStatus = ({
 
   const role = userResponse?.data?.role;
 
-  const handleUpdate = async (newStatus: string) => {
+  const handleUpdate = async (newStatus: RideStatus) => {
     try {
       await updateStatus({ rideId, rideStatus: newStatus }).unwrap();
       toast.success(`Ride status updated to ${newStatus}`);

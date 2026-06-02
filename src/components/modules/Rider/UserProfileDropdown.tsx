@@ -15,6 +15,8 @@ import {
 } from '@/redux/features/auth/auth.api';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { tokenStorage } from '@/lib/tokenStorage';
+import { rideSocket } from '@/lib/socket';
 
 export function UserProfileDropdown() {
   const navigate = useNavigate();
@@ -26,6 +28,8 @@ export function UserProfileDropdown() {
   const handleLogout = async () => {
     try {
       await logOut(undefined).unwrap();
+      tokenStorage.clear();
+      rideSocket.close();
       await dispatch(authApi.util.resetApiState());
       toast.success('Logout successful');
       navigate('/login');
@@ -95,7 +99,7 @@ export function UserProfileDropdown() {
               <div className='flex items-center gap-1 mt-0.5'>
                 <Star className='w-3 h-3 fill-yellow-400 text-yellow-400' />
                 <span className='text-xs font-bold'>
-                  {user.rating ?? '4.2'}
+                  {(user as { rating?: number }).rating ?? '4.2'}
                 </span>
               </div>
             </div>
@@ -104,7 +108,7 @@ export function UserProfileDropdown() {
                 Trips
               </span>
               <span className='text-xs font-bold mt-0.5'>
-                {user.totalRides ?? '12'}
+                {(user as { totalRides?: number }).totalRides ?? '12'}
               </span>
             </div>
           </div>

@@ -34,7 +34,7 @@ const FormSchema = z.object({
     message: 'Your one-time password must be 6 characters.',
   }),
 });
-export function VerifyRideOtp() {
+export function VerifyRideOtp({ rideId }: { rideId: string }) {
   const [open, setOpen] = useState(false);
   const [verifyRideOtp] = useVerifyRideOtpMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -47,7 +47,7 @@ export function VerifyRideOtp() {
     const otp = data.pin;
 
     try {
-      const res = await verifyRideOtp({ otp }).unwrap();
+      const res = await verifyRideOtp({ otp, rideId }).unwrap();
       console.log(res);
       toast.success('OTP verified successfully');
       setOpen(false);

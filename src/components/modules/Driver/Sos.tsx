@@ -9,10 +9,30 @@ const Sos = () => {
   const [sendEmergencyMessage] = useSendEmergencyMessageMutation();
 
   const handleSendEmergencyMessage = async () => {
-    console.log(currentRideData?.data?._id);
+    const rideId = currentRideData?.data?._id;
+    if (!rideId) {
+      toast.error('No active ride');
+      return;
+    }
+
+    const location = await new Promise<string>((resolve) => {
+      if (!('geolocation' in navigator)) {
+        resolve('Unknown location');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) =>
+          resolve(`Lat ${pos.coords.latitude}, Lng ${pos.coords.longitude}`),
+        () => resolve('Unknown location'),
+        { timeout: 5000 }
+      );
+    });
+
     try {
       await sendEmergencyMessage({
-        rideId: currentRideData?.data?._id,
+        rideId,
+        location,
+        message: 'SOS triggered from active ride',
       }).unwrap();
 
       toast.success('Emergency message sent successfully');

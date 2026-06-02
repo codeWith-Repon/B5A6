@@ -27,6 +27,7 @@ import { useRegisterVehicleMutation } from '@/redux/features/driver/driver.api';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { useEffect, useState } from 'react';
 import type { IVehicle } from '@/types/driver.types';
+import type { VehicleType } from '@/types';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -78,7 +79,7 @@ export function VehicleForm({
   const onSubmit = async (data: z.infer<typeof vehicleSchema>) => {
     const vehicleData: IVehicle = {
       driver: userId,
-      vehicleType: data.vehicleType,
+      vehicleType: data.vehicleType as VehicleType,
       brand: data.brand,
       model: data.model,
       vehicleLicense: data.vehicleLicense,
