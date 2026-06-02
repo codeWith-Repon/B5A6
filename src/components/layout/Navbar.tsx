@@ -25,6 +25,8 @@ import { UserProfileDropdown } from '../modules/Rider/UserProfileDropdown';
 import { Car } from 'lucide-react';
 import Loader from '../shared/Loader';
 import { NotificationDropdown } from '../modules/HomePage/NotificationDropdown';
+import { tokenStorage } from '@/lib/tokenStorage';
+import { rideSocket } from '@/lib/socket';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -41,13 +43,15 @@ const navigationLinks = [
 export default function Navbar() {
   const { data: userInfo, isLoading, isFetching } = useUserInfoQuery(undefined);
   const [logOut] = useLogOutMutation();
-  const [isSticky, setIsSticky] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { hash, pathname } = useLocation();
 
   const handleLogout = async () => {
     try {
       await logOut(undefined);
+      tokenStorage.clear();
+      rideSocket.close();
       await dispatch(authApi.util.resetApiState());
       toast.success('Logout successful');
     } catch (error) {
@@ -59,11 +63,10 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
+      setScrolled(window.scrollY > 8);
     };
-
-    window.addEventListener('scroll', handleScroll);
-
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -83,24 +86,24 @@ export default function Navbar() {
 
   return (
     <header
-      className={`border-b px-4 md:px-6 transition-all duration-500 top-0 z-40 bg-background  w-full ${
-        isSticky ? 'sticky bg-background/80 backdrop-blur-md shadow-sm' : ''
+      className={`sticky top-0 z-40 px-4 md:px-6 w-full bg-background border-b border-border transition-shadow duration-200 ${
+        scrolled ? 'shadow-sm' : ''
       }`}
     >
       <div>
-        <div className='flex h-16 items-center justify-between gap-4 mx-auto container max-w-342.5'>
+        <div className='flex h-14 items-center justify-between gap-4 mx-auto container max-w-342.5'>
           {/* Left side */}
           <div className='flex items-center gap-2'>
             {/* Main nav */}
-            <div className='flex items-center gap-6'>
+            <div className='flex items-center gap-8'>
               <Link
                 to='/'
-                className='text-primary hover:text-primary/90 flex items-center gap-1 '
+                className='group flex items-center gap-2 transition-opacity hover:opacity-90'
               >
-                <div className='p-2 rounded-lg bg-primary text-primary-foreground'>
-                  <Car className='w-5 h-5' />
+                <div className='p-1.5 rounded-md bg-primary text-primary-foreground'>
+                  <Car className='w-4 h-4' />
                 </div>
-                <span className='font-bold text-lg dark:text-white'>
+                <span className='font-semibold text-base tracking-tight text-foreground'>
                   RideFlow
                 </span>
               </Link>
@@ -121,7 +124,7 @@ export default function Navbar() {
                         <NavigationMenuItem key={link.href}>
                           <NavigationMenuLink
                             asChild
-                            className='text-muted-foreground hover:text-primary py-1.5 font-medium'
+                            className='text-sm text-muted-foreground hover:text-foreground py-1.5 px-2 font-medium transition-colors'
                           >
                             <Link to={navigateLink}>{link.label}</Link>
                           </NavigationMenuLink>
@@ -189,7 +192,7 @@ export default function Navbar() {
                   </svg>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align='start' className='w-36 p-1 md:hidden'>
+              <PopoverContent align='start' className='w-44 p-2 md:hidden border-border rounded-lg'>
                 <NavigationMenu className='max-w-none *:w-full'>
                   <NavigationMenuList className='flex-col items-start gap-0 md:gap-2'>
                     {navigationLinks.map((link, index) => (

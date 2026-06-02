@@ -12,17 +12,19 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className='bg-card border-t border-border'>
-      <div className='container mx-auto px-4'>
+    <footer className='relative mt-20 glass-strong border-t border-border/40'>
+      <div className='container mx-auto px-4 relative'>
         {/* Main footer content - 4 columns */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-12 md:py-16'>
           {/* Company Info */}
           <div className='space-y-4'>
             <div className='flex items-center gap-2 mb-4'>
-              <div className='p-2 rounded-lg bg-primary text-primary-foreground'>
+              <div className='p-2 rounded-xl gradient-brand text-white shadow-lg shadow-primary/30'>
                 <Car className='w-5 h-5' />
               </div>
-              <span className='font-bold text-lg'>RideFlow</span>
+              <span className='font-extrabold text-lg gradient-brand-text'>
+                RideFlow
+              </span>
             </div>
             <p className='text-foreground/60 text-sm leading-relaxed'>
               Revolutionizing urban mobility with safe, affordable, and reliable
@@ -213,36 +215,36 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <Separator className='bg-border' />
+        <Separator className='bg-border/40' />
 
         {/* Bottom footer */}
         <div className='flex flex-col md:flex-row items-center justify-between gap-6 py-8'>
-          <p className='text-foreground/60 text-sm'>
+          <p className='text-muted-foreground text-sm'>
             © {currentYear} RideFlow. All rights reserved.
           </p>
 
           {/* Social Links */}
-          <div className='flex gap-4'>
+          <div className='flex gap-3'>
             <a
               href='#'
-              className='p-2 rounded-full bg-muted hover:bg-muted/80 text-foreground/60 hover:text-primary transition-colors'
+              className='p-2.5 rounded-xl glass-subtle border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/10 transition-all'
               aria-label='Facebook'
             >
-              <Facebook className='w-5 h-5' />
+              <Facebook className='w-4 h-4' />
             </a>
             <a
               href='#'
-              className='p-2 rounded-full bg-muted hover:bg-muted/80 text-foreground/60 hover:text-primary transition-colors'
+              className='p-2.5 rounded-xl glass-subtle border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/10 transition-all'
               aria-label='Twitter'
             >
-              <Twitter className='w-5 h-5' />
+              <Twitter className='w-4 h-4' />
             </a>
             <a
               href='#'
-              className='p-2 rounded-full bg-muted hover:bg-muted/80 text-foreground/60 hover:text-primary transition-colors'
+              className='p-2.5 rounded-xl glass-subtle border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/10 transition-all'
               aria-label='LinkedIn'
             >
-              <Linkedin className='w-5 h-5' />
+              <Linkedin className='w-4 h-4' />
             </a>
           </div>
         </div>
