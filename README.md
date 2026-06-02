@@ -1,164 +1,140 @@
-# Ride Management System – Frontend (React + Redux Toolkit + RTK Query)
+# RideFlow — Frontend
 
-A **production-grade, fully responsive, and role-based ride booking platform** (similar to Uber/Pathao) built with **React, Redux Toolkit, RTK Query, Tailwind CSS**.  
-Supports **Rider, Driver, and Admin dashboards** with real-time updates, secure authentication, and a professional UI/UX.
-
----
-
-## Live Demo
-
-- **Frontend:** [Ride Booking Frontend](https://ridebooking-lilac.vercel.app/)
-- **Backend API:** [Ride Booking Backend](https://ride-booking-apis.vercel.app/)
+A production-grade ride-sharing platform frontend, built with React 19, Redux Toolkit + RTK Query, Tailwind CSS v4, and a WebSocket-driven real-time layer. Supports rider, driver, and admin roles with a single sapphire-accented design system.
 
 ---
 
-## Project Overview
+## Highlights
 
-This platform allows **Riders** to book rides, **Drivers** to accept/manage rides, and **Admins** to monitor the entire system.  
-The project features **role-based dashboards, responsive design, live ride tracking, emergency SOS functionality**.
+- **Three role-based dashboards** — Rider, Driver, Admin/Super-admin.
+- **Live ride flow** — book → match → OTP-verify → in-transit → complete, with status changes pushed over WebSocket (no polling).
+- **Real-time chat** between rider and driver during an active ride.
+- **Live driver tracking** — the driver's pin moves on the rider's map every ~3 s while ONLINE.
+- **Premium map** — CartoDB Voyager (light) / Dark Matter (dark) tiles, theme-aware, with an animated route (glow + draw-in + flowing dashes).
+- **Autocomplete location search** (Nominatim) with keyboard nav.
+- **Cookie-based JWT auth** with automatic 401 → refresh-token retry.
+- **Native dark mode** — every primitive, layout, and map tile flips with the theme.
+- **Clean design system** — neutral surfaces, single sapphire accent, restrained typography. Linear/Stripe direction, no synthwave.
 
----
-
-## Features
-
-### Public Pages
-
-- Home (Hero, Features, Testimonials, CTA, Promotions)
-- About Us (Company background, mission, team)
-- Features (Rider, Driver, Admin capabilities)
-- Contact (Validated form)
-- FAQ (Searchable)
+See **[FEATURES.md](./FEATURES.md)** for an in-depth walkthrough of every feature and how it is wired.
+See **[INTEGRATION.md](./INTEGRATION.md)** for the REST API audit and integration history.
 
 ---
 
-### Authentication & Authorization
+## Tech stack
 
-- JWT-based login & registration
-- Role selection (Rider/Driver)
-- Persistent session management
-- Account status handling (Blocked/Suspended → Redirect with info)
-- Logout functionality
-
----
-
-### Rider Dashboard
-
-- Ride request form (Pickup, Destination, Fare estimate, Payment)
-- Ride history (Search, Filter, Pagination)
-- Ride details (Map, Driver info, Status timeline)
-- Profile management (Name, Phone, Password)
-- SOS button (Call Police, Notify Contact, Share Location)
+| Layer | Choice |
+|---|---|
+| UI | React 19, Tailwind CSS v4, shadcn/ui primitives |
+| State | Redux Toolkit + RTK Query (`axiosBaseQuery`) |
+| Routing | react-router 7 |
+| Maps | react-leaflet 5, leaflet-routing-machine, CartoDB tiles, Nominatim geocoding |
+| Real-time | Native `WebSocket` with auto-reconnect singleton |
+| Forms | react-hook-form + zod |
+| Notifications | sonner |
+| Build | Vite 7, TypeScript 5.8 |
 
 ---
 
-### Driver Dashboard
+## Getting started
 
-- Online/Offline toggle
-- Incoming requests (Accept/Reject)
-- Active ride management (Accepted → Picked Up → Completed/Cancelled)
-- Earnings dashboard (Charts: Daily/Weekly/Monthly)
-- Ride history (Search, Filter, Pagination)
-- Profile management (Vehicle details, Password update)
+### Prerequisites
 
----
+- Node.js 18+
+- A running RideFlow backend on `http://localhost:5000` (HTTP) and `ws://localhost:5000/ws` (WebSocket)
 
-### Admin Dashboard
-
-- User management (Search, Filter, Block/Unblock, Approve/Suspend)
-- Ride oversight (All rides with advanced filters)
-- Analytics dashboard (Charts: Ride volume, Revenue trends, Driver activity)
-- Profile management
-
----
-
-### Emergency / SOS
-
-- Floating SOS button (Active ride only)
-- Options: Call Police, Notify Emergency Contact (Email/Phone), Share Location
-- Pre-saved emergency contacts
-- Location sharing via SMS/WhatsApp/email
-- Real-time feedback (toast/confirmation messages)
-
----
-
-### General UI/UX Enhancements
-
-- Responsive Navbar (Role-based)
-- Sidebar + Profile dropdown
-- Data tables with search & filter
-- Recharts (Bar, Line, Pie)
-- Skeleton loaders & smooth transitions
-- Lazy-loading for heavy assets (Maps, Tables)
-- Global error handling with toast notifications
-
----
-
-## Upcoming Features
-
-- **Auto Driver Selection** (System automatically assigns nearest/available driver – no manual selection)
-- **Emergency Phone Number** (Now users can add both email)
-- **Payment System Integration** (Stripe/PayPal/bKash/Nagad support for cashless payments)
-- **Live Ride Tracking** (Real-time map updates for riders & drivers)
-- **Real-time Updates with Socket.io** (Instant ride status updates, notifications, and live communication)
-
----
-
-## Tech Stack
-
-**Frontend:** React, Redux Toolkit, RTK Query, Tailwind CSS, TypeScript  
-**Backend:** Node.js, Express.js, MongoDB, JWT, bcrypt  
-**Visualization:** Recharts  
-**Notifications:** react-hot-toast  
-**Maps:** Google Maps API / Leaflet.js
-
----
-
-## Setup Instructions
-
-### Run Project
+### Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/codeWith-Repon/ride-management-frontend
 cd ride-management-frontend
-
-# Install dependencies
 npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
 ```
 
-### Frontend Environment Variable
+### Environment
+
+Create a `.env` in the project root:
 
 ```bash
-VITE_BASE_URL=https://ride-booking-apis.vercel.app/api/v1
+VITE_NODE_ENV=development
+VITE_BASE_URL=http://localhost:5000/api/v1
+VITE_WS_URL=ws://localhost:5000/ws
 ```
 
-add this your .env file
+For production, replace with your deployed origins (use `wss://` for the socket).
 
-Demo Credentials
+### Run
 
-Use these accounts to test different roles:
+```bash
+npm run dev       # vite dev server on http://localhost:5173
+npm run build     # tsc + vite production build
+npm run lint      # ESLint
+```
 
-Super Admin / Admin
+---
 
-- Email: superadmin@super.com
-- Password: Repon@123
+## Project structure
 
-Driver
+```
+src/
+  components/
+    layout/              # Navbar, Footer, CommonLayout, DashboardLayout
+    modules/             # feature components (HomePage, Authentication, Ride, Driver, Admin, …)
+    shared/              # Loader, ManagementTable, SearchFilter, …
+    ui/                  # shadcn/ui primitives (Button, Card, Input, …)
+    SocketBridge.tsx     # WS → RTK Query cache fan-out
+    DriverTrackingBridge.tsx  # driver geolocation → PATCH loop
+  pages/                 # route components
+  redux/
+    baseApi.ts           # RTK Query base with axios
+    axiosBaseQuery.ts
+    features/            # one slice per API resource
+  lib/
+    axios.ts             # interceptor with 401 → refresh-token retry
+    socket.ts            # RideSocket singleton (auto-reconnect, typed frames)
+    tokenStorage.ts      # localStorage helper for accessToken
+  hooks/                 # useTheme, use-mobile, use-file-upload
+  config/                # VITE_* env wrapper
+  context/, providers/   # theme provider
+  routes/                # router config + sidebar items
+  types/                 # shared TypeScript types
+  utils/                 # WithAuth, getSidebarItems, spinner
+  index.css              # design tokens + utilities
+```
 
-- Email: reponahmedofficial@gmail.com
-- Password: Repon@123
+---
 
-Rider
+## Demo credentials
 
-- Email: repon7253@gmail.com
-- Password: Repon@123
+| Role | Email | Password |
+|---|---|---|
+| Super-admin | `superadmin@super.com` | `Repon@123` |
+| Driver | `reponahmedofficial@gmail.com` | `Repon@123` |
+| Rider | `repon7253@gmail.com` | `Repon@123` |
 
-![Home Page](./public/screenshot/Screenshot1.png)  
+---
+
+## Live demo
+
+- **Frontend:** https://ridebooking-lilac.vercel.app/
+- **Backend API:** https://ride-booking-apis.vercel.app/
+
+---
+
+## Screenshots
+
+![Home Page](./public/screenshot/Screenshot1.png)
 ![Admin Dashboard](./public/screenshot/Screenshot2.png)
 ![Rider Dashboard](./public/screenshot/Screenshot3.png)
+
+---
+
+## Contributing
+
+PRs welcome. Read [FEATURES.md](./FEATURES.md) first to understand the architecture, then [INTEGRATION.md](./INTEGRATION.md) for the API contract details.
+
+---
+
+## License
+
+MIT.
