@@ -1,43 +1,18 @@
 import { baseApi } from "@/redux/baseApi";
 import type { IResponse } from "@/types";
-import type { IGetResponse, IMeta, } from "@/types/driver.types";
-import type { IRideRequestResponse } from "@/types/rideRequest";
+import type { IRide } from "@/types/ride.types";
 
-export const authApi = baseApi.injectEndpoints({
+export const rideApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getRideRequest: builder.query<{ data: IRideRequestResponse[], meta?: IMeta }, unknown>({
-            query: (params) => ({
-                url: "ride/rides",
-                method: "GET",
-                params
-            }),
-            transformResponse: (response: IResponse<IGetResponse<IRideRequestResponse>>) => {
-                return {
-                    data: response.data.data,
-                    meta: response.data.meta
-                }
-            },
-            providesTags: ["RideRequest"]
-        }),
-
-        setRideFare: builder.mutation({
-            query: ({ rideId, fare }) => ({
-                url: `/ride/set-fare/${rideId}`,
-                method: "POST",
-                data: { fare }
-            }),
-            invalidatesTags: ["CurrentRide"]
-        }),
-
-        getRideHistory: builder.query({
+        getRideHistory: builder.query<IResponse<IRide[]>, void>({
             query: () => ({
-                url: "ride/history",
+                url: "/ride/history",
                 method: "GET",
             }),
-            providesTags: ["CurrentRide"]
+            providesTags: ["RideHistory"]
         }),
 
-        getRideDetails: builder.query({
+        getRideDetails: builder.query<IResponse<IRide>, string>({
             query: (rideId) => ({
                 url: `/ride/${rideId}`,
                 method: "GET",
@@ -47,8 +22,6 @@ export const authApi = baseApi.injectEndpoints({
 })
 
 export const {
-    useGetRideRequestQuery,
-    useSetRideFareMutation,
     useGetRideHistoryQuery,
     useGetRideDetailsQuery
-} = authApi
+} = rideApi

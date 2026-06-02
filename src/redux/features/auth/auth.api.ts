@@ -1,6 +1,18 @@
 import { baseApi } from "@/redux/baseApi";
 import type { IResponse } from "@/types";
-import type { ILogin, ILoginResponse, IRegister, IRegisterResponse, ISendOtp, IVerifyOtp } from "@/types/auth.types";
+import type {
+    IChangePassword,
+    IForgotPassword,
+    ILogin,
+    ILoginResponse,
+    IRefreshTokenResponse,
+    IRegister,
+    IRegisterResponse,
+    IResetPassword,
+    ISendOtp,
+    ISetPassword,
+    IVerifyOtp,
+} from "@/types/auth.types";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -39,21 +51,55 @@ export const authApi = baseApi.injectEndpoints({
                 data: userInfo
             })
         }),
-        userInfo: builder.query({
+        userInfo: builder.query<IResponse<IRegisterResponse>, void>({
             query: () => ({
                 url: "/user/get-me",
                 method: "GET",
             }),
             providesTags: ["User"]
         }),
-        updateProfile: builder.mutation({
+        updateProfile: builder.mutation<IResponse<IRegisterResponse>, FormData>({
             query: (data) => ({
                 url: "/user/update",
                 method: "PATCH",
                 data
             }),
             invalidatesTags: ["User"]
-        })
+        }),
+        refreshToken: builder.mutation<IResponse<IRefreshTokenResponse>, void>({
+            query: () => ({
+                url: "/auth/refresh-token",
+                method: "POST",
+            }),
+        }),
+        setPassword: builder.mutation<IResponse<null>, ISetPassword>({
+            query: (data) => ({
+                url: "/auth/set-password",
+                method: "POST",
+                data,
+            }),
+        }),
+        changePassword: builder.mutation<IResponse<null>, IChangePassword>({
+            query: (data) => ({
+                url: "/auth/change-password",
+                method: "POST",
+                data,
+            }),
+        }),
+        forgotPassword: builder.mutation<IResponse<null>, IForgotPassword>({
+            query: (data) => ({
+                url: "/auth/forgot-password",
+                method: "POST",
+                data,
+            }),
+        }),
+        resetPassword: builder.mutation<IResponse<null>, IResetPassword>({
+            query: (data) => ({
+                url: "/auth/reset-password",
+                method: "POST",
+                data,
+            }),
+        }),
     })
 })
 
@@ -64,5 +110,10 @@ export const {
     useSendOtpMutation,
     useVerifyOtpMutation,
     useUserInfoQuery,
-    useUpdateProfileMutation
+    useUpdateProfileMutation,
+    useRefreshTokenMutation,
+    useSetPasswordMutation,
+    useChangePasswordMutation,
+    useForgotPasswordMutation,
+    useResetPasswordMutation,
 } = authApi

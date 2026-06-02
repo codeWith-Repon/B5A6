@@ -1,12 +1,22 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IResponse } from "@/types";
+import type { IResponse, RideStatus } from "@/types";
 import type { IGetResponse } from "@/types/driver.types";
-import type { IRide } from "@/types/ride.types";
+import type { IBookRide, IRide } from "@/types/ride.types";
 
+
+export interface IUpdateRideStatusArgs {
+    rideId: string;
+    rideStatus: RideStatus;
+}
+
+export interface IVerifyRideOtpArgs {
+    rideId: string;
+    otp: string;
+}
 
 export const riderApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        bookRide: builder.mutation({
+        bookRide: builder.mutation<IResponse<IRide>, IBookRide>({
             query: (data) => ({
                 url: "/ride/book",
                 method: "POST",
@@ -25,7 +35,8 @@ export const riderApi = baseApi.injectEndpoints({
                     data: response.data.data,
                     meta: response.data.meta
                 }
-            }
+            },
+            providesTags: ["RideRequest"]
         }),
         getCurrentRide: builder.query<IResponse<IRide>, unknown>({
             query: () => ({
@@ -34,17 +45,17 @@ export const riderApi = baseApi.injectEndpoints({
             }),
             providesTags: ["CurrentRide"]
         }),
-        updateRideStatus: builder.mutation({
+        updateRideStatus: builder.mutation<IResponse<IRide>, IUpdateRideStatusArgs>({
             query: ({ rideId, rideStatus }) => ({
                 url: `/ride/update-status/${rideId}`,
                 method: "POST",
                 data: { rideStatus }
             }),
-            invalidatesTags: ["CurrentRide", "RideRequest"]
+            invalidatesTags: ["CurrentRide", "RideRequest", "RideHistory"]
         }),
-        verifyRideOtp: builder.mutation({
+        verifyRideOtp: builder.mutation<IResponse<IRide>, IVerifyRideOtpArgs>({
             query: ({ otp, rideId }) => ({
-                url: `ride/verify-otp/${rideId}`,
+                url: `/ride/verify-otp/${rideId}`,
                 method: "POST",
                 data: { otp }
             }),

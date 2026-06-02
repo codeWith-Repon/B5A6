@@ -2,15 +2,16 @@ import { baseApi } from "@/redux/baseApi";
 import type { IResponse } from "@/types";
 import { type IGetFreeDrivers, type IDriver, type IDriverResponse, type IDriverUpdate, type IGetResponse, type IMeta, type IVehicle, type IVehicleResponse } from "@/types/driver.types";
 
-export const authApi = baseApi.injectEndpoints({
+export const driverApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        registerVehicle: builder.mutation<IResponse<IVehicleResponse>, IVehicle>({
+        registerVehicle: builder.mutation<IResponse<IVehicleResponse>, IVehicle | FormData>({
             query: (vehicleInfo) => ({
                 url: "/vehicle/register",
                 method: "POST",
                 data: vehicleInfo
-            })
+            }),
+            invalidatesTags: ["Vehicle"]
         }),
 
         registerDriver: builder.mutation<IResponse<IDriverResponse>, IDriver>({
@@ -32,7 +33,8 @@ export const authApi = baseApi.injectEndpoints({
                     data: response.data.data,
                     meta: response.data.meta
                 }
-            }
+            },
+            providesTags: ["Vehicle"]
         }),
         getDrivers: builder.query<{ data: IDriverResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({
@@ -54,10 +56,10 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET"
             })
         }),
-        updateDriver: builder.mutation<IDriverResponse, { id: string, data: IDriverUpdate }>({
+        updateDriver: builder.mutation<IResponse<IDriverResponse>, { id: string, data: IDriverUpdate }>({
             query: ({ id, data }) => ({
                 url: `/driver/update/${id}`,
-                method: "patch",
+                method: "PATCH",
                 data
             }),
             invalidatesTags: ["Driver"]
@@ -76,7 +78,7 @@ export const authApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 data
             }),
-            invalidatesTags: ["Driver"]
+            invalidatesTags: ["Driver", "Vehicle"]
         }),
 
         getFreeDrivers: builder.query<IGetFreeDrivers[], void>({
@@ -85,6 +87,14 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET"
             }),
             transformResponse: (response: IResponse<IGetFreeDrivers[]>) => response.data
+        }),
+
+        updateDriverLocation: builder.mutation<IResponse<null>, { lat: number; lng: number }>({
+            query: (data) => ({
+                url: "/driver/me/location",
+                method: "PATCH",
+                data
+            })
         }),
     })
 })
@@ -98,5 +108,6 @@ export const {
     useUpdateDriverMutation,
     useLogInDriverQuery,
     useUpdateVehicleMutation,
-    useGetFreeDriversQuery
-} = authApi
+    useGetFreeDriversQuery,
+    useUpdateDriverLocationMutation
+} = driverApi

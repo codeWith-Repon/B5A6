@@ -21,6 +21,7 @@ export const vehicleApi = baseApi.injectEndpoints({
             transformResponse: (
                 response: IResponse<IPaginatedResponse<IVehicle>>
             ) => response.data,
+            providesTags: ["Vehicle"],
         }),
 
         getVehicleById: builder.query<IVehicle, string>({
@@ -29,6 +30,7 @@ export const vehicleApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
             transformResponse: (response: IResponse<IVehicle>) => response.data,
+            providesTags: ["Vehicle"],
         }),
     }),
 })
