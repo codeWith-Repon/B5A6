@@ -19,81 +19,76 @@ export function SpecialOffersSection() {
   const offer = offers[currentSlide];
 
   return (
-    <section className='py-20 bg-gradient-to-b from-primary/10 to-chart-2/10 '>
+    <section className='relative py-24'>
       <div className='container mx-auto px-4'>
         {/* Header */}
         <div className='max-w-2xl mx-auto text-center space-y-4 mb-10'>
-          <div className='flex items-center justify-center gap-2 mb-2'>
-            <Zap className='w-5 h-5 text-yellow-500 dark:text-white' />
-            <span className='text-yellow-500 dark:text-white font-semibold text-sm'>
-              SPECIAL OFFERS
-            </span>
+          <div className='inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-border text-xs font-medium text-muted-foreground'>
+            <Zap className='w-3 h-3' />
+            Special offers
           </div>
-          <h2 className='text-3xl md:text-4xl font-bold text-foreground'>
-            Exclusive Deals for You
+          <h2 className='text-3xl md:text-4xl font-semibold tracking-tight text-foreground'>
+            Exclusive deals for you
           </h2>
-          <p className='text-foreground/60 text-lg'>
+          <p className='text-muted-foreground'>
             Save more with our limited-time promotions and special offers.
           </p>
         </div>
 
         {/* Carousel */}
         <div className='max-w-3xl mx-auto'>
-          <div
-            className={`bg-gradient-to-br ${offer.color} rounded-2xl p-8 md:p-12 text-white shadow-2xl transition-all duration-300`}
-          >
+          <div className='relative bg-card border border-border rounded-xl p-8 md:p-12 overflow-hidden'>
+            <div className='absolute top-6 right-6 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
+              Limited time
+            </div>
+
             <div className='space-y-6'>
-              {/* Content */}
-              <div>
-                <h3 className='text-3xl md:text-4xl font-bold mb-3'>
+              <div className='space-y-2'>
+                <h3 className='text-2xl md:text-3xl font-semibold tracking-tight text-foreground'>
                   {offer.title}
                 </h3>
-                <p className='text-lg opacity-90'>{offer.description}</p>
+                <p className='text-muted-foreground'>{offer.description}</p>
               </div>
 
-              {/* Code and CTA */}
-              <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4'>
-                <div className='flex-1'>
-                  <p className='text-sm opacity-75 mb-2'>Use code:</p>
-                  <div className='bg-white/20 rounded-lg px-4 py-3 border border-white/30 font-mono font-bold text-lg'>
+              <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2'>
+                <div className='flex-1 w-full'>
+                  <p className='text-[11px] text-muted-foreground mb-2 uppercase tracking-wider font-medium'>
+                    Promo code
+                  </p>
+                  <div className='bg-secondary border border-border rounded-md px-4 py-2.5 font-mono font-semibold text-base tracking-widest text-foreground'>
                     {offer.code}
                   </div>
                 </div>
-                <Button
-                  size='lg'
-                  className='bg-white text-foreground hover:bg-white/90 font-semibold px-8'
-                >
-                  Claim Now
+                <Button size='lg' className='w-full sm:w-auto'>
+                  Claim now
                 </Button>
               </div>
 
-              {/* Expiry info */}
-              <p className='text-sm opacity-75'>
-                Valid till end of month. T&C apply.
+              <p className='text-xs text-muted-foreground'>
+                Valid till end of month. T&amp;C apply.
               </p>
             </div>
           </div>
 
           {/* Navigation */}
-          <div className='flex items-center justify-between mt-8'>
+          <div className='flex items-center justify-between mt-6'>
             <button
               onClick={prevSlide}
-              className='p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors'
+              className='p-2 rounded-md border border-border bg-background hover:bg-secondary transition-colors'
               aria-label='Previous offer'
             >
-              <ChevronLeft className='w-5 h-5' />
+              <ChevronLeft className='w-4 h-4' />
             </button>
 
-            {/* Dots */}
-            <div className='flex gap-2'>
+            <div className='flex gap-1.5'>
               {offers.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`h-2 rounded-full transition-all ${
+                  className={`h-1.5 rounded-full transition-all ${
                     index === currentSlide
-                      ? 'bg-primary w-8'
-                      : 'bg-border w-2 hover:bg-border/70'
+                      ? 'bg-primary w-6'
+                      : 'bg-border w-1.5 hover:bg-muted-foreground/50'
                   }`}
                   aria-label={`Go to offer ${index + 1}`}
                 />
@@ -102,10 +97,10 @@ export function SpecialOffersSection() {
 
             <button
               onClick={nextSlide}
-              className='p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors'
+              className='p-2 rounded-md border border-border bg-background hover:bg-secondary transition-colors'
               aria-label='Next offer'
             >
-              <ChevronRight className='w-5 h-5' />
+              <ChevronRight className='w-4 h-4' />
             </button>
           </div>
         </div>

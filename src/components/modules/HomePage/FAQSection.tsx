@@ -22,15 +22,19 @@ export function FAQSection() {
   }, [searchTerm, faqs]);
 
   return (
-    <section id='faq' className='py-20 bg-gray-50 dark:bg-gray-800/10'>
+    <section id='faq' className='relative py-24'>
       <div className='container mx-auto px-4'>
         {/* Header */}
         <div className='max-w-2xl mx-auto text-center space-y-4 mb-10'>
-          <h2 className='text-3xl md:text-4xl font-bold text-foreground'>
-            Frequently Asked Questions
+          <div className='inline-flex items-center gap-2 px-3 py-1 rounded-full glass border border-primary/30 text-xs font-semibold text-primary uppercase tracking-widest'>
+            FAQ
+          </div>
+          <h2 className='text-4xl md:text-5xl font-extrabold tracking-tight'>
+            <span className='text-foreground'>Frequently Asked</span>{' '}
+            <span className='gradient-brand-text'>Questions</span>
           </h2>
-          <p className='text-foreground/60 text-lg'>
-            Find answers to common questions about RideHub services and how to
+          <p className='text-muted-foreground text-lg'>
+            Find answers to common questions about RideFlow services and how to
             use them.
           </p>
         </div>
@@ -38,13 +42,13 @@ export function FAQSection() {
         {/* Search */}
         <div className='max-w-2xl mx-auto mb-10'>
           <div className='relative'>
-            <Search className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40' />
+            <Search className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground' />
             <input
               type='text'
               placeholder='Search FAQs...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className='w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-card text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/50'
+              className='w-full pl-12 pr-4 py-3.5 rounded-2xl glass border border-border/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all'
             />
           </div>
         </div>
@@ -57,22 +61,22 @@ export function FAQSection() {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className='border border-border rounded-lg px-6 data-[state=open]:border-primary/30 data-[state=open]:shadow-lg transition-all'
+                  className='glass border border-border/40 rounded-2xl px-6 data-[state=open]:border-primary/40 data-[state=open]:shadow-xl data-[state=open]:shadow-primary/5 transition-all'
                 >
                   <AccordionTrigger className='py-4 hover:no-underline hover:text-primary transition-colors'>
                     <span className='text-left font-semibold text-foreground'>
                       {faq.question}
                     </span>
                   </AccordionTrigger>
-                  <AccordionContent className='text-foreground/70 pb-4 pt-2'>
+                  <AccordionContent className='text-muted-foreground pb-4 pt-2 leading-relaxed'>
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           ) : (
-            <div className='text-center py-12'>
-              <p className='text-foreground/60 text-lg'>
+            <div className='text-center py-12 glass rounded-2xl border border-border/40'>
+              <p className='text-muted-foreground text-lg'>
                 No FAQs match your search. Try different keywords.
               </p>
             </div>
@@ -81,12 +85,12 @@ export function FAQSection() {
 
         {/* Contact CTA */}
         <div className='max-w-2xl mx-auto mt-12 text-center'>
-          <p className='text-foreground/70 mb-4'>
+          <p className='text-muted-foreground mb-4'>
             Didn't find what you're looking for?
           </p>
           <a
             href='#contact'
-            className='text-primary font-semibold hover:underline transition-colors'
+            className='inline-flex items-center gap-1 text-primary font-semibold hover:underline transition-colors'
           >
             Contact our support team →
           </a>

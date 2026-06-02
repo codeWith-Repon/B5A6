@@ -5,14 +5,17 @@ import { landingData } from '@/data/landingData';
 export function ServicesSection() {
   const { services } = landingData;
   return (
-    <section id='services' className='py-20 bg-background'>
+    <section id='services' className='relative py-24'>
       <div className='container mx-auto px-4'>
         {/* Header */}
         <div className='max-w-2xl mx-auto text-center space-y-4 mb-16'>
-          <h2 className='text-3xl md:text-4xl font-bold text-foreground'>
-            Our Services
+          <div className='inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-border text-xs font-medium text-muted-foreground'>
+            Services
+          </div>
+          <h2 className='text-3xl md:text-4xl font-semibold tracking-tight text-foreground'>
+            Move your way
           </h2>
-          <p className='text-foreground/60 text-lg'>
+          <p className='text-muted-foreground'>
             Choose from our range of reliable transportation services tailored
             to your needs.
           </p>
@@ -25,33 +28,28 @@ export function ServicesSection() {
             return (
               <div
                 key={index}
-                className='group rounded-xl bg-card border border-border hover:border-primary/50 overflow-hidden transition-all duration-300 hover:shadow-lg'
+                className='group relative rounded-xl bg-card border border-border overflow-hidden transition-colors hover:border-primary/40'
               >
-                {/* Color bar */}
-                <div className={`h-2 bg-gradient-to-r ${service.color}`} />
-
                 {/* Content */}
-                <div className='p-6 space-y-4'>
-                  <div
-                    className={`w-12 h-12 rounded-lg bg-gradient-to-br ${service.color} flex items-center justify-center`}
-                  >
-                    <Icon className='w-6 h-6 text-white' />
+                <div className='relative p-6 space-y-4'>
+                  <div className='w-10 h-10 rounded-md bg-secondary text-foreground flex items-center justify-center'>
+                    <Icon className='w-5 h-5' />
                   </div>
 
-                  <h3 className='font-bold text-lg text-foreground'>
+                  <h3 className='font-semibold text-base text-foreground'>
                     {service.title}
                   </h3>
 
-                  <p className='text-foreground/60 text-sm leading-relaxed'>
+                  <p className='text-muted-foreground text-sm leading-relaxed'>
                     {service.description}
                   </p>
 
                   <Button
-                    variant='ghost'
-                    className='w-full text-primary hover:bg-primary/10 group-hover:translate-x-1 transition-transform justify-start'
+                    variant='link'
+                    className='justify-start px-0 h-auto py-1'
                   >
-                    Learn More
-                    <ArrowRight className='ml-2 w-4 h-4' />
+                    Learn more
+                    <ArrowRight className='ml-1 w-3.5 h-3.5' />
                   </Button>
                 </div>
               </div>
