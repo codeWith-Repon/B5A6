@@ -1,3 +1,4 @@
+import type { DriverOnlineStatus, RideStatus } from "."
 import type { IUser } from "./driver.types"
 import type { IPayment } from "./ride.types"
 
@@ -8,7 +9,7 @@ export interface IDriver {
   licenseNumber: string
   experience: number
   totalRides: number
-  availabilityStatus: string
+  availabilityStatus: DriverOnlineStatus
 }
 
 export interface IRideRequestResponse {
@@ -17,13 +18,13 @@ export interface IRideRequestResponse {
     driver: IDriver
     pickupLocation: string
     dropLocation: string
-    rideStatus: string
+    rideStatus: RideStatus
     fare: number
     distance: number
-    rideOtp: number
+    rideOtp?: number
     isOtpVerified: boolean
     createdAt: string
     updatedAt: string
-    __v: number
-    payment: IPayment
-} 
+    __v?: number
+    payment?: IPayment
+}

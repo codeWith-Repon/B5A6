@@ -1,6 +1,7 @@
+import type { IRole, IsActive } from "."
 
 export interface IAuth {
-    provider: string,
+    provider: "google" | "credentials"
     providerId: string
 }
 
@@ -8,9 +9,9 @@ export interface IUser {
     _id: string
     name: string
     email: string
-    role: string
+    role: IRole
     phone?: string
-    isActive: string
+    isActive: IsActive
     isVerified: boolean
     isDeleted: boolean
     address?: string
@@ -19,5 +20,5 @@ export interface IUser {
     createdAt: string
     updatedAt: string
     emergencyContactEmail?: string[]
-    __v: number
+    __v?: number
 }

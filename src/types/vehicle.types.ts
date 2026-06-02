@@ -1,3 +1,4 @@
+import type { VehicleType } from "."
 
 export interface IDriverMini {
     _id: string
@@ -8,7 +9,7 @@ export interface IDriverMini {
 export interface IVehicle {
     _id: string
     driver: IDriverMini
-    vehicleType: "CAR" | "BIKE"
+    vehicleType: VehicleType
     brand: string
     model: string
     images: string[]

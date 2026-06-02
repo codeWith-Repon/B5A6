@@ -1,8 +1,8 @@
-import type { DriverOnlineStatus, IDriverStatus } from "."
+import type { DriverOnlineStatus, IDriverStatus, IRole, IsActive, VehicleType } from "."
 
 export interface IVehicle {
     driver?: string
-    vehicleType?: string
+    vehicleType?: VehicleType
     brand?: string
     model?: string
     images?: string[]
@@ -11,7 +11,7 @@ export interface IVehicle {
 
 export interface IVehicleResponse {
     driver: string
-    vehicleType: string
+    vehicleType: VehicleType
     brand: string
     model: string
     images?: string[]
@@ -24,7 +24,9 @@ export interface IVehicleResponse {
 }
 
 export interface IDriver {
-    licenseNumber: string,
+    user: string
+    vehicle: string
+    licenseNumber: string
     experience: number
 }
 
@@ -32,18 +34,18 @@ export interface IUser {
     _id: string
     name: string
     email: string
-    isActive?: string,
-    phone?: string;
-    role?: string;
-    isVerified?: boolean;
-    image?: string;
-    address?: string;
+    isActive?: IsActive
+    phone?: string
+    role?: IRole
+    isVerified?: boolean
+    image?: string
+    address?: string
     emergencyContactEmail?: string[]
 }
 
 export interface Vehicle {
     _id: string
-    vehicleType: string
+    vehicleType: VehicleType
     brand: string
     model: string
     images?: string[]
@@ -67,8 +69,12 @@ export interface IDriverResponse {
     experience: number
     totalRides: number
     totalEarnings: number
-    availabilityStatus: string
-    status: string
+    availabilityStatus: DriverOnlineStatus
+    status: IDriverStatus
+    rating?: number
+    ratingCount?: number
+    currentLocation?: { type: "Point"; coordinates: [number, number] }
+    lastLocationAt?: string
     _id: string
     createdAt: string
     updatedAt: string
@@ -80,14 +86,9 @@ export interface IGetResponse<T> {
     meta?: IMeta
 }
 
-export interface IMeta {
-    page: number
-    limit: number
-    total: number
-    totalPage: number
-}
-
 export interface IDriverUpdate {
+    user?: string
+    vehicle?: string
     licenseNumber?: string
     experience?: number
     status?: IDriverStatus

@@ -48,6 +48,20 @@ export type IDriverStatus = "PENDING" | "APPROVED" | "SUSPENDED"
 export type DriverOnlineStatus =
     (typeof driverOnlineStatus)[keyof typeof driverOnlineStatus];
 
+export type IsActive = "ACTIVE" | "INACTIVE" | "BLOCKED";
+export type VehicleType = "CAR" | "BIKE" | "CNG" | "MINIVAN" | "PREMIUM" | "EV";
+export type RideStatus =
+    | "REQUESTED"
+    | "ACCEPTED"
+    | "PICKED UP"
+    | "IN TRANSIT"
+    | "COMPLETED"
+    | "REJECTED"
+    | "CANCELLED";
+export type PaymentStatus = "PAID" | "UNPAID" | "CANCELLED" | "FAILED" | "REFUND";
+export type PaymentMethod = "CASH" | "SSLCOMMERZ" | "PAYPAL" | "STRIPE";
+export type SosStatus = "PENDING" | "RESOLVED" | "IGNORED";
+
 export interface IDriver {
     data: IDriverResponse[]
     meta: IMeta

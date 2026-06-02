@@ -1,3 +1,4 @@
+import type { PaymentMethod, PaymentStatus, RideStatus } from "."
 import type { IDriverResponse, IUser } from "./driver.types"
 
 export interface IRide {
@@ -5,18 +6,21 @@ export interface IRide {
   user: IUser
   driver: IDriverResponse
   pickupLocation: string
+  pickupCoordinates?: { lat: number; lng: number }
   dropLocation: string
-  rideStatus: string
+  rideStatus: RideStatus
   fare: number
   distance: number
-  rideOtp: number
+  rideOtp?: number
   isOtpVerified: boolean
+  startedAt?: string
+  completedAt?: string
   createdAt: string
   updatedAt: string
-  __v: number
-  payment: IPayment
-  paymentMethod?: string | null
-  paymentStatus?: string | null
+  __v?: number
+  payment?: IPayment
+  paymentMethod?: PaymentMethod | null
+  paymentStatus?: PaymentStatus | null
 }
 
 export interface IPayment {
@@ -24,4 +28,13 @@ export interface IPayment {
   transactionId: string
   status: string
   amount: number
+}
+
+export interface IBookRide {
+  driver?: string
+  pickupLocation: string
+  pickupCoordinates?: { lat: number; lng: number }
+  dropLocation: string
+  distance?: number
+  paymentMethod: PaymentMethod
 }
