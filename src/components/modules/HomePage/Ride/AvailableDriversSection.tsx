@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Phone, ShieldCheck, Car, Briefcase } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { ShieldCheck, Car, MapPin, Loader2, Inbox } from 'lucide-react';
 import type { IGetFreeDrivers } from '@/types/driver.types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface AvailableDriversSectionProps {
   drivers: IGetFreeDrivers[] | [];
@@ -12,7 +11,8 @@ interface AvailableDriversSectionProps {
   pickupLocation: string;
   dropLocation: string;
   isLoading?: boolean;
-  onSubmit: (data: any) => void;
+  /** Kept for API compatibility — the parent's sticky bar handles submit now. */
+  onSubmit?: (data: any) => void;
   onSubmitLoading?: boolean;
   distance?: string;
 }
@@ -24,241 +24,181 @@ export function AvailableDriversSection({
   pickupLocation,
   dropLocation,
   isLoading,
-  onSubmit,
-  onSubmitLoading,
   distance,
 }: AvailableDriversSectionProps) {
+  const hasRoute = pickupLocation && dropLocation;
+  const routeBroken = distance === 'Route not found';
+
   return (
-    <>
-      {isLoading && <AvailableDriversSkeleton />}
-
-      <div className='lg:max-w-md mx-auto space-y-6 p-4'>
-        <div className='flex items-center justify-between'>
-          <h3 className='text-xl font-extrabold tracking-tight text-foreground'>
-            Nearby Drivers
-          </h3>
-          <Badge
-            variant='secondary'
-            className='bg-primary/10 text-primary hover:bg-primary/20'
-          >
-            {pickupLocation && dropLocation ? drivers.length : 0} found
-          </Badge>
-        </div>
-
-        {distance === 'Route not found' ? (
-          <div className='bg-red-500/10 border-2 border-dashed border-red-500/20 rounded-3xl p-6 text-center space-y-4'>
-            <div className='bg-red-500/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto'>
-              <Car className='text-red-500 w-6 h-6' />
-            </div>
-            <div className='space-y-1'>
-              <p className='text-sm font-medium text-red-500'>
-                Route not found
-              </p>
-              <p className='text-xs text-red-500'>
-                Please enter a valid address.
-              </p>
-            </div>
-          </div>
-        ) : !pickupLocation || !dropLocation ? (
-          <div className='bg-muted/30 border-2 border-dashed border-muted-foreground/20 rounded-3xl p-10 text-center space-y-4'>
-            <div className='bg-muted w-12 h-12 rounded-full flex items-center justify-center mx-auto'>
-              <Car className='text-muted-foreground w-6 h-6' />
-            </div>
-            <div className='space-y-1'>
-              <p className='text-sm font-medium text-foreground'>
-                Ready to head out?
-              </p>
-              <p className='text-xs text-muted-foreground'>
-                Set your destination to view available drivers.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className='space-y-4 max-h-150 overflow-y-auto pr-2 driver-list-scrollbar [scrollbar-gutter:stable]'>
-            {drivers.map((driver) => (
-              <div
-                key={driver._id}
-                onClick={() => onSelectDriver(driver._id)}
-                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer ${
-                  selectedDriver === driver._id
-                    ? 'border-primary bg-primary/2 ring-2 ring-primary/20 shadow-xl -translate-y-0.5'
-                    : 'border-border bg-card hover:border-primary/40 hover:shadow-md'
-                }`}
-              >
-                <div className='p-5'>
-                  {/* Header: Driver Info (No Fare) */}
-                  <div className='flex items-center gap-4'>
-                    <div className='relative shrink-0'>
-                      <img
-                        src={driver.user.image}
-                        alt={driver.user.name}
-                        className='w-14 h-14 rounded-full object-cover border-2 border-background shadow-sm'
-                      />
-                      <div
-                        className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-background rounded-full ${
-                          driver.availabilityStatus === 'ONLINE'
-                            ? 'bg-green-500'
-                            : 'bg-gray-400'
-                        }`}
-                      />
-                    </div>
-
-                    <div className='flex-1 min-w-0'>
-                      <div className='flex items-center gap-2'>
-                        <h4 className='font-bold text-lg text-foreground truncate uppercase tracking-tight'>
-                          {driver.user.name}
-                        </h4>
-                        {driver.status === 'APPROVED' && (
-                          <ShieldCheck className='w-4 h-4 text-blue-500 shrink-0' />
-                        )}
-                      </div>
-
-                      <div className='flex items-center gap-2 mt-1'>
-                        <Badge
-                          variant='outline'
-                          className='text-[10px] px-2 py-0 border-primary/20 text-primary uppercase italic font-black'
-                        >
-                          {driver.experience} Year Exp.
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Vehicle Details Section */}
-                  <div className='mt-5 grid grid-cols-2 gap-3 p-3 bg-muted/30 rounded-xl border border-border/50'>
-                    <div className='flex items-center gap-2'>
-                      <div className='p-1.5 bg-background rounded-lg shadow-sm'>
-                        <Car className='w-3.5 h-3.5 text-muted-foreground' />
-                      </div>
-                      <div>
-                        <p className='text-[10px] uppercase text-muted-foreground font-semibold leading-none'>
-                          Vehicle
-                        </p>
-                        <p className='text-xs font-bold truncate max-w-30'>
-                          {driver.vehicle.brand} {driver.vehicle.model}
-                        </p>
-                      </div>
-                    </div>
-                    <div className='flex items-center gap-2'>
-                      <div className='p-1.5 bg-background rounded-lg shadow-sm'>
-                        <Briefcase className='w-3.5 h-3.5 text-muted-foreground' />
-                      </div>
-                      <div>
-                        <p className='text-[10px] uppercase text-muted-foreground font-semibold leading-none'>
-                          License
-                        </p>
-                        <p className='text-xs font-bold'>
-                          {driver.licenseNumber}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Expanded Actions */}
-                  {selectedDriver === driver._id && (
-                    <div className='mt-5 flex gap-2 animate-in fade-in zoom-in-95 duration-300'>
-                      <Button
-                        className='flex-1 bg-primary text-primary-foreground font-bold h-12 rounded-xl shadow-lg shadow-primary/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-                        onClick={() => onSubmit(driver._id)}
-                        disabled={onSubmitLoading}
-                      >
-                        {onSubmitLoading ? 'Loading...' : 'Request Ride'}
-                      </Button>
-                      <a href={`tel:${driver.user.phone}`} className='contents'>
-                        <Button
-                          variant='outline'
-                          size='icon'
-                          className='w-12 h-12 rounded-xl border-2 hover:bg-primary/5 hover:text-primary transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-                          disabled={onSubmitLoading}
-                        >
-                          <Phone className='w-5 h-5' />
-                        </Button>
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Trust Footer */}
-        <div className='bg-linear-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/10 rounded-2xl p-4 flex items-center gap-3'>
-          <div className='bg-emerald-500/20 p-2 rounded-lg'>
-            <ShieldCheck className='w-5 h-5 text-emerald-600' />
-          </div>
-          <div className='space-y-0.5'>
-            <p className='text-xs font-bold text-emerald-900 dark:text-emerald-400 uppercase tracking-wide'>
-              Verified Drivers Only
-            </p>
-            <p className='text-[11px] text-emerald-700/70 dark:text-emerald-400/60 leading-tight'>
-              Every driver in our network undergoes a rigorous background check
-              for your security.
-            </p>
-          </div>
-        </div>
+    <div className='space-y-3'>
+      {/* Header */}
+      <div className='flex items-center justify-between px-1'>
+        <h3 className='text-sm font-semibold text-foreground'>
+          Nearby drivers
+        </h3>
+        <span className='text-xs text-muted-foreground tabular-nums'>
+          {hasRoute && !routeBroken ? drivers.length : 0} available
+        </span>
       </div>
-    </>
+
+      {/* States */}
+      {isLoading ? (
+        <AvailableDriversSkeleton />
+      ) : routeBroken ? (
+        <EmptyState
+          icon={<MapPin className='w-5 h-5 text-destructive' />}
+          title='Route not available'
+          subtitle='Try a more specific pickup or drop address.'
+          tone='destructive'
+        />
+      ) : !hasRoute ? (
+        <EmptyState
+          icon={<Inbox className='w-5 h-5 text-muted-foreground' />}
+          title='Pick a destination'
+          subtitle='Drivers will appear once both locations are set.'
+        />
+      ) : drivers.length === 0 ? (
+        <EmptyState
+          icon={<Car className='w-5 h-5 text-muted-foreground' />}
+          title='No drivers nearby'
+          subtitle="We'll auto-match when you book."
+        />
+      ) : (
+        <ul className='space-y-2'>
+          {drivers.map((driver) => {
+            const selected = selectedDriver === driver._id;
+            return (
+              <li key={driver._id}>
+                <button
+                  type='button'
+                  onClick={() => onSelectDriver(driver._id)}
+                  className={cn(
+                    'group w-full text-left p-3 rounded-xl border transition-colors flex items-center gap-3',
+                    selected
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary/40'
+                      : 'border-border bg-card hover:border-primary/40 hover:bg-secondary/40'
+                  )}
+                >
+                  {/* Avatar */}
+                  <div className='relative shrink-0'>
+                    <img
+                      src={driver.user.image}
+                      alt={driver.user.name}
+                      className='w-11 h-11 rounded-full object-cover border border-border'
+                    />
+                    <span
+                      className={cn(
+                        'absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card',
+                        driver.availabilityStatus === 'ONLINE'
+                          ? 'bg-emerald-500'
+                          : 'bg-muted-foreground'
+                      )}
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className='flex-1 min-w-0'>
+                    <div className='flex items-center gap-1.5'>
+                      <h4 className='font-semibold text-sm text-foreground truncate'>
+                        {driver.user.name}
+                      </h4>
+                      {driver.status === 'APPROVED' && (
+                        <ShieldCheck className='w-3.5 h-3.5 text-primary shrink-0' />
+                      )}
+                    </div>
+                    <p className='text-xs text-muted-foreground truncate mt-0.5'>
+                      {driver.vehicle.brand} {driver.vehicle.model}
+                      <span className='text-muted-foreground/60 mx-1.5'>•</span>
+                      {driver.experience}y exp
+                    </p>
+                  </div>
+
+                  {/* Selected indicator */}
+                  <div
+                    className={cn(
+                      'shrink-0 w-4 h-4 rounded-full border transition-colors',
+                      selected
+                        ? 'bg-primary border-primary'
+                        : 'border-border group-hover:border-primary/40'
+                    )}
+                  >
+                    {selected && (
+                      <svg
+                        viewBox='0 0 16 16'
+                        className='w-full h-full text-primary-foreground'
+                      >
+                        <path
+                          d='M4 8.5l2.5 2.5L12 5.5'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          fill='none'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* Trust line */}
+      <div className='flex items-center gap-2 px-1 pt-1 text-[11px] text-muted-foreground'>
+        <ShieldCheck className='w-3.5 h-3.5' />
+        All drivers are background-verified.
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  icon,
+  title,
+  subtitle,
+  tone,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  tone?: 'destructive';
+}) {
+  return (
+    <div
+      className={cn(
+        'rounded-xl border border-dashed p-6 text-center space-y-2',
+        tone === 'destructive'
+          ? 'border-destructive/40 bg-destructive/5'
+          : 'border-border bg-secondary/30'
+      )}
+    >
+      <div className='mx-auto w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center'>
+        {icon}
+      </div>
+      <p className='text-sm font-medium text-foreground'>{title}</p>
+      <p className='text-xs text-muted-foreground'>{subtitle}</p>
+    </div>
   );
 }
 
 export function AvailableDriversSkeleton() {
   return (
-    <div className='lg:max-w-md mx-auto space-y-6 p-4'>
-      {/* Header Skeleton */}
-      <div className='flex items-center justify-between'>
-        <Skeleton className='h-7 w-32 rounded-lg' />
-        <Skeleton className='h-6 w-16 rounded-full' />
-      </div>
-
-      {/* Driver List Skeleton */}
-      <div className='space-y-4'>
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className='rounded-2xl border border-border bg-card p-5 space-y-5'
-          >
-            {/* Driver Info Header */}
-            <div className='flex items-center gap-4'>
-              <Skeleton className='w-14 h-14 rounded-full shrink-0' />
-              <div className='flex-1 space-y-2'>
-                <div className='flex items-center gap-2'>
-                  <Skeleton className='h-5 w-24' />
-                  <Skeleton className='h-4 w-4 rounded-full' />
-                </div>
-                <Skeleton className='h-4 w-20 rounded-md' />
-              </div>
-            </div>
-
-            {/* Vehicle Details Section Skeleton */}
-            <div className='grid grid-cols-2 gap-3 p-3 bg-muted/30 rounded-xl border border-border/50'>
-              <div className='flex items-center gap-2'>
-                <Skeleton className='h-7 w-7 rounded-lg shrink-0' />
-                <div className='space-y-1 w-full'>
-                  <Skeleton className='h-2 w-10' />
-                  <Skeleton className='h-3 w-16' />
-                </div>
-              </div>
-              <div className='flex items-center gap-2'>
-                <Skeleton className='h-7 w-7 rounded-lg shrink-0' />
-                <div className='space-y-1 w-full'>
-                  <Skeleton className='h-2 w-10' />
-                  <Skeleton className='h-3 w-16' />
-                </div>
-              </div>
-            </div>
+    <ul className='space-y-2'>
+      {[1, 2, 3].map((i) => (
+        <li
+          key={i}
+          className='p-3 rounded-xl border border-border bg-card flex items-center gap-3'
+        >
+          <Skeleton className='w-11 h-11 rounded-full shrink-0' />
+          <div className='flex-1 space-y-2'>
+            <Skeleton className='h-4 w-32' />
+            <Skeleton className='h-3 w-40' />
           </div>
-        ))}
-      </div>
-
-      {/* Trust Footer Skeleton */}
-      <div className='border border-border/50 rounded-2xl p-4 flex items-center gap-3'>
-        <Skeleton className='w-9 h-9 rounded-lg shrink-0' />
-        <div className='space-y-2 w-full'>
-          <Skeleton className='h-3 w-32' />
-          <Skeleton className='h-2 w-full' />
-        </div>
-      </div>
-    </div>
+          <Loader2 className='w-3 h-3 animate-spin text-muted-foreground' />
+        </li>
+      ))}
+    </ul>
   );
 }

@@ -22,7 +22,32 @@ export function RoutingMachine({
 
     const routingControl = (L as any).Routing.control({
       waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
-      lineOptions: { styles: [{ color: '#f97316', weight: 5 }] },
+      lineOptions: {
+        styles: [
+          // 1. Soft outer glow / halo
+          {
+            color: '#6366f1',
+            weight: 12,
+            opacity: 0.18,
+            className: 'route-halo',
+          },
+          // 2. Main solid line — draws in on first paint
+          {
+            color: '#6366f1',
+            weight: 5,
+            opacity: 0.95,
+            className: 'route-base',
+          },
+          // 3. Animated white dashes flowing along the path
+          {
+            color: '#ffffff',
+            weight: 2.5,
+            opacity: 0.95,
+            dashArray: '8,14',
+            className: 'route-flow',
+          },
+        ],
+      },
       addWaypoints: false,
       draggableWaypoints: false,
       fitSelectedRoutes: true,
