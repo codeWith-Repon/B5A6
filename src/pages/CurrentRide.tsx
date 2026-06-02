@@ -14,7 +14,9 @@ import { Badge } from '@/components/ui/badge';
 import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import OtpVerification from '@/components/modules/Ride/Otpverification';
+import ChatPanel from '@/components/modules/Ride/Chat/ChatPanel';
 import { useEffect, useMemo } from 'react';
+import config from '@/config';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
@@ -73,38 +75,52 @@ export default function CurrentRidePage() {
     );
 
   return (
-    <div className='min-h-screen bg-background p-4 lg:p-8'>
+    <div className='min-h-screen p-4 lg:p-8'>
       <div className='max-w-7xl mx-auto space-y-6'>
         {/* Header with Status */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <button
             onClick={() => navigate(-1)}
-            className='flex items-center gap-2 font-black uppercase text-xs hover:text-primary transition-colors'
+            className='inline-flex items-center gap-2 font-bold uppercase text-xs tracking-widest text-muted-foreground hover:text-primary transition-colors'
           >
             <ChevronLeft className='w-4 h-4' /> Back to History
           </button>
           <div className='flex items-center gap-3'>
-            <span className='text-[10px] font-black uppercase text-muted-foreground italic'>
-              Ride Status:
+            <span className='text-[10px] font-bold uppercase text-muted-foreground tracking-widest'>
+              Ride Status
             </span>
-            <Badge className='bg-primary text-white rounded-full px-4 italic font-black uppercase tracking-tighter'>
+            <Badge className='rounded-full px-4 py-1 font-bold uppercase tracking-widest text-xs'>
               {ride?.rideStatus}
             </Badge>
           </div>
         </div>
 
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
-          <div className='lg:col-span-7'>
+          <div className='lg:col-span-7 space-y-2'>
             <BookingMapSection
               pickupLocation={ride?.pickupLocation}
               dropLocation={ride?.dropLocation}
+              driverCoords={
+                config.liveTracking &&
+                ride?.driver?.currentLocation?.coordinates
+                  ? [
+                      ride.driver.currentLocation.coordinates[1],
+                      ride.driver.currentLocation.coordinates[0],
+                    ]
+                  : null
+              }
             />
+            {!config.liveTracking && (
+              <p className='text-[11px] text-muted-foreground px-1'>
+                Live driver location is currently unavailable.
+              </p>
+            )}
           </div>
 
           <div className='lg:col-span-5 space-y-6 mt-15'>
             {/* Driver/Rider Information Card */}
             {role === 'RIDER' && (
-              <div className='bg-card border p-6 rounded-4xl shadow-sm relative overflow-hidden'>
+              <div className='glass border border-border/40 p-6 rounded-3xl shadow-xl shadow-primary/5 relative overflow-hidden'>
                 <div className='absolute -top-4 -right-4 opacity-5 text-primary'>
                   <User size={120} />
                 </div>
@@ -146,7 +162,7 @@ export default function CurrentRidePage() {
             )}
 
             {role === 'DRIVER' && (
-              <div className='bg-card border p-6 rounded-4xl shadow-sm relative overflow-hidden'>
+              <div className='glass border border-border/40 p-6 rounded-3xl shadow-xl shadow-primary/5 relative overflow-hidden'>
                 <div className='absolute -top-4 -right-4 opacity-5 text-primary'>
                   <User size={120} />
                 </div>
@@ -178,8 +194,8 @@ export default function CurrentRidePage() {
               !ride.isOtpVerified && <OtpVerification rideId={ride._id} />}
 
             {/* Journey & Fare Details */}
-            <div className='bg-card border p-6 rounded-4xl shadow-sm space-y-6'>
-              <h2 className='text-2xl font-black italic uppercase tracking-tighter text-primary border-b pb-2'>
+            <div className='glass border border-border/40 p-6 rounded-3xl shadow-xl shadow-primary/5 space-y-6'>
+              <h2 className='text-xl font-extrabold uppercase tracking-tight gradient-brand-text border-b border-border/40 pb-3'>
                 Journey Details
               </h2>
 
@@ -234,7 +250,7 @@ export default function CurrentRidePage() {
                 </div>
               </div>
 
-              <div className='bg-muted/50 p-4 rounded-2xl flex justify-between items-center'>
+              <div className='glass-subtle border border-border/40 p-4 rounded-2xl flex justify-between items-center'>
                 <div>
                   <p className='text-[9px] font-black text-muted-foreground uppercase'>
                     Payment Method
@@ -262,6 +278,8 @@ export default function CurrentRidePage() {
                 />
               </div>
             </div>
+
+            <ChatPanel rideId={ride._id} rideStatus={ride.rideStatus} />
           </div>
         </div>
       </div>

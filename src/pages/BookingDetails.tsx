@@ -9,21 +9,27 @@ import {
   Wallet,
   Star,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
+import type { PaymentMethod } from '@/types';
+import type { IBookRide } from '@/types/ride.types';
 
 const BookingDetails = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [selectedPayment, setSelectedPayment] = useState<string>('CASH');
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('CASH');
 
   const pickupLocation = searchParams.get('pickup');
   const dropLocation = searchParams.get('drop');
   const distance = searchParams.get('distance') || '';
   const time = searchParams.get('time');
   const driverId = searchParams.get('driver');
+  const isAutoMatch = searchParams.get('autoMatch') === '1';
+  const pickupLat = Number(searchParams.get('pickupLat'));
+  const pickupLng = Number(searchParams.get('pickupLng'));
 
   const { data: driverResponse, isLoading: isDriverLoading } =
     useGetDriverByIdQuery(driverId as string, {
@@ -35,18 +41,26 @@ const BookingDetails = () => {
   const [bookRide, { isLoading: bookRideLoading }] = useBookRideMutation();
 
   const handleConfirmBooking = async () => {
-    if (!pickupLocation || !dropLocation || !driverId) {
+    if (!pickupLocation || !dropLocation) {
+      toast.error('Missing booking details. Please try again.');
+      return;
+    }
+    if (!driverId && !isAutoMatch) {
       toast.error('Missing booking details. Please try again.');
       return;
     }
 
-    const bookingData = {
+    const bookingData: IBookRide = {
       pickupLocation,
       dropLocation,
       distance: Number(distance.split(' ')[0]),
-      driver: driverId,
       paymentMethod: selectedPayment,
     };
+    if (driverId) {
+      bookingData.driver = driverId;
+    } else if (isAutoMatch && Number.isFinite(pickupLat) && Number.isFinite(pickupLng)) {
+      bookingData.pickupCoordinates = { lat: pickupLat, lng: pickupLng };
+    }
 
     try {
       const r = await bookRide(bookingData).unwrap();
@@ -66,7 +80,7 @@ const BookingDetails = () => {
     );
   }
 
-  if (!driver) {
+  if (!driver && !isAutoMatch) {
     return (
       <div className='h-screen flex items-center justify-center'>
         Driver not found!
@@ -79,55 +93,78 @@ const BookingDetails = () => {
   const totalFare = baseFare + tax;
 
   return (
-    <div className='py-8 bg-background min-h-screen'>
+    <div className='py-8 min-h-screen'>
       <div className='container max-w-342.5 mx-auto px-4'>
-        <h1 className='text-3xl md:text-4xl font-black mb-8 italic uppercase tracking-tighter'>
-          Confirm Your Ride
-        </h1>
+        <div className='mb-6'>
+          <div className='inline-flex items-center gap-2 px-3 py-1 rounded-full glass border border-primary/30 text-xs font-semibold text-primary uppercase tracking-widest mb-3'>
+            Step 2 — Confirm
+          </div>
+          <h1 className='text-3xl md:text-4xl font-extrabold tracking-tight'>
+            <span className='text-foreground'>Confirm</span>{' '}
+            <span className='gradient-brand-text'>your ride</span>
+          </h1>
+        </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           <div className='lg:col-span-2 space-y-6'>
             {/* Ride & Driver Info */}
-            <div className='bg-card border border-border rounded-3xl p-6 shadow-sm'>
+            <div className='glass rounded-3xl border border-border/40 p-6 shadow-xl shadow-primary/5'>
               <h2 className='text-xl font-bold mb-6 flex items-center gap-2'>
                 <ShieldCheck className='text-primary' /> Ride Details
               </h2>
 
               <div className='mb-6 pb-6 border-b border-border'>
-                <div className='flex items-start gap-4'>
-                  {driver?.user?.image ? (
-                    <img
-                      src={driver.user.image}
-                      alt={driver.user.name}
-                      className='w-16 h-16 rounded-2xl object-cover border-2 border-primary/20'
-                    />
-                  ) : (
-                    <div className='w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl'>
-                      {driver?.user?.name?.charAt(0)}
+                {isAutoMatch && !driver ? (
+                  <div className='flex items-start gap-4'>
+                    <div className='w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary'>
+                      <Sparkles className='w-7 h-7' />
                     </div>
-                  )}
-
-                  <div className='flex-1'>
-                    <h3 className='text-lg font-bold text-foreground capitalize'>
-                      {driver?.user?.name}
-                    </h3>
-                    <div className='flex items-center gap-2 mt-1'>
-                      <div className='flex items-center gap-0.5'>
-                        <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
-                        <span className='text-sm font-semibold'>4.2</span>
-                      </div>
-                      <span className='text-sm text-muted-foreground'>
-                        ({driver?.totalRides || 0} rides completed)
-                      </span>
+                    <div className='flex-1'>
+                      <h3 className='text-lg font-bold text-foreground'>
+                        We'll auto-match you
+                      </h3>
+                      <p className='text-sm text-muted-foreground mt-1'>
+                        Our matcher picks the best nearby driver the moment you
+                        confirm — usually within seconds.
+                      </p>
                     </div>
-                    <p className='text-sm font-medium text-primary mt-2'>
-                      🚗 {driver?.vehicle?.brand} {driver?.vehicle?.model} •{' '}
-                      <span className='uppercase'>
-                        {driver?.vehicle?.vehicleLicense}
-                      </span>
-                    </p>
                   </div>
-                </div>
+                ) : (
+                  <div className='flex items-start gap-4'>
+                    {driver?.user?.image ? (
+                      <img
+                        src={driver.user.image}
+                        alt={driver.user.name}
+                        className='w-16 h-16 rounded-2xl object-cover border-2 border-primary/20'
+                      />
+                    ) : (
+                      <div className='w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl'>
+                        {driver?.user?.name?.charAt(0)}
+                      </div>
+                    )}
+
+                    <div className='flex-1'>
+                      <h3 className='text-lg font-bold text-foreground capitalize'>
+                        {driver?.user?.name}
+                      </h3>
+                      <div className='flex items-center gap-2 mt-1'>
+                        <div className='flex items-center gap-0.5'>
+                          <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
+                          <span className='text-sm font-semibold'>4.2</span>
+                        </div>
+                        <span className='text-sm text-muted-foreground'>
+                          ({driver?.totalRides || 0} rides completed)
+                        </span>
+                      </div>
+                      <p className='text-sm font-medium text-primary mt-2'>
+                        🚗 {driver?.vehicle?.brand} {driver?.vehicle?.model} •{' '}
+                        <span className='uppercase'>
+                          {driver?.vehicle?.vehicleLicense}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Path Visualization */}
@@ -160,25 +197,25 @@ const BookingDetails = () => {
               </div>
 
               <div className='grid grid-cols-2 gap-4'>
-                <div className='bg-muted/50 rounded-2xl p-4 border border-border/50'>
-                  <div className='flex items-center gap-2 text-muted-foreground text-xs mb-1 font-bold uppercase'>
+                <div className='glass-subtle rounded-2xl p-4 border border-border/40'>
+                  <div className='flex items-center gap-2 text-muted-foreground text-xs mb-1 font-bold uppercase tracking-wider'>
                     <Clock className='w-4 h-4 text-primary' />
                     <span>Est. Time</span>
                   </div>
-                  <p className='text-lg font-black'>{time || 'N/A'}</p>
+                  <p className='text-lg font-extrabold'>{time || 'N/A'}</p>
                 </div>
-                <div className='bg-muted/50 rounded-2xl p-4 border border-border/50'>
-                  <div className='flex items-center gap-2 text-muted-foreground text-xs mb-1 font-bold uppercase'>
+                <div className='glass-subtle rounded-2xl p-4 border border-border/40'>
+                  <div className='flex items-center gap-2 text-muted-foreground text-xs mb-1 font-bold uppercase tracking-wider'>
                     <MapPin className='w-4 h-4 text-primary' />
                     <span>Distance</span>
                   </div>
-                  <p className='text-lg font-black'>{distance || 'N/A'}</p>
+                  <p className='text-lg font-extrabold'>{distance || 'N/A'}</p>
                 </div>
               </div>
             </div>
 
             {/* Payment Selection */}
-            <div className='bg-card border border-border rounded-3xl p-6'>
+            <div className='glass rounded-3xl border border-border/40 p-6'>
               <h2 className='text-xl font-bold mb-6'>Select Payment</h2>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3'>
                 {[
@@ -223,14 +260,14 @@ const BookingDetails = () => {
                     key={method.id}
                     disabled={method.disabled}
                     onClick={() =>
-                      !method.disabled && setSelectedPayment(method.id)
+                      !method.disabled && setSelectedPayment(method.id as PaymentMethod)
                     }
                     className={`relative p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 overflow-hidden ${
                       method.disabled
-                        ? 'opacity-80 cursor-not-allowed border-border bg-muted'
+                        ? 'opacity-60 cursor-not-allowed border-border/40 bg-muted/30'
                         : selectedPayment === method.id
-                          ? 'border-primary bg-primary/5 shadow-md scale-105'
-                          : 'border-border bg-transparent hover:border-primary/30'
+                          ? 'border-primary/50 gradient-brand-soft shadow-lg shadow-primary/20 scale-[1.02]'
+                          : 'border-border/40 glass-subtle hover:border-primary/30 hover-lift'
                     }`}
                   >
                     {/* 'Coming Soon' Badge for disabled methods */}
@@ -266,8 +303,8 @@ const BookingDetails = () => {
 
           {/* Price Summary Sidebar */}
           <div className='lg:col-span-1'>
-            <div className='bg-card border-2 border-primary/10 rounded-3xl p-6 sticky top-24 shadow-xl'>
-              <h3 className='text-lg font-black uppercase mb-6 italic'>
+            <div className='glass-strong rounded-3xl border border-primary/20 p-6 sticky top-24 shadow-2xl shadow-primary/15'>
+              <h3 className='text-lg font-extrabold uppercase mb-6 tracking-tight gradient-brand-text'>
                 Fare Summary
               </h3>
               <div className='space-y-4'>
