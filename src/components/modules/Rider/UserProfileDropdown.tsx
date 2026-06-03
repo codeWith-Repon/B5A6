@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { User, History, LogOut, Star, ChevronRight } from 'lucide-react';
+import { User, History, LogOut, Star, ChevronRight, Coins } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '@/redux/hook';
 import {
@@ -141,6 +141,21 @@ export function UserProfileDropdown() {
             </div>
             <ChevronRight className='w-4 h-4 text-muted-foreground opacity-50' />
           </DropdownMenuItem>
+
+          {user?.role === 'DRIVER' && (
+            <DropdownMenuItem
+              onClick={() => navigate('/earnings')}
+              className='flex items-center justify-between py-3 px-3 cursor-pointer rounded-xl focus:bg-primary/5 group'
+            >
+              <div className='flex items-center gap-3'>
+                <div className='p-2 rounded-lg bg-primary/10 text-primary group-focus:bg-primary group-focus:text-white transition-colors'>
+                  <Coins className='w-4 h-4 group-focus:text-white' />
+                </div>
+                <span className='font-bold text-sm'>Earnings</span>
+              </div>
+              <ChevronRight className='w-4 h-4 text-muted-foreground opacity-50' />
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator className='my-2 bg-border/40' />
 

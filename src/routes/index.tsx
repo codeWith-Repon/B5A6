@@ -25,6 +25,7 @@ import CurrentRidePage from '@/pages/CurrentRide';
 import RideDetailsPage from '@/pages/RideDetails';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import Earnings from '@/pages/Driver/Earnings';
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
       {
         Component: Profile,
         path: '/profile',
+      },
+      {
+        Component: WithAuth(Earnings, role.driver as IRole),
+        path: '/earnings',
       },
       {
         Component: Support,
