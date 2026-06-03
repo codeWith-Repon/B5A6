@@ -14,6 +14,12 @@ export interface IVerifyRideOtpArgs {
     otp: string;
 }
 
+export interface IRateRideArgs {
+    rideId: string;
+    rating: number;
+    comment?: string;
+}
+
 export const riderApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         bookRide: builder.mutation<IResponse<IRide>, IBookRide>({
@@ -61,6 +67,14 @@ export const riderApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["CurrentRide", "RideRequest"]
         }),
+        rateRide: builder.mutation<IResponse<IRide>, IRateRideArgs>({
+            query: ({ rideId, rating, comment }) => ({
+                url: `/ride/${rideId}/rate`,
+                method: "POST",
+                data: { rating, comment }
+            }),
+            invalidatesTags: ["RideHistory", "CurrentRide"]
+        }),
 
     }),
 })
@@ -71,4 +85,5 @@ export const {
     useUpdateRideStatusMutation,
     useGetCurrentRideQuery,
     useVerifyRideOtpMutation,
+    useRateRideMutation,
 } = riderApi

@@ -15,6 +15,9 @@ export interface IRide {
   isOtpVerified: boolean
   startedAt?: string
   completedAt?: string
+  rating?: number
+  ratingComment?: string
+  ratedAt?: string
   createdAt: string
   updatedAt: string
   __v?: number
