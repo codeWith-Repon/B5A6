@@ -1,6 +1,7 @@
 import EditDriverInfoDialog from '@/components/modules/UpdateProfile/EditDriverInfo';
 import EditProfileDialog from '@/components/modules/UpdateProfile/EditProfileDialog';
 import EditVehicleInfo from '@/components/modules/UpdateProfile/EditVehicleInfo';
+import { SecuritySection } from '@/components/modules/UpdateProfile/SecuritySection';
 import { Card } from '@/components/ui/card';
 
 import { Label } from '@/components/ui/label';
@@ -258,6 +259,9 @@ export function Profile() {
           </div>
         </>
       )}
+
+      <Separator className='w-full' />
+      <SecuritySection />
     </Card>
   );
 }
