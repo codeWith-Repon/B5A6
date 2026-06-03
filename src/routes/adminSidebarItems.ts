@@ -5,6 +5,7 @@ const AllDriver = lazy(() => import("@/pages/Admin/AllDrivers"));
 import type { ISidebarItem } from "@/types";
 const UserManagement = lazy(() => import("@/pages/Admin/UserManagement"));
 const VehiclesManagement = lazy(() => import("@/pages/Admin/VehiclesManagement"));
+const SosReports = lazy(() => import("@/pages/Admin/SosReports"));
 
 export const adminSidebarItems: ISidebarItem[] =
     [
@@ -45,6 +46,16 @@ export const adminSidebarItems: ISidebarItem[] =
                     title: "Manage all Vehicles",
                     url: "/admin/all-vehicles",
                     component: VehiclesManagement
+                }
+            ],
+        },
+        {
+            title: "Safety",
+            items: [
+                {
+                    title: "SOS reports",
+                    url: "/admin/sos-reports",
+                    component: SosReports
                 }
             ],
         }
