@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from '@/components/ui/dropdown-menu';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import {
   useGetNotificationsQuery,
   useMarkAllAsReadMutation,
@@ -111,6 +111,15 @@ export function NotificationDropdown() {
               </div>
             ))
           )}
+        </div>
+
+        <div className='border-t border-border/40 p-2'>
+          <Link
+            to='/notifications'
+            className='block text-center text-xs font-medium text-primary hover:underline py-1.5'
+          >
+            See all notifications
+          </Link>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -195,7 +195,9 @@ const Earnings = () => {
                     borderRadius: 8,
                     fontSize: 12,
                   }}
-                  formatter={(v: number) => formatCurrency(v)}
+                  formatter={(v) =>
+                    formatCurrency(typeof v === 'number' ? v : Number(v) || 0)
+                  }
                 />
                 <Bar
                   dataKey='fare'
