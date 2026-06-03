@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import {
   ChevronLeft,
@@ -6,11 +7,15 @@ import {
   Clock,
   CreditCard,
   ShieldCheck,
+  Star,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useGetRideDetailsQuery } from '@/redux/features/ride/ride.api';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
+import { RatingDialog } from '@/components/modules/Ride/RatingDialog';
+import { cn } from '@/lib/utils';
 
 export default function RideDetailsPage() {
   const { id } = useParams();
@@ -23,6 +28,7 @@ export default function RideDetailsPage() {
 
   const ride = rideResponse?.data;
   const currentUserRole = userResponse?.data?.role;
+  const [ratingOpen, setRatingOpen] = useState(false);
 
   if (rideLoading || userLoading) {
     return (
@@ -193,6 +199,54 @@ export default function RideDetailsPage() {
           </div>
         </div>
 
+        {/* Rating */}
+        {currentUserRole === 'RIDER' && ride.rideStatus === 'COMPLETED' && (
+          <div className='bg-card border border-border rounded-xl p-5'>
+            {ride.rating ? (
+              <div className='space-y-2'>
+                <p className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
+                  Your rating
+                </p>
+                <div className='flex items-center gap-1'>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <Star
+                      key={n}
+                      className={cn(
+                        'w-5 h-5',
+                        n <= ride.rating!
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-muted-foreground'
+                      )}
+                    />
+                  ))}
+                  <span className='ml-2 text-sm font-semibold text-foreground'>
+                    {ride.rating}/5
+                  </span>
+                </div>
+                {ride.ratingComment && (
+                  <p className='text-sm text-muted-foreground italic'>
+                    "{ride.ratingComment}"
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className='flex items-center justify-between gap-3 flex-wrap'>
+                <div>
+                  <p className='text-sm font-semibold text-foreground'>
+                    How was the ride?
+                  </p>
+                  <p className='text-xs text-muted-foreground'>
+                    Your feedback helps us match you with better drivers.
+                  </p>
+                </div>
+                <Button onClick={() => setRatingOpen(true)} className='gap-2'>
+                  <Star className='w-4 h-4' /> Rate this ride
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Bottom Section: Security Info */}
         <div className='glass-subtle border border-border/40 p-4 rounded-2xl flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-wider'>
           <div className='flex items-center gap-2'>
@@ -202,6 +256,13 @@ export default function RideDetailsPage() {
           <div>OTP Verified: {ride.isOtpVerified ? 'YES' : 'NO'}</div>
         </div>
       </div>
+
+      <RatingDialog
+        open={ratingOpen}
+        onOpenChange={setRatingOpen}
+        rideId={ride._id}
+        driverName={ride.driver?.user?.name}
+      />
     </div>
   );
 }
