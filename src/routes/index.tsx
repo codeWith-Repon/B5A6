@@ -23,6 +23,8 @@ import BookingDetails from '@/pages/BookingDetails';
 import RideHistory from '@/pages/RideHistory';
 import CurrentRidePage from '@/pages/CurrentRide';
 import RideDetailsPage from '@/pages/RideDetails';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +116,14 @@ export const router = createBrowserRouter([
   {
     Component: Verify,
     path: '/verify',
+  },
+  {
+    Component: ForgotPassword,
+    path: '/forgot-password',
+  },
+  {
+    Component: ResetPassword,
+    path: '/reset-password',
   },
   {
     Component: Unauthorized,

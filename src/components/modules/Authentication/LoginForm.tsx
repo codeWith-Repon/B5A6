@@ -176,6 +176,15 @@ export function LoginForm({
         </form>
       </Form>
 
+      <div className='flex justify-end -mt-1'>
+        <Link
+          to='/forgot-password'
+          className='text-xs text-muted-foreground hover:text-primary transition-colors'
+        >
+          Forgot password?
+        </Link>
+      </div>
+
       {isLoading ? (
         <Button type='submit' form='login-form' className='w-full' disabled>
           <Loader2 className='mr-2 h-4 w-4 animate-spin' />

@@ -94,10 +94,11 @@ export const authApi = baseApi.injectEndpoints({
             }),
         }),
         resetPassword: builder.mutation<IResponse<null>, IResetPassword>({
-            query: (data) => ({
+            query: ({ token, ...data }) => ({
                 url: "/auth/reset-password",
                 method: "POST",
                 data,
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
             }),
         }),
     })
