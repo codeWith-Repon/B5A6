@@ -2,6 +2,7 @@ import EditDriverInfoDialog from '@/components/modules/UpdateProfile/EditDriverI
 import EditProfileDialog from '@/components/modules/UpdateProfile/EditProfileDialog';
 import EditVehicleInfo from '@/components/modules/UpdateProfile/EditVehicleInfo';
 import { SecuritySection } from '@/components/modules/UpdateProfile/SecuritySection';
+import { EmergencyContactsSection } from '@/components/modules/UpdateProfile/EmergencyContactsSection';
 import { Card } from '@/components/ui/card';
 
 import { Label } from '@/components/ui/label';
@@ -262,6 +263,9 @@ export function Profile() {
 
       <Separator className='w-full' />
       <SecuritySection />
+
+      <Separator className='w-full' />
+      <EmergencyContactsSection />
     </Card>
   );
 }
