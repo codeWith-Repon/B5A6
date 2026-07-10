@@ -8,6 +8,14 @@ export type ServerFrame =
     | { type: "notification:new"; notification: IRideNotificationFrame }
     | { type: "ride:status"; rideId: string; rideStatus: string; ride: unknown }
     | { type: "ride:otp-verified"; rideId: string }
+    | {
+          type: "location:update";
+          rideId: string;
+          driverId: string;
+          lat: number;
+          lng: number;
+          updatedAt: string;
+      }
     | { type: "error"; message: string }
     | { type: string; [key: string]: unknown };
 

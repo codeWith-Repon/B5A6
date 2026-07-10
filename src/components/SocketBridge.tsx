@@ -7,6 +7,7 @@ import { useAppDispatch } from '@/redux/hook';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import { baseApi } from '@/redux/baseApi';
 import { chatApi } from '@/redux/features/Chat/chat.api';
+import { riderApi } from '@/redux/features/Rider/rider.api';
 
 /**
  * Bridges the WebSocket to RTK Query:
@@ -94,6 +95,30 @@ export function SocketBridge() {
                     d.readAt = readAt;
                   }
                 });
+              })
+            );
+          }
+          break;
+        }
+
+        case 'location:update': {
+          const m = msg as {
+            rideId?: string;
+            lat?: number;
+            lng?: number;
+          };
+          if (m.rideId && typeof m.lat === 'number' && typeof m.lng === 'number') {
+            const rideId = m.rideId;
+            const lat = m.lat;
+            const lng = m.lng;
+            dispatch(
+              riderApi.util.updateQueryData('getCurrentRide', undefined, (draft) => {
+                if (draft.data?._id === rideId && draft.data.driver) {
+                  draft.data.driver.currentLocation = {
+                    type: 'Point',
+                    coordinates: [lng, lat],
+                  };
+                }
               })
             );
           }
