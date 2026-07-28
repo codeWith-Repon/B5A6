@@ -82,6 +82,24 @@ const driverIcon = L.divIcon({
   iconAnchor: [18, 18],
 });
 
+const riderIcon = L.divIcon({
+  className: '',
+  html: `
+    <div style="
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: oklch(0.65 0.19 45);
+      box-shadow: 0 0 0 5px oklch(0.65 0.19 45 / 0.2), 0 4px 12px oklch(0 0 0 / 0.35);
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+    ">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+    </div>
+  `,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+});
+
 interface BookingMapSectionProps {
   pickupLocation: string;
   dropLocation: string;
@@ -90,6 +108,8 @@ interface BookingMapSectionProps {
   onRouteUpdate?: (distance: string, time: string) => void;
   /** [lat, lng] of the driver's current GPS — pin auto-rendered when set */
   driverCoords?: [number, number] | null;
+  /** [lat, lng] of the rider's current GPS (tracked up to pickup) — pin auto-rendered when set */
+  riderCoords?: [number, number] | null;
   /**
    * Exact coords for the pickup/drop text, when the caller already knows them
    * (autocomplete pick, "use current location" outside this component) — skips
@@ -110,6 +130,7 @@ export function BookingMapSection({
   onDropChange,
   onRouteUpdate,
   driverCoords,
+  riderCoords,
   pickupCoordsHint,
   dropCoordsHint,
   hideActions,
@@ -292,6 +313,13 @@ export function BookingMapSection({
               position={driverCoords}
               icon={driverIcon}
               zIndexOffset={500}
+            />
+          )}
+          {riderCoords && (
+            <Marker
+              position={riderCoords}
+              icon={riderIcon}
+              zIndexOffset={400}
             />
           )}
 

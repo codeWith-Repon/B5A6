@@ -16,6 +16,13 @@ export type ServerFrame =
           lng: number;
           updatedAt: string;
       }
+    | {
+          type: "rider-location:update";
+          rideId: string;
+          lat: number;
+          lng: number;
+          updatedAt: string;
+      }
     | { type: "error"; message: string }
     | { type: string; [key: string]: unknown };
 

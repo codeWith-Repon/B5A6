@@ -16,6 +16,7 @@ import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import OtpVerification from '@/components/modules/Ride/Otpverification';
 import { useEffect, useMemo } from 'react';
 import config from '@/config';
+import { rideStatus } from '@/constants/rideStatus';
 
 export default function CurrentRidePage() {
   const navigate = useNavigate();
@@ -105,6 +106,18 @@ export default function CurrentRidePage() {
                   ? [
                       ride.driver.currentLocation.coordinates[1],
                       ride.driver.currentLocation.coordinates[0],
+                    ]
+                  : null
+              }
+              riderCoords={
+                config.liveTracking &&
+                role === 'DRIVER' &&
+                (ride?.rideStatus === rideStatus.requested ||
+                  ride?.rideStatus === rideStatus.accepted) &&
+                ride?.riderCurrentLocation?.coordinates
+                  ? [
+                      ride.riderCurrentLocation.coordinates[1],
+                      ride.riderCurrentLocation.coordinates[0],
                     ]
                   : null
               }

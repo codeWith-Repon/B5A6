@@ -9,6 +9,7 @@ import { store } from './redux/store';
 import { Toaster } from 'sonner';
 import { SocketBridge } from './components/SocketBridge';
 import { DriverTrackingBridge } from './components/DriverTrackingBridge';
+import { RiderTrackingBridge } from './components/RiderTrackingBridge';
 import { GlobalChatWidget } from './components/GlobalChatWidget';
 
 createRoot(document.getElementById('root')!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
         <SocketBridge />
         <DriverTrackingBridge />
+        <RiderTrackingBridge />
         <GlobalChatWidget />
         <RouterProvider router={router} />
         <Toaster

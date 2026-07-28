@@ -18,6 +18,9 @@ export interface IRide {
   rating?: number
   ratingComment?: string
   ratedAt?: string
+  /** Rider's live position — tracked only up to pickup */
+  riderCurrentLocation?: { type: 'Point'; coordinates: [number, number] }
+  riderLastLocationAt?: string
   createdAt: string
   updatedAt: string
   __v?: number

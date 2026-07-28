@@ -75,6 +75,13 @@ export const riderApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["RideHistory", "CurrentRide"]
         }),
+        updateRiderLocation: builder.mutation<IResponse<null>, { lat: number; lng: number }>({
+            query: (data) => ({
+                url: "/ride/me/location",
+                method: "PATCH",
+                data
+            }),
+        }),
 
     }),
 })
@@ -86,4 +93,5 @@ export const {
     useGetCurrentRideQuery,
     useVerifyRideOtpMutation,
     useRateRideMutation,
+    useUpdateRiderLocationMutation,
 } = riderApi

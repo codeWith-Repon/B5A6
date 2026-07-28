@@ -125,6 +125,30 @@ export function SocketBridge() {
           break;
         }
 
+        case 'rider-location:update': {
+          const m = msg as {
+            rideId?: string;
+            lat?: number;
+            lng?: number;
+          };
+          if (m.rideId && typeof m.lat === 'number' && typeof m.lng === 'number') {
+            const rideId = m.rideId;
+            const lat = m.lat;
+            const lng = m.lng;
+            dispatch(
+              riderApi.util.updateQueryData('getCurrentRide', undefined, (draft) => {
+                if (draft.data?._id === rideId) {
+                  draft.data.riderCurrentLocation = {
+                    type: 'Point',
+                    coordinates: [lng, lat],
+                  };
+                }
+              })
+            );
+          }
+          break;
+        }
+
         case 'error': {
           const err = (msg as { message?: string }).message;
           if (err) console.warn('[ws] error:', err);
