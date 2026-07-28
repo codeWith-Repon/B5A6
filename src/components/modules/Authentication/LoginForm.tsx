@@ -200,7 +200,7 @@ export function LoginForm({
         <Button
           variant='secondary'
           size='sm'
-          onClick={() => handleAutoLogin('superAdmin@gmail.com', 'R1234567@')}
+          onClick={() => handleAutoLogin('superadmin@super.com', 'Repon@123')}
           disabled={isLoading}
         >
           Admin
@@ -208,7 +208,7 @@ export function LoginForm({
         <Button
           variant='secondary'
           size='sm'
-          onClick={() => handleAutoLogin('partian55@gmail.com', 'Repon@123')}
+          onClick={() => handleAutoLogin('repon7253@gmail.com', 'Repon@123')}
           disabled={isLoading}
         >
           User
@@ -216,7 +216,7 @@ export function LoginForm({
         <Button
           variant='secondary'
           size='sm'
-          onClick={() => handleAutoLogin('driver@gmail.com', 'R1234567@')}
+          onClick={() => handleAutoLogin('reponahmedofficial@gmail.com', 'Repon@123')}
           disabled={isLoading}
         >
           Driver

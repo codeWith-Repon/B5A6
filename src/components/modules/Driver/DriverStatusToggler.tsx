@@ -34,9 +34,14 @@ export default function DriverStatusToggler({
   }
 
   const handleStatusChange = async () => {
+    const driverId = driver?.data[0]?._id;
+    if (!driverId) {
+      toast.error('Driver profile not found yet. Please try again shortly.');
+      return;
+    }
     try {
       await updateDriver({
-        id: driver?.data[0]?._id as string,
+        id: driverId,
         data: {
           availabilityStatus:
             driver?.data[0]?.availabilityStatus === driverOnlineStatus.online
@@ -59,7 +64,7 @@ export default function DriverStatusToggler({
         checked={
           driver?.data[0]?.availabilityStatus === driverOnlineStatus.online
         }
-        disabled={isLoading}
+        disabled={isLoading || !driver?.data[0]?._id}
         onClick={handleStatusChange}
         className='order-1 h-4 w-6 after:absolute after:inset-0 [&_span]:size-3 data-[state=checked]:[&_span]:translate-x-2 data-[state=checked]:[&_span]:rtl:-translate-x-2 cursor-pointer'
         aria-describedby={`${id}-description`}

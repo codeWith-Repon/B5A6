@@ -11,7 +11,7 @@ export const driverApi = baseApi.injectEndpoints({
                 method: "POST",
                 data: vehicleInfo
             }),
-            invalidatesTags: ["Vehicle"]
+            invalidatesTags: ["Vehicle", "User"]
         }),
 
         registerDriver: builder.mutation<IResponse<IDriverResponse>, IDriver>({
@@ -20,7 +20,7 @@ export const driverApi = baseApi.injectEndpoints({
                 method: "POST",
                 data: driverInfo
             }),
-            invalidatesTags: ["Driver"]
+            invalidatesTags: ["Driver", "User"]
         }),
         getVehicle: builder.query<{ data: IVehicleResponse[], meta?: IMeta }, unknown>({
             query: (params) => ({

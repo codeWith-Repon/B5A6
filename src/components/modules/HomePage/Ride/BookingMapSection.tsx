@@ -9,6 +9,8 @@ import {
   Clock,
   Route,
   MapPinOffIcon,
+  Crosshair,
+  Loader2,
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
@@ -126,8 +128,43 @@ export function BookingMapSection({
     null
   );
   const [dropCoords, setDropCoords] = useState<[number, number] | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
   const isRouteActive = !!(pickupLocation && dropLocation);
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await res.json();
+          onPickupChange?.(data.display_name || `${latitude}, ${longitude}`);
+        } catch {
+          onPickupChange?.(`${latitude}, ${longitude}`);
+        } finally {
+          setClickMode(null);
+          setIsLocating(false);
+        }
+      },
+      () => {
+        setIsLocating(false);
+        alert('Please enable location permissions in your browser.');
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+  };
+
+  // Bare map clicks default to pickup-first, then drop — explicit button clicks (clickMode) override this.
+  const effectiveClickMode: 'pickup' | 'drop' | null =
+    clickMode ?? (!pickupLocation ? 'pickup' : !dropLocation ? 'drop' : null);
 
   // Geocode location strings → coords
   useEffect(() => {
@@ -196,27 +233,47 @@ export function BookingMapSection({
           )}
 
           <MapClickHandler
-            mode={clickMode}
+            mode={effectiveClickMode}
             onSelect={(addr) => {
-              if (clickMode === 'pickup') onPickupChange?.(addr);
-              if (clickMode === 'drop') onDropChange?.(addr);
+              if (effectiveClickMode === 'pickup') onPickupChange?.(addr);
+              if (effectiveClickMode === 'drop') onDropChange?.(addr);
               setClickMode(null);
             }}
           />
         </MapContainer>
 
+        {/* Locate-me control */}
+        {onPickupChange && (
+          <button
+            type='button'
+            onClick={handleUseCurrentLocation}
+            disabled={isLocating}
+            className='absolute top-3 right-3 z-1000 h-9 w-9 rounded-full bg-card border border-border shadow-md flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-60'
+            title='Use current location as pickup'
+            aria-label='Use current location as pickup'
+          >
+            {isLocating ? (
+              <Loader2 className='w-4 h-4 animate-spin' />
+            ) : (
+              <Crosshair className='w-4 h-4' />
+            )}
+          </button>
+        )}
+
         {/* Click-to-pick mode badge */}
-        {clickMode && (
+        {effectiveClickMode && (
           <div className='absolute top-3 left-1/2 -translate-x-1/2 z-1000 bg-card border border-border rounded-full px-3 py-1.5 shadow-md flex items-center gap-2 text-xs font-medium'>
             <MousePointerClick className='w-3.5 h-3.5 text-primary' />
-            Tap the map to set {clickMode}
-            <button
-              onClick={() => setClickMode(null)}
-              className='ml-1 text-muted-foreground hover:text-foreground'
-              aria-label='Cancel'
-            >
-              <X className='w-3 h-3' />
-            </button>
+            Tap the map to set {effectiveClickMode}
+            {clickMode && (
+              <button
+                onClick={() => setClickMode(null)}
+                className='ml-1 text-muted-foreground hover:text-foreground'
+                aria-label='Cancel'
+              >
+                <X className='w-3 h-3' />
+              </button>
+            )}
           </div>
         )}
 

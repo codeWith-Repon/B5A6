@@ -65,14 +65,13 @@ const DriverForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof driverSchema>) => {
-    const userRef = vehicleData?.data[0]?.driver;
     const vehicleRef = vehicleData?.data[0]?._id;
-    if (!userRef || !vehicleRef) {
+    if (!userId || !vehicleRef) {
       toast.error('You must register a vehicle before becoming a driver');
       return;
     }
     const driverInfo = {
-      user: userRef,
+      user: userId,
       vehicle: vehicleRef,
       licenseNumber: data.licenseNumber,
       experience: data.experience,
