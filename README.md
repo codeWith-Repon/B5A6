@@ -9,7 +9,7 @@ A production-grade ride-sharing platform frontend, built with React 19, Redux To
 - **Three role-based dashboards** — Rider, Driver, Admin/Super-admin.
 - **Live ride flow** — book → match → OTP-verify → in-transit → complete, with status changes pushed over WebSocket (no polling).
 - **Real-time chat as a floating widget** — a Messenger-style bubble (`GlobalChatWidget`, mounted app-wide) appears on *any* page whenever you have an active ride, with an unread badge and avatars on both sides.
-- **Live driver tracking** — the driver's pin moves on the rider's map roughly every 12s while `ONLINE`, broadcast over WebSocket; a toast now surfaces if the browser denies/lacks geolocation instead of failing silently.
+- **Bidirectional live tracking** — the driver's pin moves on the rider's map roughly every 12s while `ONLINE`, for the whole ride (`DriverTrackingBridge`). The rider's pin moves on the driver's map too (`RiderTrackingBridge`), but only up to pickup — it stops automatically once the ride is `PICKED UP`, since the driver has the rider by then. Both directions surface a toast if the browser denies/lacks geolocation instead of failing silently.
 - **Premium map** — CartoDB Voyager (light) / Dark Matter (dark) tiles, theme-aware, with an animated route (glow + draw-in + flowing dashes), draggable pickup/drop pins, click-to-set, and a "use current location" control.
 - **Autocomplete location search** (Nominatim) with keyboard nav — exact coordinates from a suggestion pick or "use current location" are passed straight through to the map instead of being re-geocoded from text, so pins land exactly where you meant.
 - **Cookie-based JWT auth** with automatic 401 → refresh-token retry.
@@ -83,7 +83,8 @@ src/
     shared/               # Loader, ManagementTable, SearchFilter, …
     ui/                   # shadcn/ui primitives (Button, Card, Input, …)
     SocketBridge.tsx      # WS → RTK Query cache fan-out
-    DriverTrackingBridge.tsx  # driver geolocation → PATCH loop, toasts on permission denial
+    DriverTrackingBridge.tsx  # driver geolocation → PATCH loop (whole ride), toasts on permission denial
+    RiderTrackingBridge.tsx   # rider geolocation → PATCH loop (pre-pickup only), same toast handling
     GlobalChatWidget.tsx  # app-root-mounted floating chat bubble (rider/driver only)
   pages/                 # route components
   redux/
