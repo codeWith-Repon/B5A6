@@ -5,7 +5,7 @@ export function MapClickHandler({
   onSelect,
 }: {
   mode: 'pickup' | 'drop' | null;
-  onSelect: (addr: string) => void;
+  onSelect: (addr: string, lat: number, lng: number) => void;
 }) {
   useMapEvents({
     click: async (e) => {
@@ -16,7 +16,7 @@ export function MapClickHandler({
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
       );
       const data = await res.json();
-      onSelect(data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      onSelect(data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`, lat, lng);
     },
   });
   return null;

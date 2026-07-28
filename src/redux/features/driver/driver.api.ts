@@ -86,7 +86,8 @@ export const driverApi = baseApi.injectEndpoints({
                 url: "/driver/free-drivers",
                 method: "GET"
             }),
-            transformResponse: (response: IResponse<IGetFreeDrivers[]>) => response.data
+            transformResponse: (response: IResponse<IGetFreeDrivers[]>) => response.data,
+            providesTags: ["Driver"]
         }),
 
         updateDriverLocation: builder.mutation<IResponse<null>, { lat: number; lng: number }>({

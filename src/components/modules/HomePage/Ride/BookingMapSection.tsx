@@ -129,8 +129,25 @@ export function BookingMapSection({
   );
   const [dropCoords, setDropCoords] = useState<[number, number] | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  // Set when a coord comes straight from a map interaction (click/drag/locate) —
+  // tells the address→coords geocode effect below to skip re-deriving that field,
+  // so the pin doesn't snap back then jump to Nominatim's forward-search result.
+  const skipPickupGeocodeRef = useRef(false);
+  const skipDropGeocodeRef = useRef(false);
 
   const isRouteActive = !!(pickupLocation && dropLocation);
+
+  const reverseGeocode = async (lat: number, lng: number) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+      );
+      const data = await res.json();
+      return data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    } catch {
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+  };
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -141,18 +158,12 @@ export function BookingMapSection({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
-          );
-          const data = await res.json();
-          onPickupChange?.(data.display_name || `${latitude}, ${longitude}`);
-        } catch {
-          onPickupChange?.(`${latitude}, ${longitude}`);
-        } finally {
-          setClickMode(null);
-          setIsLocating(false);
-        }
+        skipPickupGeocodeRef.current = true;
+        setPickupCoords([latitude, longitude]);
+        const addr = await reverseGeocode(latitude, longitude);
+        onPickupChange?.(addr);
+        setClickMode(null);
+        setIsLocating(false);
       },
       () => {
         setIsLocating(false);
@@ -166,31 +177,43 @@ export function BookingMapSection({
   const effectiveClickMode: 'pickup' | 'drop' | null =
     clickMode ?? (!pickupLocation ? 'pickup' : !dropLocation ? 'drop' : null);
 
-  // Geocode location strings → coords
-  useEffect(() => {
-    const getCoords = async (
-      query: string,
-      setter: (c: [number, number] | null) => void
-    ) => {
-      if (!query || query.length < 3) {
-        setter(null);
-        return;
-      }
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
-        );
-        const data = await res.json();
-        if (data.length > 0)
-          setter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  // Address string → coords (only for edits that didn't already come with exact coords,
+  // e.g. typing/autocomplete — map click/drag/locate set coords directly and skip this).
+  const forwardGeocode = async (
+    query: string,
+    setter: (c: [number, number] | null) => void
+  ) => {
+    if (!query || query.length < 3) {
+      setter(null);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+      );
+      const data = await res.json();
+      if (data.length > 0)
+        setter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-    getCoords(pickupLocation, setPickupCoords);
-    getCoords(dropLocation, setDropCoords);
-  }, [pickupLocation, dropLocation]);
+  useEffect(() => {
+    if (skipPickupGeocodeRef.current) {
+      skipPickupGeocodeRef.current = false;
+      return;
+    }
+    forwardGeocode(pickupLocation, setPickupCoords);
+  }, [pickupLocation]);
+
+  useEffect(() => {
+    if (skipDropGeocodeRef.current) {
+      skipDropGeocodeRef.current = false;
+      return;
+    }
+    forwardGeocode(dropLocation, setDropCoords);
+  }, [dropLocation]);
 
   return (
     <div className='space-y-3'>
@@ -210,8 +233,36 @@ export function BookingMapSection({
             subdomains={tile.subdomains}
           />
 
-          {pickupCoords && <Marker position={pickupCoords} icon={pickupIcon} />}
-          {dropCoords && <Marker position={dropCoords} icon={dropIcon} />}
+          {pickupCoords && (
+            <Marker
+              position={pickupCoords}
+              icon={pickupIcon}
+              draggable={!!onPickupChange}
+              eventHandlers={{
+                dragend: async (e) => {
+                  const { lat, lng } = e.target.getLatLng();
+                  skipPickupGeocodeRef.current = true;
+                  setPickupCoords([lat, lng]);
+                  onPickupChange?.(await reverseGeocode(lat, lng));
+                },
+              }}
+            />
+          )}
+          {dropCoords && (
+            <Marker
+              position={dropCoords}
+              icon={dropIcon}
+              draggable={!!onDropChange}
+              eventHandlers={{
+                dragend: async (e) => {
+                  const { lat, lng } = e.target.getLatLng();
+                  skipDropGeocodeRef.current = true;
+                  setDropCoords([lat, lng]);
+                  onDropChange?.(await reverseGeocode(lat, lng));
+                },
+              }}
+            />
+          )}
           {driverCoords && (
             <Marker
               position={driverCoords}
@@ -234,9 +285,17 @@ export function BookingMapSection({
 
           <MapClickHandler
             mode={effectiveClickMode}
-            onSelect={(addr) => {
-              if (effectiveClickMode === 'pickup') onPickupChange?.(addr);
-              if (effectiveClickMode === 'drop') onDropChange?.(addr);
+            onSelect={(addr, lat, lng) => {
+              if (effectiveClickMode === 'pickup') {
+                skipPickupGeocodeRef.current = true;
+                setPickupCoords([lat, lng]);
+                onPickupChange?.(addr);
+              }
+              if (effectiveClickMode === 'drop') {
+                skipDropGeocodeRef.current = true;
+                setDropCoords([lat, lng]);
+                onDropChange?.(addr);
+              }
               setClickMode(null);
             }}
           />
@@ -317,7 +376,7 @@ export function BookingMapSection({
             className='justify-start'
           >
             <MapPin className='w-4 h-4' />
-            Pick on map — Pickup
+            {pickupLocation ? 'Change pickup on map' : 'Pick on map — Pickup'}
           </Button>
           <Button
             type='button'
@@ -326,7 +385,7 @@ export function BookingMapSection({
             className='justify-start'
           >
             <Navigation className='w-4 h-4' />
-            Pick on map — Drop
+            {dropLocation ? 'Change drop on map' : 'Pick on map — Drop'}
           </Button>
         </div>
       )}
