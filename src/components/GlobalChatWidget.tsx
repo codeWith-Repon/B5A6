@@ -17,18 +17,22 @@ const ACTIVE_STATUSES = new Set<string>([
  */
 export function GlobalChatWidget() {
   const { data: userInfo } = useUserInfoQuery(undefined);
-  const isAuthed = !!userInfo?.success;
+  const userRole = userInfo?.data?.role;
+  // Ride chat is a rider<->driver feature only. The backend's getCurrentRide
+  // doesn't scope to the caller for ADMIN/SUPER_ADMIN (it returns the first
+  // non-terminal ride system-wide), so querying it here would show an admin
+  // some random ride's chat/avatar — never fetch for non-participant roles.
+  const isParticipant = userRole === role.rider || userRole === role.driver;
 
   const { data: rideResponse } = useGetCurrentRideQuery(undefined, {
-    skip: !isAuthed,
+    skip: !isParticipant,
     pollingInterval: 15000,
   });
 
   const ride = rideResponse?.data;
   if (!ride || !ACTIVE_STATUSES.has(ride.rideStatus)) return null;
 
-  const isRider = userInfo?.data?.role === role.rider;
-  const counterpart = isRider ? ride.driver?.user : ride.user;
+  const counterpart = userRole === role.rider ? ride.driver?.user : ride.user;
 
   return (
     <ChatPanel
