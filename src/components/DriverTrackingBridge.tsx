@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import {
@@ -19,7 +20,8 @@ const GEO_TIMEOUT_MS = 10_000;
  *   - the driver record exists and availabilityStatus === ONLINE
  *
  * Reads geolocation every UPDATE_INTERVAL_MS and PATCHes /driver/me/location.
- * Silently no-ops for other roles or when the browser denies geolocation.
+ * No-ops for other roles; surfaces a toast if geolocation is denied/unsupported
+ * so the driver knows why riders aren't seeing their live position.
  */
 export function DriverTrackingBridge() {
   const { data: userInfo } = useUserInfoQuery(undefined);
@@ -49,7 +51,9 @@ export function DriverTrackingBridge() {
       return;
     }
     if (!('geolocation' in navigator)) {
-      console.warn('[tracking] geolocation not available');
+      toast.error('Live tracking unavailable', {
+        description: "Your browser doesn't support geolocation.",
+      });
       return;
     }
 
@@ -71,11 +75,22 @@ export function DriverTrackingBridge() {
         },
         (err) => {
           inFlightRef.current = false;
-          // Permission denied / unavailable — stop the loop until next status change
           console.warn('[tracking] geo error', err.code, err.message);
-          if (err.code === err.PERMISSION_DENIED && intervalRef.current) {
-            window.clearInterval(intervalRef.current);
-            intervalRef.current = null;
+          if (err.code === err.PERMISSION_DENIED) {
+            toast.error('Location permission denied', {
+              description:
+                "Riders won't see your live position until you allow location access for this site.",
+            });
+            // Stop the loop until next status change — no point retrying every
+            // 12s against a permission the browser will keep denying.
+            if (intervalRef.current) {
+              window.clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+          } else {
+            toast.error('Live tracking hiccup', {
+              description: 'Could not get your current location. Retrying shortly.',
+            });
           }
         },
         {

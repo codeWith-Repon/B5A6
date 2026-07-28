@@ -12,8 +12,8 @@ import { cn } from '@/lib/utils';
 interface LocationInputSectionProps {
   pickupLocation: string;
   dropLocation: string;
-  onPickupChange: (location: string) => void;
-  onDropChange: (location: string) => void;
+  onPickupChange: (location: string, coords?: [number, number]) => void;
+  onDropChange: (location: string, coords?: [number, number]) => void;
 }
 
 export function LocationInputSection({
@@ -39,14 +39,20 @@ export function LocationInputSection({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        const coords: [number, number] = [latitude, longitude];
+        const fallback = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
           );
+          if (!res.ok) {
+            onPickupChange(fallback, coords);
+            return;
+          }
           const data = await res.json();
-          onPickupChange(data.display_name || `${latitude}, ${longitude}`);
+          onPickupChange(data.display_name || fallback, coords);
         } catch {
-          onPickupChange(`${latitude}, ${longitude}`);
+          onPickupChange(fallback, coords);
         } finally {
           setIsLoadingLocation(false);
         }
@@ -70,7 +76,7 @@ export function LocationInputSection({
         </div>
 
         {/* Inputs */}
-        <div className='flex-1 divide-y divide-border'>
+        <div className='flex-1 min-w-0 divide-y divide-border'>
           <LocationAutocomplete
             value={pickupLocation}
             onChange={onPickupChange}
@@ -118,7 +124,7 @@ interface NominatimItem {
 
 interface LocationAutocompleteProps {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (val: string, coords?: [number, number]) => void;
   placeholder?: string;
   disabled?: boolean;
   onUseCurrentLocation?: () => void;
@@ -196,7 +202,7 @@ function LocationAutocomplete({
   const pick = (item: NominatimItem) => {
     skipNextFetchRef.current = true;
     setQuery(item.display_name);
-    onChange(item.display_name);
+    onChange(item.display_name, [parseFloat(item.lat), parseFloat(item.lon)]);
     setOpen(false);
   };
 
@@ -228,6 +234,7 @@ function LocationAutocomplete({
           placeholder={placeholder}
           value={query}
           disabled={disabled}
+          title={query}
           onChange={(e) => {
             setQuery(e.target.value);
             onChange(e.target.value);
@@ -235,7 +242,7 @@ function LocationAutocomplete({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          className='flex-1 bg-transparent outline-none py-2.5 text-sm font-medium placeholder:text-muted-foreground disabled:opacity-60'
+          className='flex-1 min-w-0 truncate bg-transparent outline-none py-2.5 text-sm font-medium placeholder:text-muted-foreground disabled:opacity-60'
         />
         {onUseCurrentLocation && (
           <button

@@ -19,6 +19,24 @@ const GetRide = () => {
   const [dropLocation, setDropLocation] = useState(
     searchParams.get('drop') || ''
   );
+  // Exact coords for the current pickup/drop text when known (autocomplete pick,
+  // "use current location") — passed to the map so it doesn't have to re-geocode
+  // the address text and risk drifting from the real point.
+  const [pickupCoordsHint, setPickupCoordsHint] = useState<
+    [number, number] | null
+  >(null);
+  const [dropCoordsHint, setDropCoordsHint] = useState<
+    [number, number] | null
+  >(null);
+
+  const handlePickupChange = (location: string, coords?: [number, number]) => {
+    setPickupLocation(location);
+    setPickupCoordsHint(coords ?? null);
+  };
+  const handleDropChange = (location: string, coords?: [number, number]) => {
+    setDropLocation(location);
+    setDropCoordsHint(coords ?? null);
+  };
   const [distance, setDistance] = useState(searchParams.get('distance') || '');
   const [time, setTime] = useState(searchParams.get('time') || '');
   const [selectedDriver, setSelectedDriver] = useState<string | null>(
@@ -103,15 +121,17 @@ const GetRide = () => {
             <LocationInputSection
               pickupLocation={pickupLocation}
               dropLocation={dropLocation}
-              onPickupChange={setPickupLocation}
-              onDropChange={setDropLocation}
+              onPickupChange={handlePickupChange}
+              onDropChange={handleDropChange}
             />
 
             <BookingMapSection
               pickupLocation={pickupLocation}
               dropLocation={dropLocation}
-              onPickupChange={setPickupLocation}
-              onDropChange={setDropLocation}
+              onPickupChange={handlePickupChange}
+              onDropChange={handleDropChange}
+              pickupCoordsHint={pickupCoordsHint}
+              dropCoordsHint={dropCoordsHint}
               onRouteUpdate={(dist, dur) => {
                 setDistance(dist);
                 setTime(dur);

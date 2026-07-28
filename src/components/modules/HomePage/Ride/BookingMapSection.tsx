@@ -90,6 +90,13 @@ interface BookingMapSectionProps {
   onRouteUpdate?: (distance: string, time: string) => void;
   /** [lat, lng] of the driver's current GPS — pin auto-rendered when set */
   driverCoords?: [number, number] | null;
+  /**
+   * Exact coords for the pickup/drop text, when the caller already knows them
+   * (autocomplete pick, "use current location" outside this component) — skips
+   * the address→coords re-geocode so the pin doesn't drift from the real point.
+   */
+  pickupCoordsHint?: [number, number] | null;
+  dropCoordsHint?: [number, number] | null;
   /** Hide the bottom "Set Pickup / Set Drop" action buttons */
   hideActions?: boolean;
   /** Height (Tailwind class). Defaults to a comfortable preview height. */
@@ -103,6 +110,8 @@ export function BookingMapSection({
   onDropChange,
   onRouteUpdate,
   driverCoords,
+  pickupCoordsHint,
+  dropCoordsHint,
   hideActions,
   className,
 }: BookingMapSectionProps) {
@@ -198,6 +207,21 @@ export function BookingMapSection({
       console.error(e);
     }
   };
+
+  // Caller already knows the exact coords for this pickup/drop text (autocomplete
+  // pick or an external "use current location") — use them directly and tell the
+  // text-driven effects below to skip their own re-geocode for this change.
+  useEffect(() => {
+    if (!pickupCoordsHint) return;
+    skipPickupGeocodeRef.current = true;
+    setPickupCoords(pickupCoordsHint);
+  }, [pickupCoordsHint]);
+
+  useEffect(() => {
+    if (!dropCoordsHint) return;
+    skipDropGeocodeRef.current = true;
+    setDropCoords(dropCoordsHint);
+  }, [dropCoordsHint]);
 
   useEffect(() => {
     if (skipPickupGeocodeRef.current) {
