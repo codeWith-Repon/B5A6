@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { Mail } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -20,18 +21,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
   useSendOtpMutation,
   useVerifyOtpMutation,
 } from '@/redux/features/auth/auth.api';
 import { cn } from '@/lib/utils';
+import { AuthShell } from '@/components/modules/Authentication/AuthShell';
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -67,7 +61,6 @@ const Verify = () => {
 
     const timerId = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      console.log('timer', timer);
     }, 1000);
     return () => clearInterval(timerId);
   }, [email, confirmed, timer]);
@@ -81,7 +74,6 @@ const Verify = () => {
         setTimer(120);
         setConfirmed(true);
       }
-      console.log(res);
     } catch (error) {
       toast.error('Something went wrong', { id: toastId });
       console.log(error);
@@ -110,107 +102,90 @@ const Verify = () => {
     }
   };
 
-  return (
-    <div className='relative grid place-content-center min-h-svh px-4 overflow-hidden'>
-      <div className='aurora' aria-hidden />
-      {confirmed ? (
-        <Card className='relative z-10 w-full max-w-sm'>
-          <CardHeader>
-            <CardTitle>One-Time Password</CardTitle>
-            <CardDescription className='sr-only'>
-              Enter your otp below to verify to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='w-2/3 space-y-6'
-                id='otp-form'
-              >
-                <FormField
-                  control={form.control}
-                  name='pin'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                          </InputOTPGroup>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={1} />
-                          </InputOTPGroup>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={2} />
-                          </InputOTPGroup>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={3} />
-                          </InputOTPGroup>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={4} />
-                          </InputOTPGroup>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
-                      </FormControl>
-                      <FormDescription>
-                        Please enter the one-time password sent to your email.{' '}
-                        <Button
-                          className={cn('p-0 m-0', {
-                            'cursor-pointer': timer === 0,
-                            'text-gray-500': timer !== 0,
-                          })}
-                          type='button'
-                          variant={'link'}
-                          onClick={handleSentOtp}
-                          disabled={timer !== 0}
-                        >
-                          Resend OTP
-                        </Button>
-                        {timer > 0 && ` in ${timer} s`}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-          </CardContent>
-          <CardFooter className='flex-col gap-2'>
+  if (confirmed) {
+    return (
+      <AuthShell
+        title='Enter verification code'
+        subtitle={`We sent a 6-digit code to ${email}`}
+      >
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='flex flex-col items-center gap-6'
+          >
+            <FormField
+              control={form.control}
+              name='pin'
+              render={({ field }) => (
+                <FormItem className='flex flex-col items-center'>
+                  <FormControl>
+                    <InputOTP maxLength={6} {...field}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <FormDescription className='text-center'>
+                    <Button
+                      className={cn('h-auto p-0', {
+                        'cursor-pointer': timer === 0,
+                        'text-muted-foreground': timer !== 0,
+                      })}
+                      type='button'
+                      variant='link'
+                      onClick={handleSentOtp}
+                      disabled={timer !== 0 || isLoading}
+                    >
+                      Resend OTP
+                    </Button>
+                    {timer > 0 && ` in ${timer}s`}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button
               type='submit'
-              className='w-full cursor-pointer'
-              form='otp-form'
+              className='w-full'
               disabled={verifyLoading}
             >
               Verify
             </Button>
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className='relative z-10 w-full max-w-sm'>
-          <CardHeader>
-            <CardTitle className='text-xl'>Verify your email</CardTitle>
-            <CardDescription>
-              We will send you an OTP at
-              <span className='underline font-semibold'> {email}</span>
-            </CardDescription>
-          </CardHeader>
-          <CardFooter className='flex-col gap-2'>
-            <Button
-              type='submit'
-              className='w-full'
-              onClick={handleSentOtp}
-              disabled={isLoading}
-            >
-              Confirm
-            </Button>
-          </CardFooter>
-        </Card>
-      )}
-    </div>
+          </form>
+        </Form>
+      </AuthShell>
+    );
+  }
+
+  return (
+    <AuthShell title='Verify your email'>
+      <div className='flex flex-col items-center gap-4 text-center'>
+        <div className='w-12 h-12 rounded-full bg-secondary text-foreground flex items-center justify-center'>
+          <Mail className='w-6 h-6' />
+        </div>
+        <p className='text-sm text-muted-foreground'>
+          We&apos;ll send a one-time code to
+          <br />
+          <span className='font-medium text-foreground break-all'>
+            {email}
+          </span>
+        </p>
+        <Button
+          type='button'
+          className='w-full mt-2'
+          onClick={handleSentOtp}
+          disabled={isLoading}
+        >
+          Confirm
+        </Button>
+      </div>
+    </AuthShell>
   );
 };
 export default Verify;
