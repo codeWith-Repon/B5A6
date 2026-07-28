@@ -14,7 +14,6 @@ import { Badge } from '@/components/ui/badge';
 import { ChangeRideStatus } from '@/components/modules/Ride/ChangeRideStatus';
 import { useUserInfoQuery } from '@/redux/features/auth/auth.api';
 import OtpVerification from '@/components/modules/Ride/Otpverification';
-import ChatPanel from '@/components/modules/Ride/Chat/ChatPanel';
 import { useEffect, useMemo } from 'react';
 import config from '@/config';
 
@@ -279,7 +278,7 @@ export default function CurrentRidePage() {
               </div>
             </div>
 
-            <ChatPanel rideId={ride._id} rideStatus={ride.rideStatus} />
+            {/* Chat is now a global floating widget — see GlobalChatWidget in main.tsx */}
           </div>
         </div>
       </div>
