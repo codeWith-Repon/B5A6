@@ -16,6 +16,7 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
+import '@/lib/leafletIcons';
 
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';

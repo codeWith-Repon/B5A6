@@ -48,6 +48,10 @@ export function RoutingMachine({
           },
         ],
       },
+      // Pickup/drop pins are drawn by BookingMapSection. Without this the
+      // control adds its own waypoint markers on Leaflet's default icon, which
+      // resolves to a broken image in the production build.
+      createMarker: () => null,
       addWaypoints: false,
       draggableWaypoints: false,
       fitSelectedRoutes: true,
